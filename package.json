@@ -1,0 +1,24 @@
+{
+  "name": "ghini",
+  "version": "0.0.0",
+  "description": "web interface to bauble.classic database",
+  "main": "web.js",
+  "scripts": {
+    "start": "node web.js",
+    "test": "node test.js"
+  },
+  "repository": "http://github.com/mfrasca/ghini/",
+  "author": "Mario Frasca",
+  "license": "GPL2+",
+  "dependencies": {
+    "logfmt": "~0.21.0",
+    "express": "~3.4.8",
+    "jade": "~1.3.0",
+    "socket.io": "~0.9.16",
+    "vows": "~0.8.1",
+    "pg-promise": "~2.8.5"
+  },
+  "engines": {
+    "node": "0.10.26"
+  }
+}

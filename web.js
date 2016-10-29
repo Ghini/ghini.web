@@ -131,7 +131,7 @@ io.sockets.on('connection', function (socket) {
         socket.emit('init-toggle', result);
     });
 
-    db.query("SELECT a.code||'.'||p.code as plant, a.code AS accession, g.genus, s.sp AS species, f.family, "+
+    db.query("SELECT a.code||'.'||p.code as plant, a.code AS accession, g.epithet AS genus, s.epithet AS species, f.epithet AS family, "+
              "p.position_lon AS lng, p.position_lat AS lat, p.zoom, coalesce(vn.name, '') as vernacular "+
              "FROM plant AS p, accession AS a, genus AS g, family AS f, "+
              "species AS s LEFT JOIN default_vernacular_name dvn ON dvn.species_id=s.id "+

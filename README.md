@@ -39,7 +39,7 @@ document in the database.
 
 future is unwritten, but check the issues page.
 
-setting up
+Setting Up
 ==========
 
 Simply put: download the code, and install the dependencies.
@@ -57,12 +57,17 @@ install`. To start the server: `nodejs web.js`.
 
 If npm gets confused, `rm -fr ./node_modules/` and try again.
 
-database connection
+Database Connection
 ===================
 
-ghini.web expects your data to be in a PostgreSQL database, and to match the
-model defined in ghini.desktop 1.0. Have a look at the `config.js`
-file. Make sure the `database_url` matches a data connection on your host.
+ghini.web expects your data to be in a spatial database (initially we only
+support PostgreSQL+PostGIS) and to match the model defined in ghini.desktop
+1.1, with the addition of geographic information. The geographic information
+is not unhandled by the desktop application. At a later stage support will
+be added for SpatiaLite, and possibly other spatial databases.
+
+Have a look at the `config.js` file and make sure the `database_url` matches
+a data connection on your host.
 
 For example, `'postgresql://bscratch:btest52@localhost/bscratch'` means that
 you have created a `bscratch` role with password `btest52`, owner of the
@@ -70,15 +75,27 @@ you have created a `bscratch` role with password `btest52`, owner of the
 
 log in as `postgres`, start `psql`, execute the following:
 
-create role bscratch with login createdb password 'btest52';
-create database bscratch with owner bscratch;
+CREATE ROLE bscratch WITH LOGIN CREATEDB PASSWORD 'btest52';
+CREATE DATABASE bscratch WITH OWNER bscratch;
 
-then start ghini.desktop and let it initialize the database.
+start ghini.desktop (1.1), let it initialize the database, then come back to
+the `postgres` terminal and execute:
+
+\c bscratch
+CREATE EXTENSION postgis;
+CREATE EXTENSION postgis_topology;
+SELECT AddGeometryColumn ('', 'plant', 'coords', 4326, 'POINT', 0);
+
+with SQLite, instead of the above, download the `init_spatialite.sql` script
+and run it using the `spatialite` program, then execute `SELECT
+AddGeometryColumn ('plant', 'coords', 4326, 'POINT', 0);`
 
 using it
 ========
 
 use ghini.desktop to populate the database,
+use QGIS, in particular Add Part, to add the geometry to each plant row,
 start `nodejs web.js`,
 look at your data on `http://localhost:5000/`,
 open issues to suggest how to change ghini.web.
+

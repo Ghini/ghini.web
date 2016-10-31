@@ -313,7 +313,8 @@ function init() {
     L.control.scale().addTo(map);
 
     //map.setView([9.2348, -74.42276], 20); // go to cuchubo garden
-    map.setView([6.27071, -75.56353], 18); // JBdM
+    map.setView([7.59174, -80.96141], 18); // go to tanager garden
+    //map.setView([6.27071, -75.56353], 18); // JBdM
     for (i=1; i<=map.getZoom(); i++)
         map.addLayer(plant_layer[i]);
 

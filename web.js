@@ -132,12 +132,12 @@ io.sockets.on('connection', function (socket) {
     });
 
     db.query("SELECT a.code||'.'||p.code as plant, a.code AS accession, g.epithet AS genus, s.epithet AS species, f.epithet AS family, "+
-             "p.position_lon AS lng, p.position_lat AS lat, p.zoom, coalesce(vn.name, '') as vernacular "+
+             "p.position_lon AS lng, p.position_lat AS lat, p.visible_zoom AS zoom, coalesce(vn.name, '') as vernacular "+
              "FROM plant AS p, accession AS a, genus AS g, family AS f, "+
              "species AS s LEFT JOIN default_vernacular_name dvn ON dvn.species_id=s.id "+
              "LEFT JOIN vernacular_name vn ON vn.id=dvn.vernacular_name_id "+
              "WHERE s.genus_id=g.id AND g.family_id=f.id AND p.accession_id=a.id AND a.species_id=s.id "+
-             "AND p.zoom IS NOT NULL ORDER BY a.code, p.code")
+             "AND p.visible_zoom IS NOT NULL ORDER BY a.code, p.code")
         .then(function(data) {
             for(var i=0; i<data.length; i++)
                 socket.emit('add-plant', data[i]);
@@ -148,7 +148,7 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('add-plant', function(data) {
         db.query("UPDATE plant "+
-                 "SET position_lat=${lat}, position_lon=${lng}, zoom=${zoom} "+
+                 "SET position_lat=${lat}, position_lon=${lng}, visible_zoom=${zoom} "+
                  "WHERE code=${plant_short} AND accession_id="+
                  "(SELECT id FROM accession WHERE code=${accession})",
                  data)

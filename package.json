@@ -9,14 +9,18 @@
   },
   "repository": "http://github.com/Ghini/ghini.web/",
   "author": "Mario Frasca",
-  "license": "AGPL3+",
+  "license": "AGPL-3.0",
   "dependencies": {
-    "logfmt": "~0.21.0",
+    "any-db": "^2.1.0",
+    "any-db-mysql": "^2.1.2",
+    "any-db-postgres": "^2.1.4",
+    "any-db-sqlite3": "^2.1.4",
     "express": "~3.4.8",
     "jade": "~1.3.0",
+    "logfmt": "~0.21.0",
+    "pg-promise": "~2.8.5",
     "socket.io": "~0.9.16",
-    "vows": "~0.8.1",
-    "pg-promise": "~2.8.5"
+    "vows": "~0.8.1"
   },
   "engines": {
     "node": "0.10.26"

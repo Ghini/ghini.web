@@ -1,15 +1,15 @@
 {
-  "name": "ghini",
-  "version": "0.0.0",
-  "description": "web interface to bauble.classic database",
+  "name": "ghini.web",
+  "version": "1.1.0",
+  "description": "web interface to ghini.desktop database",
   "main": "web.js",
   "scripts": {
     "start": "node web.js",
     "test": "node test.js"
   },
-  "repository": "http://github.com/mfrasca/ghini/",
+  "repository": "http://github.com/Ghini/ghini.web/",
   "author": "Mario Frasca",
-  "license": "GPL2+",
+  "license": "AGPL3+",
   "dependencies": {
     "logfmt": "~0.21.0",
     "express": "~3.4.8",

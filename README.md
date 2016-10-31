@@ -49,8 +49,10 @@ Debian8, and possibly with anything based on Debian, is v0.10.29, and that's
 far too old. Follow the instructions on nodejs.org, or trust me and do the
 following:
 
+```
 curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 sudo apt-get install -y nodejs
+```
 
 ghini.web is a npm-based program. To get all further dependencies: `npm
 install`. To start the server: `nodejs web.js`.
@@ -75,16 +77,20 @@ you have created a `bscratch` role with password `btest52`, owner of the
 
 log in as `postgres`, start `psql`, execute the following:
 
+```
 CREATE ROLE bscratch WITH LOGIN CREATEDB PASSWORD 'btest52';
 CREATE DATABASE bscratch WITH OWNER bscratch;
+```
 
 start ghini.desktop (1.1), let it initialize the database, then come back to
 the `postgres` terminal and execute:
 
+```
 \c bscratch
 CREATE EXTENSION postgis;
 CREATE EXTENSION postgis_topology;
 SELECT AddGeometryColumn ('', 'plant', 'coords', 4326, 'POINT', 0);
+```
 
 with SQLite, instead of the above, download the `init_spatialite.sql` script
 and run it using the `spatialite` program, then execute `SELECT
@@ -93,9 +99,9 @@ AddGeometryColumn ('plant', 'coords', 4326, 'POINT', 0);`
 using it
 ========
 
-use ghini.desktop to populate the database,
-use QGIS, in particular Add Part, to add the geometry to each plant row,
-start `nodejs web.js`,
-look at your data on `http://localhost:5000/`,
-open issues to suggest how to change ghini.web.
+* use ghini.desktop to populate the database,
+* not yet decided ... (use QGIS, in particular Add Part, to add the geometry to each plant row),
+* start `nodejs web.js`,
+* look at your data on `http://localhost:5000/`,
+* open issues to suggest how to change ghini.web.
 

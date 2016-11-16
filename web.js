@@ -1,9 +1,9 @@
 // This file is part of ghini.web
 // http://github.com/Ghini/ghini.web
 //
-// ghini.web is free software: you can redistribute it and/or modify it
-// under the terms of the GNU Affero General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or (at
+// ghini.web is free software: you can redistribute ghini.web and/or modify
+// it under the terms of the GNU Affero General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or (at
 // your option) any later version.
 //
 // ghini.web is distributed in the hope that it will be useful, but WITHOUT
@@ -11,15 +11,15 @@
 // FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public
 // License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License along
-// with ghini.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Affero General Public License
+// along with ghini.web.  If not, see <http://www.gnu.org/licenses/>.
 //
 // this is the remote server
 
 var config = require('./config');
 var express = require("express");
 var app = express();
-var port = Number(process.env.PORT || config.port);
+var port = Number(process.env.PORT || config.port);  // servicing on port
 var dburl = process.env.DATABASE_URL || config.database_url;
 
 var fs = require('fs');

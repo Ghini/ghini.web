@@ -6,6 +6,9 @@ application, the other running on the local web browser, as a JavaScript client 
 I will not introduce separate names for the two components, I will call them both ``ghini.web``,
 the former being ``ghini.web-the_server`` and the latter ``ghini.web-the_client``, or, in short: GWtS and GWtC.
 
+the server
+===========
+
 our Node.js program ``ghini.web-the_server`` serves static files like a normal web server 
 and dynamic data through a restful web api.
 
@@ -37,3 +40,13 @@ the dynamic data served describes gardens and collections, so GWtS offers ways t
 
     * add a plant to a garden
     * add a picture to a plant
+
+the client
+===========
+
+GWtC is a single page web client, initialised to a map of the world, with dots at the locations of the gardens participating to the project.
+
+clicking on a garden pops up a window, where you can read a description of the garden selected, and you can choose to enter the garden. entering a garden implies zooming in to a level where individual plants will become visible on the map.
+
+while the garden pop up is active, the rest of the interface is grayed out. you can also close the pop up without selecting the garden, this will reactivate the map without changing the zoom.
+

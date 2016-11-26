@@ -11,19 +11,29 @@ and dynamic data through a restful web api.
 
 the dynamic data served describes gardens and collections, so GWtS offers ways to:
 
-* reading
- * garden related
-  * get a list of all gardens, with their name and geographic coordinates.
-  * get a verbose description of the garden, really a web page.
-  * look up gardens by name
-  * look up gardens geographically (draw a circle on the map)
-  * get a list of pictures taken in the garden, not associated to plants.
- * plant related
-  * get a list of all plants in a garden (with accession name, coordinates, names of pictures).
-  * get the miniature of a specific picture.
-  * get the full resolution version of a specific picture.
-* writing
- * add a garden to the list
- * add a picture to a garden
- * add a plant to a garden
- * add a picture to a plant
+* garden related
+
+  * reading
+
+    * get a list of all gardens, with their name and geographic coordinates.
+    * get a verbose description of the garden, really a web page.
+    * look up gardens by name
+    * get a list of pictures taken in the garden, not associated to plants.
+
+  * writing
+
+    * add a garden to the list
+    * add a picture to a garden
+
+* plant related
+ 
+  * reading
+
+    * get a list of all plants in a garden (with accession name, coordinates, names of pictures).
+    * get the miniature of a specific picture.
+    * get the full resolution version of a specific picture.
+  
+  * writing
+
+    * add a plant to a garden
+    * add a picture to a plant

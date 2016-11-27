@@ -93,3 +93,5 @@ pip-log.txt
 .mr.developer.cfg
 dump.sql
 tmp-*.txt
+
+table.sql

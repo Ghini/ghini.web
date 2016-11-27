@@ -96,7 +96,15 @@ using it
 
 * use ghini.desktop to populate the database,
 * not yet decided how to do this, but you need define the coordinates of the plants,
+  * alter table plant add column position_lat float;
+  * alter table plant add column position_lon float;
+  * alter table plant add column visible_zoom integer;
+  * update plant set position_lat=cast(split_part(note,' ',1) as float), position_lon=cast(split_part(note,' ',2) as float) from plant_note where plant.id=plant_id and category='coords';
+  * alter table species rename column sp to epithet;
+  * alter table species rename column sp_author to author;
+  * alter table genus rename column genus to epithet;
+  * alter table family rename column family to epithet;
+
 * start `nodejs web.js`,
 * look at your data on `http://localhost:5000/`,
 * open issues to suggest how to change ghini.web.
-

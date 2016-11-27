@@ -103,6 +103,7 @@ function doHighlight() {
     console.log(listOf[whatToHighlight]);
     for (var i = 0; i<listOf[whatToHighlight].length; i++) {
         var marker = listOf[whatToHighlight][i];
+        console.log(marker);
         marker.setIcon(icon.black);
         markers.highlighted.push(marker);
     }
@@ -389,6 +390,7 @@ function init() {
 
             // add the reference to the dialog box to the help menu.
             var list_item = $('<li/>');
+            console.log(item.name);
             var anchor = $('<a/>', { onclick: "$('#" + item.name + "Modal').modal('show'); return false;", href: "#" });
             var icon = $('<i/>', { class: "icon-" + item.icon + " icon-black" });
             $("#help-menu-list").append(list_item);

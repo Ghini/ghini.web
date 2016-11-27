@@ -46,8 +46,8 @@ String.prototype.formatU = function() {
 };
 
 app.set('views', __dirname + '/views');
-app.set('view engine', "jade");
-app.engine('jade', require('jade').__express);
+app.set('view engine', "pug");
+app.engine('pug', require('pug').__express);
 app.use(express.static(__dirname + '/public'));
 
 app.get("/", function(req, res){

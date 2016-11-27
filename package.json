@@ -15,10 +15,13 @@
     "jade": "~1.3.0",
     "logfmt": "~0.21.0",
     "pg-promise": "~2.8.5",
-    "socket.io": "~0.9.16",
-    "vows": "~0.8.1"
+    "pug": "^2.0.0-beta6",
+    "socket.io": "~0.9.16"
   },
   "engines": {
     "node": "6.9.1"
+  },
+  "devDependencies": {
+    "vows": "^0.8.1"
   }
 }

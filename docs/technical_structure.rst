@@ -50,3 +50,11 @@ clicking on a garden pops up a window, where you can read a description of the g
 
 while the garden pop up is active, the rest of the interface is grayed out. you can also close the pop up without selecting the garden, this will reactivate the map without changing the zoom.
 
+frequent actions
+------------------
+
+updating dependencies
+
+| ``sudo npm install -g npm-check-updates``
+| ``ncu -u``
+

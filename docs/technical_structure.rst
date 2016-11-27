@@ -1,18 +1,20 @@
 technical structure
 --------------------
 
-``ghini.web`` is the combination of two pieces of software, one running on the remote server as a Node.js 
-application, the other running on the local web browser, as a JavaScript client of the former Node.js server. 
-I will not introduce separate names for the two components, I will call them both ``ghini.web``,
-the former being ``ghini.web-the_server`` and the latter ``ghini.web-the_client``, or, in short: GWtS and GWtC.
+``ghini.web`` is the combination of two pieces of software, one running on
+the remote server as a Node.js application, the other running on the local
+web browser, as a JavaScript client of the former Node.js server.  I will
+not introduce separate names for the two components, I will call them both
+``ghini.web``, the former being ``ghini.web-the_server`` and the latter
+``ghini.web-the_client``, or, in short: GWtS and GWtC.
 
 the server
 ===========
 
-our Node.js program ``ghini.web-the_server`` serves static files like a normal web server 
-and dynamic data through a restful web api.
-
-the dynamic data served describes gardens and collections, so GWtS offers ways to:
+our Node.js program ``ghini.web-the_server`` serves static files like a
+normal web server and dynamic data through an API. the dynamic data served
+describes gardens and collections, and the access functions we need to the
+data can be grouped this way:
 
 * garden related
 
@@ -32,7 +34,8 @@ the dynamic data served describes gardens and collections, so GWtS offers ways t
  
   * reading
 
-    * get a list of all plants in a garden (with accession name, coordinates, names of pictures).
+    * get a list of all plants in a garden (with accession name,
+      coordinates, names of pictures).
     * get the miniature of a specific picture.
     * get the full resolution version of a specific picture.
   
@@ -44,11 +47,32 @@ the dynamic data served describes gardens and collections, so GWtS offers ways t
 the client
 ===========
 
-GWtC is a single page web client, initialised to a map of the world, with dots at the locations of the gardens participating to the project.
+GWtC is a single page web client, initialised to a map of the world, with
+dots at the locations of the gardens participating to the project.
 
-clicking on a garden pops up a window, where you can read a description of the garden selected, and you can choose to enter the garden. entering a garden implies zooming in to a level where individual plants will become visible on the map.
+clicking on a garden pops up a window, where you can read a description of
+the garden selected, and you can choose to enter the garden. entering a
+garden implies zooming in to a level where individual plants will become
+visible on the map.
 
-while the garden pop up is active, the rest of the interface is grayed out. you can also close the pop up without selecting the garden, this will reactivate the map without changing the zoom.
+while the garden pop up is active, the rest of the interface is grayed
+out. you can also close the pop up without selecting the garden, this will
+reactivate the map without changing the zoom.
+
+the connection server ←→ client
+==================================
+
+I am not yet decided, but I don't know if we should implement a normal
+restful api, or if we should keep a socket open between client and
+server. in the latter case, which is what I have been experimenting with
+from the beginning, a client registers with the server and requests data
+through the channel that stays open the whole time.
+
+the advantage of this approach is that the server can initiate changes on
+clients, and in case a client does change something in the database, the
+fact can be reflected at all other clients. it will probably not be that
+relevant as of now, but it does not make things more complex, and I suspect
+it offers more future flexibility.
 
 frequent actions
 ------------------
@@ -57,4 +81,5 @@ updating dependencies
 
 | ``sudo npm install -g npm-check-updates``
 | ``ncu -u``
+| ``npm install``
 

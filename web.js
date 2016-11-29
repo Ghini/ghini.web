@@ -21,18 +21,12 @@ var express = require("express");
 var app = express();
 var port = Number(process.env.PORT || config.port);  // servicing on port
 var dburl = process.env.DATABASE_URL || config.database_url;
+console.log(dburl);
 
 var fs = require('fs');
 
-var pgp = require('pg-promise')(/*options*/);
-var db = pgp(dburl);
-
-var client = new pgp.pg.Client(dburl);
-client.connect();
-client.query('LISTEN "watchers"');
-client.on('notification', function(data) {
-    console.log(data.payload);
-});
+var mongodb = require('mongodb');
+var dbclient = mongodb.MongoClient;
 
 String.prototype.formatU = function() {
     var str = this.toString();
@@ -131,46 +125,28 @@ io.sockets.on('connection', function (socket) {
         socket.emit('init-toggle', result);
     });
 
-    db.query("SELECT a.code||'.'||p.code as plant, a.code AS accession, g.epithet AS genus, s.epithet AS species, f.epithet AS family, "+
-             "p.position_lon AS lng, p.position_lat AS lat, p.visible_zoom AS zoom, coalesce(vn.name, '') as vernacular "+
-             "FROM plant AS p, accession AS a, genus AS g, family AS f, "+
-             "species AS s LEFT JOIN default_vernacular_name dvn ON dvn.species_id=s.id "+
-             "LEFT JOIN vernacular_name vn ON vn.id=dvn.vernacular_name_id "+
-             "WHERE s.genus_id=g.id AND g.family_id=f.id AND p.accession_id=a.id AND a.species_id=s.id "+
-             "AND p.visible_zoom IS NOT NULL ORDER BY a.code, p.code")
-        .then(function(data) {
-            for(var i=0; i<data.length; i++)
-                socket.emit('add-plant', data[i]);
-        })
-        .catch(function(error) {
-            return console.error(error);
-        });
+    dbclient.connect(dburl, function (err, db) {
+        if (err) {
+            console.log('Unable to connect to the mongoDB server. Error:', err);
+        } else {
+            // Get the gardens collection
+            var gardens = db.collection('gardens');
 
-    socket.on('add-plant', function(data) {
-        db.query("UPDATE plant "+
-                 "SET position_lat=${lat}, position_lon=${lng}, visible_zoom=${zoom} "+
-                 "WHERE code=${plant_short} AND accession_id="+
-                 "(SELECT id FROM accession WHERE code=${accession})",
-                 data)
-        .catch(function(error) {
-            return console.error(error);
-        });
-        socket.broadcast.emit('add-plant', data);
-    });
-
-    socket.on('move', function (data) {
-        // inform all other clients of the move.
-        db.query("UPDATE plant SET position_lat=${lat}, position_lon=${lng} WHERE code=${plant_short} AND accession_id=(SELECT id FROM accession WHERE code=${accession})", data)
-        .catch(function(error) {
-            return console.error(error);
-        });
-        socket.broadcast.emit('move', data);
-    });
-    socket.on('insert', function (data) {
-        io.sockets.emit('insert', data);
-    });
-    socket.on('delete', function (data) {
-        io.sockets.emit('delete', data);
-    });
+            //We have a cursor now with our find criteria
+            var cursor = gardens.aggregate({$lookup:{from:"plants", foreignField:"garden", localField:"name", as:"plants"}},
+                                           {$project: {name:1, lat: 1, lon: 1, contact: 1, zoom: 1, count: {$size: "$plants"}}},
+                                           {});
+            //Lets iterate on the result
+            cursor.each(function (err, doc) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log(doc);
+                    if(doc)
+                        socket.emit('add-plant', doc);
+                }
+            });
+            db.close();
+        }});
 });
 

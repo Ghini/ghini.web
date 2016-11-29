@@ -19,7 +19,6 @@
 var config = {};
 
 config.port = 5000;
-config.database_url = 'postgresql://bscratch:btest52@localhost/bscratch';
-//config.database_url = 'sqlite3:/home/mario/.bauble/tanager.db';
+config.database_url = 'mongodb://localhost:27017/gardens';
 
 module.exports = config;

@@ -143,34 +143,17 @@ function doAddPlant() {
 }
 
 function finalAddPlant(item) {
-    var marker = L.marker([item.lat, item.lng],
-                          { icon: icon.gray,
+    var marker = L.marker([item.lat, item.lon],
+                          { icon: icon.garden,
                             draggable: 'true',
                             accession: item.accession,
-                            plant: item.plant,
-                            title: item.plant,
-                            zoom: item.zoom
+                            plant: item.name,
+                            title: item.name,
+                            zoom: 1
                           });
     markers.push(marker);
-    marker.addTo(plant_layer[item.zoom]).bindPopup('<b>{0}</b><br/>{1}<br/><a target="wikipedia" href="http://en.wikipedia.org/wiki/{2}_{3}">{2}_{3} ({4})</a>'.formatU([item.plant, item.vernacular, item.genus, item.species, item.family]), {marker: marker});
-    marker.on('dragend', onDragend);
-    marker.on('contextmenu', openHighlightModal);
-
-    // associate marker with its unique plant accession.plant #
-    listOf[item.plant] = marker;
-    var ranks = [item.accession, item.genus + " " + item.species, item.genus, item.family];
-
-    if(!(item.accession in taxonOf) )
-        taxonOf[item.accession] = {};
-    taxonOf[item.accession].family = item.family;
-    taxonOf[item.accession].genus = item.genus;
-    taxonOf[item.accession].species = item.species;
-    for (var i = 0; i < ranks.length; i++) {
-        if (!(ranks[i] in listOf)) {
-            listOf[ranks[i]] = [];
-        }
-        listOf[ranks[i]].push(marker);
-    }
+    marker.addTo(plant_layer[1]).bindPopup('<b>{0}</b><br/>contact: {1}<br/>mapped plants: {2}<br/>'.formatU(
+        [item.name, item.contact, item.count]), {marker: marker});
 }
 
 
@@ -296,6 +279,8 @@ function init() {
     }
 
     icon = {
+        'garden': L.AwesomeMarkers.icon({ color: '#ffffff',
+                                          icon: 'info-sign' }),
         'gray': L.icon({
             iconUrl: './res/bullet-lightgray.png',
             iconSize:     [16, 16], // size of the icon
@@ -313,9 +298,8 @@ function init() {
     // add the scale control
     L.control.scale().addTo(map);
 
-    //map.setView([9.2348, -74.42276], 20); // go to cuchubo garden
-    map.setView([7.59174, -80.96141], 18); // go to tanager garden
-    //map.setView([6.27071, -75.56353], 18); // JBdM
+    map.setView([32.0, 8.0], 5); // go to center of world map - somewhere in Africa
+    console.log(map.getZoom());
     for (i=1; i<=map.getZoom(); i++)
         map.addLayer(plant_layer[i]);
 

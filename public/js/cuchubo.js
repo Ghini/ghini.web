@@ -416,5 +416,6 @@ function init() {
     });
 
     socket.on('add-plant', finalAddPlant);
+    map.setZoom(2);
 
 }

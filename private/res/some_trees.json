@@ -569,8 +569,13 @@
     {"prototype": "garden", "name": "Jardín Botánico del Quindío", "lat":  4.522, "lon": -75.630},
     {"prototype": "garden", "name": "Jardín Botánico de Manizales", "lat":  5.047, "lon": -75.498},
     {"prototype": "garden", "name": "Jardín Botánico de Pereira", "lat":  4.784, "lon": -75.674},
-    {"prototype": "garden", "name": "Jardín Botánico de Quito", "contact": "Felipe Andrade", "lat":  -0.176, "lon": -78.486},
+    {"prototype": "garden", "name": "Jardín Botánico de Quito", "contact": "Felipe Andrade", "lat": 0.1862, "lon": -78.4851},
     {"prototype": "garden", "name": "Jardín Botánico de Cartagena Guillermo Piñeres", "lat":  10.358, "lon": -75.410},
     {"prototype": "garden", "name": "The Robert & Catherine Wilson BG", "lat":  8.785, "lon": -82.959},
-    {"prototype": "garden", "name": "MRBG", "lat": -21.1585, "lon": 149.1571}
+    {"prototype": "garden", "name": "Mackay Regional BG", "lat": -21.1585, "lon": 149.1571},
+    {"prototype": "garden", "name": "Foldyard Cottage Mediterranean and Herb Garden", "lat": 53.9431, "lon": -0.8075},
+    {"prototype": "garden", "name": "Belize Botanical Gardens", "lat": 17.0885, "lon": -89.0683},
+    {"prototype": "garden", "name": "Lovett Pinetum", "lat": 37.2410, "lon": -93.1502},
+    {"prototype": "garden", "name": "Den Helder Oranjerie", "lat": 52.9578, "lon": 4.7545},
+    {"prototype": "garden", "name": "Jardín Botánico de la UNAS", "lat": -9.30408, "lon": -76.00374}
 ]

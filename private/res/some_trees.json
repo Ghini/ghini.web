@@ -613,10 +613,10 @@ db.photos.insert([
 
 db.infopanels.drop();
 db.infopanels.insert([
-    {garden:"Jardín el Cuchubo", lat:9.235022007049798, lon:-74.42264601588249, name: 'kitchen', title:''},
-    {garden:"Jardín el Cuchubo", lat:9.234892282310618, lon:-74.42253604531288, name:'house', title: ''},
-    {garden:"Jardín el Cuchubo", lat:9.234884339978088, lon:-74.4224850833416, name:'septic tank', title: ''},
-    {garden:"Jardín el Cuchubo", lat:9.235107056151358, lon:-74.42272681742905, name:'gate', title: 'this is the main entrance<br/>to the garden'}
+    {garden:"Jardín el Cuchubo", lat:9.235022007049798, lon:-74.42264601588249, title: 'kitchen', text:''},
+    {garden:"Jardín el Cuchubo", lat:9.234892282310618, lon:-74.42253604531288, title:'house', text: ''},
+    {garden:"Jardín el Cuchubo", lat:9.234884339978088, lon:-74.4224850833416, title:'septic tank', text: ''},
+    {garden:"Jardín el Cuchubo", lat:9.235107056151358, lon:-74.42272681742905, title:'gate', text: 'this is the main entrance<br/>to the garden'}
 ]);
     
 

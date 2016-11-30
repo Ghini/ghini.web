@@ -143,10 +143,17 @@ function doAddPlant() {
 }
 
 var prototype_format = {};
-prototype_format['garden'] = '<b>{name}</b><br/>contact: {contact}<br/>mapped plants: {count}<br/><a href="#">zoom to garden</a>';
-prototype_format['plant'] = '<b>{0}</b><br/>contact: {1}<br/>mapped plants: {2}<br/>';
-prototype_format['photo'] = '<b>{0}</b><br/>contact: {1}<br/>mapped plants: {2}<br/>';
-prototype_format['infopanel'] = '<b>{0}</b><br/>contact: {1}<br/>mapped plants: {2}<br/>';
+prototype_format['garden'] = '<b>{name}</b><br/>contact: {contact}<br/>mapped plants: {count}<br/>' +
+    '<a onclick="fireSelectGarden(\'{name}\'); return false;", href="#">zoom to garden</a>';
+prototype_format['plant'] = '<b>{code}</b><br/>{vernacular}<br/>{species}<br/>';
+prototype_format['photo'] = '<b>{title}</b><br/>{name}<br/>';
+prototype_format['infopanel'] = '<b>{title}</b><br/>{text}<br/>';
+
+function fireSelectGarden(e) {
+    map.closePopup();
+    socket.emit('select-garden', e);
+    return false;
+}
 
 function finalAddObject(item) {
     var marker = L.marker([item.lat, item.lon],

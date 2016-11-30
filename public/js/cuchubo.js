@@ -136,24 +136,24 @@ function doAddPlant() {
     item.zoom = threshold;
     item.family = item.genus = item.species = item.vernacular = "";
 
-    finalAddPlant(item);
-    socket.emit("add-plant", item);
+    finalAddObject(item);
+    socket.emit("add-object", item);
 
     addToDom(item.plant, threshold, [item.lat, item.lng]);
 }
 
-function finalAddPlant(item) {
+var prototype_format = {};
+prototype_format['garden'] = '<b>{name}</b><br/>contact: {contact}<br/>mapped plants: {count}<br/><a href="#">zoom to garden</a>';
+prototype_format['plant'] = '<b>{0}</b><br/>contact: {1}<br/>mapped plants: {2}<br/>';
+prototype_format['photo'] = '<b>{0}</b><br/>contact: {1}<br/>mapped plants: {2}<br/>';
+prototype_format['infopanel'] = '<b>{0}</b><br/>contact: {1}<br/>mapped plants: {2}<br/>';
+
+function finalAddObject(item) {
     var marker = L.marker([item.lat, item.lon],
-                          { icon: icon.garden,
-                            draggable: 'true',
-                            accession: item.accession,
-                            plant: item.name,
-                            title: item.name,
-                            zoom: 1
-                          });
+                          item);
     markers.push(marker);
-    marker.addTo(plant_layer[1]).bindPopup('<b>{0}</b><br/>contact: {1}<br/>mapped plants: {2}<br/>'.formatU(
-        [item.name, item.contact, item.count]), {marker: marker});
+    marker.addTo(plant_layer[1]).bindPopup(prototype_format[item['prototype']].formatU(item),
+                                           {marker: marker});
 }
 
 
@@ -415,7 +415,6 @@ function init() {
         }
     });
 
-    socket.on('add-plant', finalAddPlant);
-    map.setZoom(2);
-
+    socket.on('add-object', finalAddObject);
+    map.setZoom(2);  // again set zoom in case it did not work
 }

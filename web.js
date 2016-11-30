@@ -132,18 +132,24 @@ io.sockets.on('connection', function (socket) {
             // Get the gardens collection
             var gardens = db.collection('gardens');
 
-            //We have a cursor now with our find criteria
+            // We have a cursor now with our find criteria.
+            // Having a cursor does not mean we performed any database access, yet.
             var cursor = gardens.aggregate({$lookup:{from:"plants", foreignField:"garden", localField:"name", as:"plants"}},
-                                           {$project: {name:1, lat: 1, lon: 1, contact: 1, zoom: 1, count: {$size: "$plants"}}},
+                                           {$project: {name:1, lat: 1, lon: 1, contact: 1,
+                                                       draggable: {$literal: false},
+                                                       title: "$name",
+                                                       zoom: {$literal: 1},
+                                                       prototype: {$literal: "garden"},
+                                                       count: {$size: "$plants"}}},
                                            {});
-            //Lets iterate on the result
+            // Lets iterate on the result.
+            // this will access the database, so we act in a callback.
             cursor.each(function (err, doc) {
-                if (err) {
-                    console.log(err);
+                if (err || !doc) {
+                    console.log("err:", err, "; doc:", doc);
                 } else {
                     console.log(doc);
-                    if(doc)
-                        socket.emit('add-plant', doc);
+                    socket.emit('add-object', doc);
                 }
             });
             db.close();

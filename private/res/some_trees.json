@@ -1,7 +1,11 @@
 db.sources.drop();
 db.sources.insert([]);
+
 db.taxa.drop();
 db.taxa.insert([
+    {name: "Ceiba pentandra", family: "Bombacaceae", vernacular: "bonga, ceibo"},
+    {name: "Delonix regia", family: "Fabaceae", subfamily: "Caesalpinioideae", vernacular: "flamboyán, acacia roja"},
+    {name: "Ficus elastica", family: "Moraceae", vernacular: "higo, matapalo"},
     {name: "sp. 0026", rank: "species", family: "-", vernacular: "Trebol"},
     {name: "sp. 0031", rank: "species", family: "-", vernacular: "cardón, pitaya"},
     {name: "sp. 0044", rank: "species", family: "-", vernacular: "Mirto"},
@@ -183,6 +187,7 @@ db.taxa.insert([
     {name: "Vitex cymosa", rank: "species", family: "Verbenaceae", vernacular: "Aceituna"},
     {name: "Zingiber officinalis", rank: "species", family: "Zingiberaceae", vernacular: "Jengibre"}
 ]);
+
 db.gardens.drop();
 db.gardens.insert([
     {name: "Jardín el Cuchubo", lat:  9.23424, lon: -74.42281},
@@ -200,6 +205,12 @@ db.gardens.insert([
     {name: "Lovett Pinetum", lat: 37.2410, lon: -93.1502},
     {name: "Jardín Botánico de la UNAS", lat: -9.30408, lon: -76.00374}
 ]);
+db.gardens.update({name:/Cuchubo/}, {$set:{contact:"Mario Frasca", email:"mario@anche.no"}});
+db.gardens.update({name:/Ambiental/}, {$set:{contact:"Dania Paguaga"}});
+db.gardens.update({name:/Medell.n/}, {$set:{contact:"Ana María Benavides"}});
+db.gardens.update({name:/Foldyard/}, {$set:{contact:"Corrado Topi"}});
+db.gardens.update({name:/Belize/}, {$set:{contact:"Rudy Aguilar"}});
+
 db.plants.drop();
 db.plants.insert([
     {garden:"Jardín el Cuchubo", code: "2014.0001.1", zoom: 21, lat: 9.23508951684, lon: -74.4227429107, species: "Ixora coccinea"},
@@ -573,14 +584,41 @@ db.plants.insert([
     {garden:"Jardín el Cuchubo", code: "2014.0629.1", zoom: 22, lat: 9.23485157785, lon: -74.4225078821, species: "Sterculia apetala"},
     {garden:"Jardín el Cuchubo", code: "2014.0640.1", zoom: 22, lat: 9.23479002477, lon: -74.4224180281, species: "Lecythis tuyrana"},
     {garden:"Jardín el Cuchubo", code: "2014.0662.1", zoom: 22, lat: 9.23481782294, lon: -74.4225129113, species: "sp. 0662"},
-    {garden:"parque centenario", code: "2016.0001.1", zoom: 20, lon: -75.5479202, lat: 10.4224405, species: "Ceiba pentandra", "osm-id": 4525366856},
-    {garden:"parque centenario", code: "2016.0002.1", zoom: 20, lon: -75.5479736, lat: 10.4226131, species: "Delonix regia", "osm-id": 4525366855},
-    {garden:"parque centenario", code: "2016.0003.1", zoom: 20, lon: -75.5480206, lat: 10.4227406, species: "Guaiacum officinale", "osm-id": 4525366854},
-    {garden:"parque centenario", code: "2016.0004.1", zoom: 20, lon: -75.5465624, lat: 10.4233636, species: "Ficus elastica", "osm-id": 4525366853}]);
-db.taxa.insert([
-    {name: "Ceiba pentandra", family: "Bombacaceae", vernacular: "bonga, ceibo"},
-    {name: "Delonix regia", family: "Fabaceae", subfamily: "Caesalpinioideae", vernacular: "flamboyán, acacia roja"},
-    {name: "Ficus elastica", family: "Moraceae", vernacular: "higo, matapalo"}]);
+    {garden:"parque centenario", code: "2016.0001.1", zoom: 20, lat: 10.4224405, lon: -75.5479202, species: "Ceiba pentandra", "osm-id": 4525366856},
+    {garden:"parque centenario", code: "2016.0002.1", zoom: 20, lat: 10.4226131, lon: -75.5479736, species: "Delonix regia", "osm-id": 4525366855},
+    {garden:"parque centenario", code: "2016.0003.1", zoom: 20, lat: 10.4227406, lon: -75.5480206, species: "Guaiacum officinale", "osm-id": 4525366854},
+    {garden:"parque centenario", code: "2016.0004.1", zoom: 20, lat: 10.4233636, lon: -75.5465624, species: "Ficus elastica", "osm-id": 4525366853}]);
+
+db.photos.drop();
+db.photos.insert([
+    {garden:"Jardín el Cuchubo", lat:9.235107056151358, lon:-74.42272681742905, name:'P1190996.JPG', title: 'Entrance el Cuchubo'},
+    {garden:"Jardín el Cuchubo", lat:9.235053776366405, lon:-74.42273989319801, name:'P1200002.JPG', title: 'Area 1a'},
+    {garden:"Jardín el Cuchubo", lat:9.235060394973665, lon:-74.42269831895828, name:'P1190998.JPG', title: 'Area 2a'},
+    {garden:"Jardín el Cuchubo", lat:9.235063042416543, lon:-74.42272111773491, name:'P1200004.JPG', title: 'Area 3a from entrance'},
+    {garden:"Jardín el Cuchubo", lat:9.235000827503802, lon:-74.42267283797263, name:'P1200005.JPG', title: 'Area 3a view from kitchen'},
+    {garden:"Jardín el Cuchubo", lat:9.234883016255987, lon:-74.42256085574626, name:'P1200006.JPG', title: 'Area 4a from house'},
+    {garden:"Jardín el Cuchubo", lat:9.234848930410086, lon:-74.42259136587381, name:'P1200007.JPG', title: 'Area house Mr. Pontón taken from clemón'},
+    {garden:"Jardín el Cuchubo", lat:9.234824772478467, lon:-74.42256554961205, name:'P1200008.JPG', title: 'Area 5a'},
+    {garden:"Jardín el Cuchubo", lat:9.23495582096434, lon:-74.42253738641739, name:'P1200010.JPG', title: 'Area Behind Mr. Pontóns house'},
+    {garden:"Jardín el Cuchubo", lat:9.23484065714602, lon:-74.42265003919601, name:'P1200011.JPG', title: 'Area 3a to Kitchen taken from Big Mamoncillo in open area 4a'},
+    {garden:"Jardín el Cuchubo", lat:9.234816830144423, lon:-74.42270435392857, name:'P1200013.JPG', title: 'Path going to pinus'},
+    {garden:"Jardín el Cuchubo", lat:9.23481815386678, lon: -74.42275336252688, name:'P1200015.JPG', title: 'Around Prbromelia'},
+    {garden:"Jardín el Cuchubo", lat:9.234816830144423, lon:-74.42277643829584, name:'P1200016.JPG', title: 'Path between 3c and 3b taken form Santa Cruz'},
+    {garden:"Jardín el Cuchubo", lat:9.234826096200797, lon:-74.4228096306324, name:'P1200017.JPG', title: 'Path going to y from 3b'},
+    {garden:"Jardín el Cuchubo", lat:9.234965087017063, lon:-74.42277878522873, name:'P1200018.JPG', title: 'Path leading back to entrance passing by 3b 1c 1b and 1a'},
+    {garden:"Jardín el Cuchubo", lat:9.234834700395776, lon:-74.42258834838867, name:'P1200019.JPG', title: 'view from Tamarinde to 5a'},
+    {garden:"Jardín el Cuchubo", lat:9.234933317692454, lon:-74.42260444164276, name:'P1200033.JPG', title: 'view intermezzo'},
+    {garden:"Jardín el Cuchubo", lat:9.235073301257465, lon:-74.42273151129484, name:'panoramica.jpg', title: 'panoramica'}
+]);
+
+db.infopanels.drop();
+db.infopanels.insert([
+    {garden:"Jardín el Cuchubo", lat:9.235022007049798, lon:-74.42264601588249, name: 'kitchen', title:''},
+    {garden:"Jardín el Cuchubo", lat:9.234892282310618, lon:-74.42253604531288, name:'house', title: ''},
+    {garden:"Jardín el Cuchubo", lat:9.234884339978088, lon:-74.4224850833416, name:'septic tank', title: ''},
+    {garden:"Jardín el Cuchubo", lat:9.235107056151358, lon:-74.42272681742905, name:'gate', title: 'this is the main entrance<br/>to the garden'}
+]);
+    
 
 // INTEGRITY CHECK
 // plants referring to non existing taxon

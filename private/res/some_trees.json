@@ -205,11 +205,12 @@ db.gardens.insert([
     {name: "Lovett Pinetum", lat: 37.2410, lon: -93.1502},
     {name: "Jardín Botánico de la UNAS", lat: -9.30408, lon: -76.00374}
 ]);
-db.gardens.update({name:/Cuchubo/}, {$set:{contact:"Mario Frasca", email:"mario@anche.no"}});
-db.gardens.update({name:/Ambiental/}, {$set:{contact:"Dania Paguaga"}});
-db.gardens.update({name:/Medell.n/}, {$set:{contact:"Ana María Benavides"}});
-db.gardens.update({name:/Foldyard/}, {$set:{contact:"Corrado Topi"}});
-db.gardens.update({name:/Belize/}, {$set:{contact:"Rudy Aguilar"}});
+db.gardens.updateOne({name:/Cuchubo/}, {$set:{contact:"Mario Frasca", email:"mario@anche.no"}});
+db.gardens.updateOne({name:/Ambiental/}, {$set:{contact:"Dania Paguaga"}});
+db.gardens.updateOne({name:/Medell.n/}, {$set:{contact:"Ana María Benavides"}});
+db.gardens.updateOne({name:/Foldyard/}, {$set:{contact:"Corrado Topi"}});
+db.gardens.updateOne({name:/Belize/}, {$set:{contact:"Rudy Aguilar"}});
+db.gardens.updateMany({name:/./}, {$set:{zoom:18}});
 
 db.plants.drop();
 db.plants.insert([

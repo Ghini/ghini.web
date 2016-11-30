@@ -423,5 +423,8 @@ function init() {
     });
 
     socket.on('add-object', finalAddObject);
+    socket.on('map-set-view', function(doc) {
+        map.setView([doc.lat, doc.lon], doc.zoom);
+    });
     map.setZoom(2);  // again set zoom in case it did not work
 }

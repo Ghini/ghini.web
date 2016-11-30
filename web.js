@@ -154,5 +154,45 @@ io.sockets.on('connection', function (socket) {
             });
             db.close();
         }});
+
+    socket.on('select-garden', function (name) {
+        dbclient.connect(dburl, function (err, db) {
+            var plants, gardens, cursor;
+            if (err) {
+                console.log('Unable to connect to the mongoDB server. Error:', err);
+            } else {
+                // first of all, tell the client to set the view on the garden
+                cursor = db.collection('gardens').findOne({name:name}, function(err, doc) {
+                    if (err || !doc) {
+                        console.log("err:", err, "; doc:", doc);
+                    } else {
+                        console.log(doc);
+                        socket.emit('map-set-view', doc);
+                    }
+                });
+
+                // Get the plants relative to this garden
+                plants = db.collection('plants');
+
+                // We get a cursor with our find criteria.
+                // Having a cursor does not mean we performed any database access, yet.
+                cursor = plants.aggregate({$match:{garden:name}},
+                                              {$lookup:{from:"taxa", localField:"species", foreignField:"name", as:"taxon"}},
+                                              {}
+                                             );
+                // Lets iterate on the result.
+                // this will access the database, so we act in a callback.
+                cursor.each(function (err, doc) {
+                    if (err || !doc) {
+                        console.log("err:", err, "; doc:", doc);
+                    } else {
+                        socket.emit('add-object', doc);
+                    }
+                });
+
+                db.close();
+            }});
+    });
+    
 });
 

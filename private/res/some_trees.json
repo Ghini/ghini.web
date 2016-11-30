@@ -197,7 +197,7 @@ db.gardens.insert([
     {name: "Jardín Botánico de Medellín", lat:  6.27057, lon: -75.56380},
     {name: "Jardín Botánico Ambiental", lat:  12.43411, lon: -86.91369},
     {name: "Jardín Botánico de Quito", contact: "Felipe Andrade", lat: 0.1862, lon: -78.4851},
-    {name: "Jardín Botánico de Cartagena Guillermo Piñeres", lat:  10.358, lon: -75.410},
+    {name: "Den Helder Oranjerie", lat: 52.9578, lon: 4.7545, zoom: 18},
     {name: "The Robert & Catherine Wilson BG", lat:  8.785, lon: -82.959},
     {name: "Mackay Regional BG", lat: -21.1585, lon: 149.1571},
     {name: "Foldyard Cottage Mediterranean and Herb Garden", lat: 53.9431, lon: -0.8075},

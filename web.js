@@ -157,6 +157,9 @@ io.sockets.on('connection', function (socket) {
         }});
 
     socket.on('select-garden', function (name) {
+        socket.emit('map-remove-objects', 'plant');
+        socket.emit('map-remove-objects', 'photo');
+        socket.emit('map-remove-objects', 'infopanel');
         if (name === '') {
             socket.emit('map-set-view', {zoom:2, lat:32.0, lon:8.0});
         }
@@ -181,9 +184,14 @@ io.sockets.on('connection', function (socket) {
                 // We get a cursor with our find criteria.
                 // Having a cursor does not mean we performed any database access, yet.
                 cursor = plants.aggregate({$match:{garden:name}},
-                                              {$lookup:{from:"taxa", localField:"species", foreignField:"name", as:"taxon"}},
-                                              {}
-                                             );
+                                          {$lookup:{from:"taxa", localField:"species", foreignField:"name", as:"taxon"}},
+                                          {$project: {lat: 1, lon: 1, species:1, taxon:1, code:1, zoom:1,
+                                                      draggable: {$literal: false},
+                                                      title: "$code",
+                                                      vernacular: "$taxon.vernacular",
+                                                      prototype: {$literal: "plant"}}},
+                                          {}
+                                         );
                 // Lets iterate on the result.
                 // this will access the database, so we act in a callback.
                 cursor.each(function (err, doc) {

@@ -38,7 +38,7 @@ var markers = [];
 markers.highlighted = [];
 
 // the layers on which we group plants, indexed by zoom level.
-var plant_layer = [];
+var objects_layer = [];
 
 // layers of which we can toggle the visibility
 var toggleLayer = {};
@@ -119,7 +119,7 @@ function fireAddPlant(e) {
 
 function doAddPlant() {
     var threshold = map.getZoom();
-    var layer = plant_layer[threshold];
+    var layer = objects_layer[threshold];
     if (layer === null)
         return;
     if ($('#addendum').val() === "")
@@ -160,8 +160,8 @@ function finalAddObject(item) {
     var marker = L.marker([item.lat, item.lon],
                           item);
     markers.push(marker);
-    marker.addTo(plant_layer[1]).bindPopup(prototype_format[item['prototype']].formatU(item),
-                                           {marker: marker});
+    marker.addTo(objects_layer[item.zoom]).bindPopup(prototype_format[item['prototype']].formatU(item),
+                                                     {marker: marker});
 }
 
 
@@ -252,9 +252,9 @@ function onZoomstart() {
 function onZoomend() {
     // are we zooming out?
     if (previous_zoom > map.getZoom()) {
-        map.removeLayer(plant_layer[previous_zoom]);
+        map.removeLayer(objects_layer[previous_zoom]);
     } else { // then we are zooming in!
-        map.addLayer(plant_layer[map.getZoom()]);
+        map.addLayer(objects_layer[map.getZoom()]);
     }
 }
 
@@ -283,7 +283,7 @@ function init() {
 
     // create one layer for each zoom level
     for (var i = 0; i<24; i++) {
-        plant_layer[i] = L.layerGroup();
+        objects_layer[i] = L.layerGroup();
     }
 
     icon = {
@@ -306,10 +306,10 @@ function init() {
     // add the scale control
     L.control.scale().addTo(map);
 
-    map.setView([32.0, 8.0], 5); // go to center of world map - somewhere in Africa
+    map.setView([32.0, 8.0], 2); // go to center of world map - somewhere in Africa
     console.log(map.getZoom());
     for (i=1; i<=map.getZoom(); i++)
-        map.addLayer(plant_layer[i]);
+        map.addLayer(objects_layer[i]);
 
     // create an OpenStreetMap tile layer
     L.tileLayer(
@@ -426,5 +426,13 @@ function init() {
     socket.on('add-object', finalAddObject);
     socket.on('map-set-view', function(doc) {
         map.setView([doc.lat, doc.lon], doc.zoom);
+        for(var z = 1; z <= doc.zoom; z++) {
+            map.addLayer(objects_layer[z]);
+        }
+        for(; z < 24; z++) {
+            map.removeLayer(objects_layer[z]);
+        }
+    });
+    socket.on('map-remove-objects', function(prototype_name){
     });
 }

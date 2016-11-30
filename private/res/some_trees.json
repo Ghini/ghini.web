@@ -585,10 +585,11 @@ db.plants.insert([
     {garden:"Jardín el Cuchubo", code: "2014.0629.1", zoom: 22, lat: 9.23485157785, lon: -74.4225078821, species: "Sterculia apetala"},
     {garden:"Jardín el Cuchubo", code: "2014.0640.1", zoom: 22, lat: 9.23479002477, lon: -74.4224180281, species: "Lecythis tuyrana"},
     {garden:"Jardín el Cuchubo", code: "2014.0662.1", zoom: 22, lat: 9.23481782294, lon: -74.4225129113, species: "sp. 0662"},
-    {garden:"parque centenario", code: "2016.0001.1", zoom: 20, lat: 10.4224405, lon: -75.5479202, species: "Ceiba pentandra", "osm-id": 4525366856},
-    {garden:"parque centenario", code: "2016.0002.1", zoom: 20, lat: 10.4226131, lon: -75.5479736, species: "Delonix regia", "osm-id": 4525366855},
-    {garden:"parque centenario", code: "2016.0003.1", zoom: 20, lat: 10.4227406, lon: -75.5480206, species: "Guaiacum officinale", "osm-id": 4525366854},
-    {garden:"parque centenario", code: "2016.0004.1", zoom: 20, lat: 10.4233636, lon: -75.5465624, species: "Ficus elastica", "osm-id": 4525366853}]);
+    {garden:"parque centenario", code: "2016.0001.1", zoom: 17, lat: 10.4224405, lon: -75.5479202, species: "Ceiba pentandra", "osm-id": 4525366856},
+    {garden:"parque centenario", code: "2016.0002.1", zoom: 17, lat: 10.4226131, lon: -75.5479736, species: "Delonix regia", "osm-id": 4525366855},
+    {garden:"parque centenario", code: "2016.0003.1", zoom: 17, lat: 10.4227406, lon: -75.5480206, species: "Guaiacum officinale", "osm-id": 4525366854},
+    {garden:"parque centenario", code: "2016.0004.1", zoom: 17, lat: 10.4233636, lon: -75.5465624, species: "Ficus elastica", "osm-id": 4525366853}]);
+db.plants.updateMany({garden:/Cuchubo/, zoom:20}, {$set:{zoom:18}});
 
 db.photos.drop();
 db.photos.insert([

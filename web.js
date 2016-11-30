@@ -93,7 +93,7 @@ io.sockets.on('connection', function (socket) {
         }
         socket.emit('init-help', result);
     });
-
+    
     // initialize client's toggle menu
     fs.readFile("private/res/elements-toggle.txt", "binary", function(err, file) {
         if(err) {
@@ -153,9 +153,13 @@ io.sockets.on('connection', function (socket) {
                 }
             });
             db.close();
+            socket.emit('map-set-view', {zoom:2, lat:32.0, lon:8.0});
         }});
 
     socket.on('select-garden', function (name) {
+        if (name === '') {
+            socket.emit('map-set-view', {zoom:2, lat:32.0, lon:8.0});
+        }
         dbclient.connect(dburl, function (err, db) {
             var plants, gardens, cursor;
             if (err) {

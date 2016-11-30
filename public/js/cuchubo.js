@@ -144,7 +144,8 @@ function doAddPlant() {
 
 var prototype_format = {};
 prototype_format['garden'] = '<b>{name}</b><br/>contact: {contact}<br/>mapped plants: {count}<br/>' +
-    '<a onclick="fireSelectGarden(\'{name}\'); return false;", href="#">zoom to garden</a>';
+    '<a onclick="fireSelectGarden(\'{name}\'); return false;", href="#">zoom to garden</a><br/>' +
+    '<a onclick="fireSelectGarden(\'\'); return false;", href="#">zoom to world</a>';
 prototype_format['plant'] = '<b>{code}</b><br/>{vernacular}<br/>{species}<br/>';
 prototype_format['photo'] = '<b>{title}</b><br/>{name}<br/>';
 prototype_format['infopanel'] = '<b>{title}</b><br/>{text}<br/>';
@@ -426,5 +427,4 @@ function init() {
     socket.on('map-set-view', function(doc) {
         map.setView([doc.lat, doc.lon], doc.zoom);
     });
-    map.setZoom(2);  // again set zoom in case it did not work
 }

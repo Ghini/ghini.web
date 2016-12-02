@@ -157,6 +157,12 @@ function fireSelectGarden(e) {
 }
 
 function finalAddObject(item) {
+    if ('icon' in item && 'color' in item) {
+        var icon = L.AwesomeMarkers.icon({ color: item.color,
+                                           icon: item.icon });
+        delete item.color;
+        item.icon = icon;
+    }
     var marker = L.marker([item.lat, item.lon],
                           item);
     markers.push(marker);
@@ -436,3 +442,20 @@ function init() {
     socket.on('map-remove-objects', function(prototype_name){
     });
 }
+
+
+/*
+
+icons we could use
+user
+trash
+home
+flag
+tag
+camera
+info-sign
+leaf
+comment
+globe
+
+*/

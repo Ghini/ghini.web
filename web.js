@@ -139,6 +139,8 @@ io.sockets.on('connection', function (socket) {
                                                        draggable: {$literal: false},
                                                        title: "$name",
                                                        zoom: {$literal: 1},
+                                                       color: {$literal: "red"},
+                                                       icon: {$literal: "home"},
                                                        prototype: {$literal: "garden"},
                                                        count: {$size: "$plants"}}},
                                            {});
@@ -187,6 +189,8 @@ io.sockets.on('connection', function (socket) {
                                           {$lookup:{from:"taxa", localField:"species", foreignField:"name", as:"taxon"}},
                                           {$project: {lat: 1, lon: 1, species:1, taxon:1, code:1, zoom:1,
                                                       draggable: {$literal: false},
+                                                      color: {$literal: "green"},
+                                                      icon: {$literal: "leaf"},
                                                       title: "$code",
                                                       vernacular: "$taxon.vernacular",
                                                       prototype: {$literal: "plant"}}},

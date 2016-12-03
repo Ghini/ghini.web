@@ -129,21 +129,20 @@ io.sockets.on('connection', function (socket) {
         if (err) {
             console.log('Unable to connect to the mongoDB server. Error:', err);
         } else {
-            // Get the gardens collection
-            var gardens = db.collection('gardens');
-
-            // We have a cursor now with our find criteria.
+            // Get the collection of all gardens, each with the amount of plants;
+            // We store our find criteria in a cursor.
             // Having a cursor does not mean we performed any database access, yet.
-            var cursor = gardens.aggregate({$lookup:{from:"plants", foreignField:"garden", localField:"name", as:"plants"}},
-                                           {$project: {name:1, lat: 1, lon: 1, contact: 1,
-                                                       draggable: {$literal: false},
-                                                       title: "$name",
-                                                       zoom: {$literal: 1},
-                                                       color: {$literal: "red"},
-                                                       icon: {$literal: "home"},
-                                                       prototype: {$literal: "garden"},
-                                                       count: {$size: "$plants"}}},
-                                           {});
+            var cursor = db.collection('gardens').aggregate(
+                {$lookup:{from:"plants", foreignField:"garden", localField:"name", as:"plants"}},
+                {$project: {layer_name: {$literal: "gardens"},
+                            layer_zoom: {$literal: 2},
+                            name:1, lat: 1, lon: 1, contact: 1,
+                            title: "$name",
+                            count: {$size: "$plants"},
+                            draggable: {$literal: false},
+                            color: {$literal: "red"},
+                            icon: {$literal: "home"}}},
+                {});
             // Lets iterate on the result.
             // this will access the database, so we act in a callback.
             cursor.each(function (err, doc) {
@@ -159,19 +158,21 @@ io.sockets.on('connection', function (socket) {
         }});
 
     socket.on('select-garden', function (name) {
-        socket.emit('map-remove-objects', 'plant');
-        socket.emit('map-remove-objects', 'photo');
-        socket.emit('map-remove-objects', 'infopanel');
+        // wipe all data which is relative to the current garden
+        socket.emit('map-remove-objects', 'plants');
+        socket.emit('map-remove-objects', 'photos');
+        socket.emit('map-remove-objects', 'infopanels');
         if (name === '') {
             socket.emit('map-set-view', {zoom:2, lat:32.0, lon:8.0});
+            return;
         }
         dbclient.connect(dburl, function (err, db) {
-            var plants, gardens, cursor;
             if (err) {
                 console.log('Unable to connect to the mongoDB server. Error:', err);
             } else {
-                // first of all, tell the client to set the view on the garden
-                cursor = db.collection('gardens').findOne({name:name}, function(err, doc) {
+                // first of all, tell the client to set the view on the
+                // garden; the garden document contains lat, lon, and zoom.
+                var cursor = db.collection('gardens').findOne({name:name}, function(err, doc) {
                     if (err || !doc) {
                         console.log("err:", err, "; doc:", doc);
                     } else {
@@ -180,28 +181,29 @@ io.sockets.on('connection', function (socket) {
                     }
                 });
 
-                // Get the plants relative to this garden
-                plants = db.collection('plants');
-
-                // We get a cursor with our find criteria.
+                // Get the plants relative to this garden.
+                // We store our find criteria in a cursor.
                 // Having a cursor does not mean we performed any database access, yet.
-                cursor = plants.aggregate({$match:{garden:name}},
-                                          {$lookup:{from:"taxa", localField:"species", foreignField:"name", as:"taxon"}},
-                                          {$project: {lat: 1, lon: 1, species:1, taxon:1, code:1, zoom:1,
-                                                      draggable: {$literal: false},
-                                                      color: {$literal: "green"},
-                                                      icon: {$literal: "leaf"},
-                                                      title: "$code",
-                                                      vernacular: "$taxon.vernacular",
-                                                      prototype: {$literal: "plant"}}},
-                                          {}
-                                         );
+                cursor = db.collection('plants').aggregate(
+                    {$match:{garden:name}},
+                    {$lookup:{from:"taxa", localField:"species", foreignField:"name", as:"taxon"}},
+                    {$project: {layer_name: {$literal: "plants"},
+                                layer_zoom: "$zoom",
+                                lat: 1, lon: 1, species:1, taxon:1, code:1,
+                                title: "$code",
+                                vernacular: "$taxon.vernacular",
+                                draggable: {$literal: false},
+                                color: {$literal: "green"},
+                                icon: {$literal: "leaf"}}},
+                    {}
+                );
                 // Lets iterate on the result.
                 // this will access the database, so we act in a callback.
                 cursor.each(function (err, doc) {
                     if (err || !doc) {
                         console.log("err:", err, "; doc:", doc);
                     } else {
+                        console.log(doc);
                         socket.emit('add-object', doc);
                     }
                 });

@@ -37,8 +37,11 @@ var markers = [];
 // highlighted markers!
 markers.highlighted = [];
 
-// the layers on which we group plants, indexed by zoom level.
-var objects_layer = [];
+// the layers we show. it's indexed by name and by zoom level. every object
+// goes on a layer, and only the gardens-1 layer is kept alive during the
+// whole session. other layers are dynamic, created if needed when entering
+// a garden, destroyed when leaving a garden.
+var objects_layer = {};
 
 // layers of which we can toggle the visibility
 var toggleLayer = {};
@@ -119,7 +122,7 @@ function fireAddPlant(e) {
 
 function doAddPlant() {
     var threshold = map.getZoom();
-    var layer = objects_layer[threshold];
+    var layer = objects_layer['plants'][threshold];
     if (layer === null)
         return;
     if ($('#addendum').val() === "")
@@ -143,12 +146,12 @@ function doAddPlant() {
 }
 
 var prototype_format = {};
-prototype_format['garden'] = '<b>{name}</b><br/>contact: {contact}<br/>mapped plants: {count}<br/>' +
+prototype_format['gardens'] = '<b>{name}</b><br/>contact: {contact}<br/>mapped plants: {count}<br/>' +
     '<a onclick="fireSelectGarden(\'{name}\'); return false;", href="#">zoom to garden</a><br/>' +
     '<a onclick="fireSelectGarden(\'\'); return false;", href="#">zoom to world</a>';
-prototype_format['plant'] = '<b>{code}</b><br/>{vernacular}<br/>{species}<br/>';
-prototype_format['photo'] = '<b>{title}</b><br/>{name}<br/>';
-prototype_format['infopanel'] = '<b>{title}</b><br/>{text}<br/>';
+prototype_format['plants'] = '<b>{code}</b><br/>{vernacular}<br/>{species}<br/>';
+prototype_format['photos'] = '<b>{title}</b><br/>{name}<br/>';
+prototype_format['infopanels'] = '<b>{title}</b><br/>{text}<br/>';
 
 function fireSelectGarden(e) {
     map.closePopup();
@@ -166,10 +169,35 @@ function finalAddObject(item) {
     var marker = L.marker([item.lat, item.lon],
                           item);
     markers.push(marker);
-    marker.addTo(objects_layer[item.zoom]).bindPopup(prototype_format[item['prototype']].formatU(item),
-                                                     {marker: marker});
+
+    var g = item.layer_name;
+    var z = item.layer_zoom;
+    var l;
+
+    if (typeof objects_layer[g] === 'undefined') {
+        objects_layer[g] = {};
+    }
+    if (typeof objects_layer[g][z] === 'undefined') {
+        objects_layer[g][z] = L.layerGroup();
+        l = objects_layer[g][z];
+        if(z <= map.getZoom()) {
+            map.addLayer(l);
+        }
+    }
+    l = objects_layer[g][z];
+
+    marker.addTo(l).bindPopup(
+        prototype_format[g].formatU(item),
+        {marker: marker});
 }
 
+function finalRemoveLayer(layer_name) {
+    var g = layer_name;
+    for (var z in objects_layer[g]) {
+        map.removeLayer(objects_layer[g][z]);
+    }
+    delete objects_layer[g];
+}
 
 // add info about named plant to DOM (so we can easily copy it)
 function addToDom(name, threshold, location) {
@@ -256,11 +284,19 @@ function onZoomstart() {
 }
 
 function onZoomend() {
-    // are we zooming out?
-    if (previous_zoom > map.getZoom()) {
-        map.removeLayer(objects_layer[previous_zoom]);
-    } else { // then we are zooming in!
-        map.addLayer(objects_layer[map.getZoom()]);
+    var l = {};
+    for(var g in objects_layer) {
+        if (previous_zoom > map.getZoom()) {
+            // we are either zooming out ...
+            l = objects_layer[g][previous_zoom];
+            if (typeof l !== 'undefined')
+                map.removeLayer(l);
+        } else {
+            // or zooming in !!!
+            l = objects_layer[g][map.getZoom()];
+            if (typeof l !== 'undefined')
+                map.addLayer(l);
+        }
     }
 }
 
@@ -287,11 +323,6 @@ function init() {
     // create a map in the "map" div
     map = L.map('map');
 
-    // create one layer for each zoom level
-    for (var i = 0; i<24; i++) {
-        objects_layer[i] = L.layerGroup();
-    }
-
     icon = {
         'garden': L.AwesomeMarkers.icon({ color: '#ffffff',
                                           icon: 'info-sign' }),
@@ -311,11 +342,6 @@ function init() {
 
     // add the scale control
     L.control.scale().addTo(map);
-
-    map.setView([32.0, 8.0], 2); // go to center of world map - somewhere in Africa
-    console.log(map.getZoom());
-    for (i=1; i<=map.getZoom(); i++)
-        map.addLayer(objects_layer[i]);
 
     // create an OpenStreetMap tile layer
     L.tileLayer(
@@ -432,15 +458,17 @@ function init() {
     socket.on('add-object', finalAddObject);
     socket.on('map-set-view', function(doc) {
         map.setView([doc.lat, doc.lon], doc.zoom);
-        for(var z = 1; z <= doc.zoom; z++) {
-            map.addLayer(objects_layer[z]);
-        }
-        for(; z < 24; z++) {
-            map.removeLayer(objects_layer[z]);
+        for (var g in objects_layer) {
+            for(var z in objects_layer[g]) {
+                if(z <= doc.zoom) {
+                    map.addLayer(objects_layer[g][z]);
+                } else {
+                    map.removeLayer(objects_layer[g][z]);
+                }
+            }
         }
     });
-    socket.on('map-remove-objects', function(prototype_name){
-    });
+    socket.on('map-remove-objects', finalRemoveLayer);
 }
 
 

@@ -892,32 +892,32 @@ db.plants.insert([
 
 db.photos.drop();
 db.photos.insert([
-    {garden:"Jardín el Cuchubo", lat:9.235107056151358, lon:-74.42272681742905, name:'P1190996.JPG', title: 'Entrance el Cuchubo'},
-    {garden:"Jardín el Cuchubo", lat:9.235053776366405, lon:-74.42273989319801, name:'P1200002.JPG', title: 'Area 1a'},
-    {garden:"Jardín el Cuchubo", lat:9.235060394973665, lon:-74.42269831895828, name:'P1190998.JPG', title: 'Area 2a'},
-    {garden:"Jardín el Cuchubo", lat:9.235063042416543, lon:-74.42272111773491, name:'P1200004.JPG', title: 'Area 3a from entrance'},
-    {garden:"Jardín el Cuchubo", lat:9.235000827503802, lon:-74.42267283797263, name:'P1200005.JPG', title: 'Area 3a view from kitchen'},
-    {garden:"Jardín el Cuchubo", lat:9.234883016255987, lon:-74.42256085574626, name:'P1200006.JPG', title: 'Area 4a from house'},
-    {garden:"Jardín el Cuchubo", lat:9.234848930410086, lon:-74.42259136587381, name:'P1200007.JPG', title: 'Area house Mr. Pontón taken from clemón'},
-    {garden:"Jardín el Cuchubo", lat:9.234824772478467, lon:-74.42256554961205, name:'P1200008.JPG', title: 'Area 5a'},
-    {garden:"Jardín el Cuchubo", lat:9.23495582096434, lon:-74.42253738641739, name:'P1200010.JPG', title: 'Area Behind Mr. Pontóns house'},
-    {garden:"Jardín el Cuchubo", lat:9.23484065714602, lon:-74.42265003919601, name:'P1200011.JPG', title: 'Area 3a to Kitchen taken from Big Mamoncillo in open area 4a'},
-    {garden:"Jardín el Cuchubo", lat:9.234816830144423, lon:-74.42270435392857, name:'P1200013.JPG', title: 'Path going to pinus'},
-    {garden:"Jardín el Cuchubo", lat:9.23481815386678, lon: -74.42275336252688, name:'P1200015.JPG', title: 'Around Prbromelia'},
-    {garden:"Jardín el Cuchubo", lat:9.234816830144423, lon:-74.42277643829584, name:'P1200016.JPG', title: 'Path between 3c and 3b taken form Santa Cruz'},
-    {garden:"Jardín el Cuchubo", lat:9.234826096200797, lon:-74.4228096306324, name:'P1200017.JPG', title: 'Path going to y from 3b'},
-    {garden:"Jardín el Cuchubo", lat:9.234965087017063, lon:-74.42277878522873, name:'P1200018.JPG', title: 'Path leading back to entrance passing by 3b 1c 1b and 1a'},
-    {garden:"Jardín el Cuchubo", lat:9.234834700395776, lon:-74.42258834838867, name:'P1200019.JPG', title: 'view from Tamarinde to 5a'},
-    {garden:"Jardín el Cuchubo", lat:9.234933317692454, lon:-74.42260444164276, name:'P1200033.JPG', title: 'view intermezzo'},
-    {garden:"Jardín el Cuchubo", lat:9.235073301257465, lon:-74.42273151129484, name:'panoramica.jpg', title: 'panoramica'}
+    {garden:"Jardín el Cuchubo", zoom: 17, lat:9.235107056151358, lon:-74.42272681742905, name:'P1190996.JPG', title: 'Entrance el Cuchubo'},
+    {garden:"Jardín el Cuchubo", zoom: 18, lat:9.235053776366405, lon:-74.42273989319801, name:'P1200002.JPG', title: 'Area 1a'},
+    {garden:"Jardín el Cuchubo", zoom: 18, lat:9.235060394973665, lon:-74.42269831895828, name:'P1190998.JPG', title: 'Area 2a'},
+    {garden:"Jardín el Cuchubo", zoom: 18, lat:9.235063042416543, lon:-74.42272111773491, name:'P1200004.JPG', title: 'Area 3a from entrance'},
+    {garden:"Jardín el Cuchubo", zoom: 18, lat:9.235000827503802, lon:-74.42267283797263, name:'P1200005.JPG', title: 'Area 3a view from kitchen'},
+    {garden:"Jardín el Cuchubo", zoom: 18, lat:9.234883016255987, lon:-74.42256085574626, name:'P1200006.JPG', title: 'Area 4a from house'},
+    {garden:"Jardín el Cuchubo", zoom: 18, lat:9.234848930410086, lon:-74.42259136587381, name:'P1200007.JPG', title: 'Area house Mr. Pontón taken from clemón'},
+    {garden:"Jardín el Cuchubo", zoom: 18, lat:9.234824772478467, lon:-74.42256554961205, name:'P1200008.JPG', title: 'Area 5a'},
+    {garden:"Jardín el Cuchubo", zoom: 18, lat:9.23495582096434, lon:-74.42253738641739, name:'P1200010.JPG', title: 'Area Behind Mr. Pontóns house'},
+    {garden:"Jardín el Cuchubo", zoom: 17, lat:9.23484065714602, lon:-74.42265003919601, name:'P1200011.JPG', title: 'Area 3a to Kitchen taken from Big Mamoncillo in open area 4a'},
+    {garden:"Jardín el Cuchubo", zoom: 18, lat:9.234816830144423, lon:-74.42270435392857, name:'P1200013.JPG', title: 'Path going to pinus'},
+    {garden:"Jardín el Cuchubo", zoom: 18, lat:9.23481815386678, lon: -74.42275336252688, name:'P1200015.JPG', title: 'Around Prbromelia'},
+    {garden:"Jardín el Cuchubo", zoom: 18, lat:9.234816830144423, lon:-74.42277643829584, name:'P1200016.JPG', title: 'Path between 3c and 3b taken form Santa Cruz'},
+    {garden:"Jardín el Cuchubo", zoom: 18, lat:9.234826096200797, lon:-74.4228096306324, name:'P1200017.JPG', title: 'Path going to y from 3b'},
+    {garden:"Jardín el Cuchubo", zoom: 18, lat:9.234965087017063, lon:-74.42277878522873, name:'P1200018.JPG', title: 'Path leading back to entrance passing by 3b 1c 1b and 1a'},
+    {garden:"Jardín el Cuchubo", zoom: 17, lat:9.234834700395776, lon:-74.42258834838867, name:'P1200019.JPG', title: 'view from Tamarinde to 5a'},
+    {garden:"Jardín el Cuchubo", zoom: 17, lat:9.234933317692454, lon:-74.42260444164276, name:'P1200033.JPG', title: 'view intermezzo'},
+    {garden:"Jardín el Cuchubo", zoom: 17, lat:9.235073301257465, lon:-74.42273151129484, name:'panoramica.jpg', title: 'panoramica'}
 ]);
 
 db.infopanels.drop();
 db.infopanels.insert([
-    {garden:"Jardín el Cuchubo", lat:9.235022007049798, lon:-74.42264601588249, title: 'kitchen', text:''},
-    {garden:"Jardín el Cuchubo", lat:9.234892282310618, lon:-74.42253604531288, title:'house', text: ''},
-    {garden:"Jardín el Cuchubo", lat:9.234884339978088, lon:-74.4224850833416, title:'septic tank', text: ''},
-    {garden:"Jardín el Cuchubo", lat:9.235107056151358, lon:-74.42272681742905, title:'gate', text: 'this is the main entrance<br/>to the garden'}
+    {garden:"Jardín el Cuchubo", zoom: 18, lat:9.235022007049798, lon:-74.42264601588249, title: 'kitchen', text:''},
+    {garden:"Jardín el Cuchubo", zoom: 18, lat:9.234892282310618, lon:-74.42253604531288, title:'house', text: ''},
+    {garden:"Jardín el Cuchubo", zoom: 18, lat:9.234884339978088, lon:-74.4224850833416, title:'septic tank', text: ''},
+    {garden:"Jardín el Cuchubo", zoom: 18, lat:9.235107056151358, lon:-74.42272681742905, title:'gate', text: 'this is the main entrance<br/>to the garden'}
 ]);
     
 

@@ -23,8 +23,6 @@ var port = Number(process.env.PORT || config.port);  // servicing on port
 var dburl = process.env.DATABASE_URL || config.database_url;
 console.log(dburl);
 
-var fs = require('fs');
-
 var mongodb = require('mongodb');
 var dbclient = mongodb.MongoClient;
 
@@ -61,70 +59,6 @@ var io = require('socket.io').listen(app.listen(port, function() {
 // will be used as receivers of client changes. The client will emit
 // messages of type 'move', 'insert', 'delete'.
 io.sockets.on('connection', function (socket) {
-
-    // initialize client's help menu
-    fs.readFile("private/res/elements-help.txt", "binary", function(err, file) {
-        if(err) {
-            return;
-        }
-        var result = [];
-        var i = 0;
-        var arrayOfLines = file.split(/[\r\n]/);
-        for(; i<arrayOfLines.length; i++) {
-            var item = {};
-            // header: 0:name, 1:anchor, 2:title, 3:icon
-            var header = arrayOfLines[i].split(',');
-            item.name = header[0];
-            item.anchor = header[1];
-            item.title = header[2];
-            item.icon = header[3];
-
-            // add the dialog box to the document body
-
-            // read the content of the dialog box from the file.
-            var content = [];
-            for(i++; i<arrayOfLines.length; i++) {
-                content.push(arrayOfLines[i]);
-                if (arrayOfLines[i] === "")
-                    break;
-            }
-            item.content = content.join("");
-            result.push(item);
-        }
-        socket.emit('init-help', result);
-    });
-    
-    // initialize client's toggle menu
-    fs.readFile("private/res/elements-toggle.txt", "binary", function(err, file) {
-        if(err) {
-            return;
-        }
-        var result = [];
-        var i = 0;
-        var arrayOfLines = file.split(/[\r\n]/);
-        for(; i<arrayOfLines.length; i++) {
-            var group = {};
-            var parts = arrayOfLines[i].split(",");
-            group.layerName = parts[0];
-            group.color = parts[1];
-            group.icon = parts[2];
-            var format = parts[3];
-            group.items = [];
-            for (i++; i < arrayOfLines.length; i++) {
-                parts = arrayOfLines[i].split(",");
-                if(parts.length === 1)
-                    break;
-                group.items.push({ lat: parseFloat(parts[0]), 
-                                  lng: parseFloat(parts[1]),
-                                  content: format.formatU(parts)
-                                });
-            }
-
-            result.push(group);
-        }
-        socket.emit('init-toggle', result);
-    });
-
     dbclient.connect(dburl, function (err, db) {
         if (err) {
             console.log('Unable to connect to the mongoDB server. Error:', err);
@@ -199,6 +133,46 @@ io.sockets.on('connection', function (socket) {
                 );
                 // Lets iterate on the result.
                 // this will access the database, so we act in a callback.
+                cursor.each(function (err, doc) {
+                    if (err || !doc) {
+                        console.log("err:", err, "; doc:", doc);
+                    } else {
+                        console.log(doc);
+                        socket.emit('add-object', doc);
+                    }
+                });
+
+                // same for the photos
+                cursor = db.collection('photos').aggregate(
+                    {$match:{garden:name}},
+                    {$project: {layer_name: {$literal: "photos"},
+                                layer_zoom: "$zoom",
+                                lat: 1, lon: 1, title: 1, name: 1,
+                                draggable: {$literal: false},
+                                color: {$literal: "cadetblue"},
+                                icon: {$literal: "camera"}}},
+                    {}
+                );
+                cursor.each(function (err, doc) {
+                    if (err || !doc) {
+                        console.log("err:", err, "; doc:", doc);
+                    } else {
+                        console.log(doc);
+                        socket.emit('add-object', doc);
+                    }
+                });
+
+                // same for the infopanels
+                cursor = db.collection('infopanels').aggregate(
+                    {$match:{garden:name}},
+                    {$project: {layer_name: {$literal: "infopanels"},
+                                layer_zoom: "$zoom",
+                                lat: 1, lon: 1, title: 1, text: 1,
+                                draggable: {$literal: false},
+                                color: {$literal: "purple"},
+                                icon: {$literal: "info-sign"}}},
+                    {}
+                );
                 cursor.each(function (err, doc) {
                     if (err || !doc) {
                         console.log("err:", err, "; doc:", doc);

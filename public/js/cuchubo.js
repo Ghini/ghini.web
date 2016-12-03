@@ -43,9 +43,6 @@ markers.highlighted = [];
 // a garden, destroyed when leaving a garden.
 var objects_layer = {};
 
-// layers of which we can toggle the visibility
-var toggleLayer = {};
-
 //
 // GLOBAL FUNCTIONS
 
@@ -174,10 +171,22 @@ function finalAddObject(item) {
     var z = item.layer_zoom;
     var l;
 
-    if (typeof objects_layer[g] === 'undefined') {
+    if (typeof objects_layer[g] === 'undefined' || Object.keys(objects_layer[g]).length === 0) {
+        console.log('not found layers', g, "... creating now");
         objects_layer[g] = {};
+
+        var list_item = $('<li/>');
+        $('#toggle-menu-list').append(list_item);
+        var anchor = $('<a/>',
+                       { href: '#',
+                         onclick: 'toggleLayerCheck(this, "' + g + '"); return false;'
+                       });
+        list_item.append(anchor);
+        var icon_element = $('<i/>', { class: 'icon-remove icon-black' });
+        anchor.append(icon_element);
+        anchor.append(" " + g);
     }
-    if (typeof objects_layer[g][z] === 'undefined') {
+    if (!objects_layer[g][z]) {
         objects_layer[g][z] = L.layerGroup();
         l = objects_layer[g][z];
         if(z <= map.getZoom()) {
@@ -188,7 +197,7 @@ function finalAddObject(item) {
 
     marker.addTo(l).bindPopup(
         prototype_format[g].formatU(item),
-        {marker: marker});
+        {marker: marker});    
 }
 
 function finalRemoveLayer(layer_name) {
@@ -196,7 +205,7 @@ function finalRemoveLayer(layer_name) {
     for (var z in objects_layer[g]) {
         map.removeLayer(objects_layer[g][z]);
     }
-    delete objects_layer[g];
+    objects_layer[g] = {};
 }
 
 // add info about named plant to DOM (so we can easily copy it)
@@ -222,13 +231,20 @@ function onDragend(event) {
 }
 
 function toggleLayerCheck(anchor, layerName) {
-    var layer = toggleLayer[layerName];
+    var removing = false;
+    for(var z in objects_layer[layerName]) {
+        var layer = objects_layer[layerName][z];
+        if(map.hasLayer(layer)) {
+            map.removeLayer(layer);
+            removing = true;
+        } else {
+            map.addLayer(layer);
+        }
+    }
     var check = anchor.childNodes[0];
-    if(map.hasLayer(layer)) {
-        map.removeLayer(layer);
+    if(removing) {
         check.className = "icon-remove icon-black";
     } else {
-        map.addLayer(layer);
         check.className = "icon-ok icon-black";
     }
 }
@@ -423,35 +439,6 @@ function init() {
             anchor.append(" ");
             anchor.append(item.anchor);
             body_div.html(item.content);
-        }
-    });
-
-
-    // initialize the toggle menu
-    socket.on('init-toggle', function(data) {
-        for(var i=0; i<data.length; i++){
-            var group = data[i];
-            var layer = toggleLayer[group.layerName] = L.layerGroup();
-            var list_item = $('<li/>');
-            $('#toggle-menu-list').append(list_item);
-            var anchor = $('<a/>',
-                           { href: '#',
-                             onclick: 'toggleLayerCheck(this, "' + group.layerName + '"); return false;'
-                           });
-            list_item.append(anchor);
-            var icon_element = $('<i/>', { class: 'icon-remove icon-black' });
-            anchor.append(icon_element);
-            anchor.append(" " + group.layerName);
-
-            var icon = L.AwesomeMarkers.icon({ color: group.color,
-                                               icon: group.icon });
-
-            for (var j=0; j < group.items.length; j++) {
-                var item = group.items[j];
-                var marker = L.marker([item.lat, item.lng],
-                                      { icon: icon });
-                marker.addTo(layer).bindPopup(item.content);
-            }
         }
     });
 

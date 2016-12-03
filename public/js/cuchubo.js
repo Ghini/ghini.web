@@ -175,14 +175,14 @@ function finalAddObject(item) {
         console.log('not found layers', g, "... creating now");
         objects_layer[g] = {};
 
-        var list_item = $('<li/>');
+        var list_item = $('<li/>', { id: 'toggle-menu-item-' + g });
         $('#toggle-menu-list').append(list_item);
         var anchor = $('<a/>',
                        { href: '#',
                          onclick: 'toggleLayerCheck(this, "' + g + '"); return false;'
                        });
         list_item.append(anchor);
-        var icon_element = $('<i/>', { class: 'icon-remove icon-black' });
+        var icon_element = $('<i/>', { class: 'icon-ok icon-black' });
         anchor.append(icon_element);
         anchor.append(" " + g);
     }
@@ -205,6 +205,7 @@ function finalRemoveLayer(layer_name) {
     for (var z in objects_layer[g]) {
         map.removeLayer(objects_layer[g][z]);
     }
+    $('#toggle-menu-item-' + g).remove();
     objects_layer[g] = {};
 }
 
@@ -233,6 +234,8 @@ function onDragend(event) {
 function toggleLayerCheck(anchor, layerName) {
     var removing = false;
     for(var z in objects_layer[layerName]) {
+        if(z > map.getZoom())
+            break;
         var layer = objects_layer[layerName][z];
         if(map.hasLayer(layer)) {
             map.removeLayer(layer);

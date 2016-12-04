@@ -193,24 +193,25 @@ db.gardens.insert([
     {name: "Jardín el Cuchubo", lat:  9.23424, lon: -74.42281},
     {name: "parque centenario", lat:  10.422582, lon: -75.5472843},
     {name: "Tanager", contact: "Loes Roos", email: "tanagertourism@gmail.com", phone: "+50766760220", lat: 7.59203, lon: -80.96175},
-    {name: "Jardin Botanique des Cayes", contact: "William Cinea", phone: "+50943092809", lat:  18.2340, lon: -73.7541},
+    {name: "Jardin Botanique des Cayes", contact: "William Cinea", phone: "+50943092809", lat:  18.2348, lon: -73.75561},
     {name: "Jardín Botánico de Medellín", lat:  6.27057, lon: -75.56380},
     {name: "Jardín Botánico Ambiental", lat:  12.43411, lon: -86.91369},
-    {name: "Jardín Botánico de Quito", contact: "Felipe Andrade", lat: 0.1862, lon: -78.4851},
-    {name: "Den Helder Oranjerie", lat: 52.9578, lon: 4.7545, zoom: 18},
+    {name: "Jardín Botánico de Quito", contact: "Felipe Andrade", lat: -0.1862, lon: -78.4851},
+    {name: "Den Helder Oranjerie", lat: 52.9578, lon: 4.7545, zoom: 19},
     {name: "The Robert & Catherine Wilson BG", lat:  8.785, lon: -82.959},
-    {name: "Mackay Regional BG", lat: -21.1585, lon: 149.1571},
+    {name: "Mackay Regional BG", lat: -21.1585, lon: 149.1571, zoom: 16},
     {name: "Foldyard Cottage Mediterranean and Herb Garden", lat: 53.9431, lon: -0.8075},
     {name: "Belize Botanical Gardens", lat: 17.0885, lon: -89.0683},
     {name: "Lovett Pinetum", lat: 37.2410, lon: -93.1502},
     {name: "Jardín Botánico de la UNAS", lat: -9.30408, lon: -76.00374}
 ]);
 db.gardens.updateOne({name:/Cuchubo/}, {$set:{contact:"Mario Frasca", email:"mario@anche.no"}});
+db.gardens.updateOne({name:/Cuchubo/}, {$set:{lat: 9.23496, lon: -74.4227, zoom:21}});
 db.gardens.updateOne({name:/Ambiental/}, {$set:{contact:"Dania Paguaga"}});
 db.gardens.updateOne({name:/Medell.n/}, {$set:{contact:"Ana María Benavides"}});
 db.gardens.updateOne({name:/Foldyard/}, {$set:{contact:"Corrado Topi"}});
-db.gardens.updateOne({name:/Belize/}, {$set:{contact:"Rudy Aguilar"}});
-db.gardens.updateMany({name:/./}, {$set:{zoom:18}});
+db.gardens.updateOne({name:/Belize/}, {$set:{contact:"Rudy Aguilar", zoom: 17}});
+db.gardens.updateMany({zoom:{$exists:false}}, {$set:{zoom:18}});
 
 db.plants.drop();
 db.plants.insert([

@@ -31,10 +31,14 @@ body
           ul.nav.navbar-nav
             li.dropdown
               a.dropdown-toggle(href='#', data-toggle='dropdown')
-                i.icon-question-sign.icon-white
-                |  help
+                i.icon-zoom-in.icon-white
+                |  gardens
                 b.caret
-              ul#help-menu-list.dropdown-menu
+              ul#gardens-menu-list.dropdown-menu
+                li#gardens-menu-item-world
+                  a(href='#', onclick='fireSelectGarden(\'\'); return false;')
+                    i.icon-home.icon-black
+                    |  world
             li.dropdown
               a.dropdown-toggle(href='#', data-toggle='dropdown')
                 i.icon-off.icon-white

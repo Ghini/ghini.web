@@ -144,8 +144,7 @@ function doAddPlant() {
 
 var prototype_format = {};
 prototype_format['gardens'] = '<b>{name}</b><br/>contact: {contact}<br/>mapped plants: {count}<br/>' +
-    '<a onclick="fireSelectGarden(\'{name}\'); return false;", href="#">zoom to garden</a><br/>' +
-    '<a onclick="fireSelectGarden(\'\'); return false;", href="#">zoom to world</a>';
+    '<a onclick="fireSelectGarden(\'{name}\'); return false;", href="#">zoom to garden</a><br/>';
 prototype_format['plants'] = '<b>{code}</b><br/>{vernacular}<br/>{species}<br/>';
 prototype_format['photos'] = '<b>{title}</b><br/>{name}<br/>';
 prototype_format['infopanels'] = '<b>{title}</b><br/>{text}<br/>';
@@ -171,18 +170,33 @@ function finalAddObject(item) {
     var z = item.layer_zoom;
     var l;
 
+    var list_item, anchor, icon_element;
+
+    if(g === 'gardens') {
+        list_item = $('<li/>', { id: 'gardens-menu-item-' + g });
+        $('#gardens-menu-list').append(list_item);
+        anchor = $('<a/>',
+                       { href: '#',
+                         onclick: "fireSelectGarden('" + item.title + "'); return false;"
+                       });
+        list_item.append(anchor);
+        icon_element = $('<i/>', { class: 'icon-map-marker icon-black' });
+        anchor.append(icon_element);
+        anchor.append(" " + item.title);
+    }
+    
     if (typeof objects_layer[g] === 'undefined' || Object.keys(objects_layer[g]).length === 0) {
         console.log('not found layers', g, "... creating now");
         objects_layer[g] = {};
 
-        var list_item = $('<li/>', { id: 'toggle-menu-item-' + g });
+        list_item = $('<li/>', { id: 'toggle-menu-item-' + g });
         $('#toggle-menu-list').append(list_item);
-        var anchor = $('<a/>',
+        anchor = $('<a/>',
                        { href: '#',
                          onclick: 'toggleLayerCheck(this, "' + g + '"); return false;'
                        });
         list_item.append(anchor);
-        var icon_element = $('<i/>', { class: 'icon-ok icon-black' });
+        icon_element = $('<i/>', { class: 'icon-ok icon-black' });
         anchor.append(icon_element);
         anchor.append(" " + g);
     }

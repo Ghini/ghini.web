@@ -42,6 +42,9 @@ app.set('view engine', "pug");
 app.engine('pug', require('pug').__express);
 app.use(express.static(__dirname + '/public'));
 
+var favicon = require('serve-favicon');
+app.use(favicon(__dirname + '/public/img/favicon.ico'));
+
 app.get("/", function(req, res){
     res.render("map");
     console.log(dburl);

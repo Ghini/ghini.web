@@ -172,8 +172,8 @@ function finalAddObject(item) {
 
     var list_item, anchor, icon_element;
 
-    if((g === 'gardens') && ($('#gardens-menu-item-' + g).length == 0)) {
-        list_item = $('<li/>', { id: 'gardens-menu-item-' + g });
+    if((g === 'gardens') && ($('#gardens-menu-item-{lat}-{lon}'.formatU(item)).length == 0)) {
+        list_item = $('<li/>', { id: 'gardens-menu-item-{lat}-{lon}'.formatU(item) });
         $('#gardens-menu-list').append(list_item);
         anchor = $('<a/>',
                        { href: '#',

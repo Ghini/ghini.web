@@ -29,6 +29,8 @@ it into ghini.web.
 you need a script to import your data from the json export to the ghini.web
 database.
 
+ghini.web is the code running at the site http://gardens.ghini.me
+
 Setting Up
 ==========
 

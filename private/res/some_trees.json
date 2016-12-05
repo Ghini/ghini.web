@@ -213,7 +213,7 @@ db.gardens.updateOne({name:/Foldyard/}, {$set:{contact:"Corrado Topi"}});
 db.gardens.updateOne({name:/Belize/}, {$set:{contact:"Rudy Aguilar", zoom: 17}});
 db.gardens.updateOne({name:/The Robert & Catherine Wilson/}, {$set:{zoom: 15}});
 db.gardens.updateMany({zoom:{$exists:false}}, {$set:{zoom:18}});
-db.gardens.updateOne({name:/Lovett/}, {$set:{lat: 37.242, lon: -93.1502, contact: "Nick Baker"}});
+db.gardens.updateOne({name:/Lovett/}, {$set:{lat: 37.2418, lon: -93.1517, contact: "Nick Baker"}});
 
 db.plants.drop();
 db.plants.insert([

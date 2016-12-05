@@ -54,11 +54,17 @@ var io = require('socket.io').listen(app.listen(port, function() {
             console.log("Listening on " + port);
         }));
 
-// Upon a successful connection, we send the complete list of plants for
-// which we have the geographic coordinates, and register three handlers that
-// will be used as receivers of client changes. The client will emit
-// messages of type 'move', 'insert', 'delete'.
 io.sockets.on('connection', function (socket) {
+    // Upon a successful connection, we send the list of gardens, with the
+    // plants count per garden. gardens are objects as any other object, they
+    // have associated the colour red and the icon home, and the zoom at which
+    // they appear is 2. then we issue the command 'map-set-view' to the world.
+
+    // The client will use the garden icons or menu item to zoom into a
+    // garden (issue the 'select-garden' command), upon receiving this
+    // command, we issue the command 'map-set-view' to the garden position
+    // and extent, followed by the lists of objects relative to the selected
+    // garden. these include plants, photos, infopanels.
     dbclient.connect(dburl, function (err, db) {
         if (err) {
             console.log('Unable to connect to the mongoDB server. Error:', err);
@@ -126,6 +132,7 @@ io.sockets.on('connection', function (socket) {
                                 lat: 1, lon: 1, species:1, taxon:1, code:1,
                                 title: "$code",
                                 vernacular: "$taxon.vernacular",
+                                family: "$taxon.family",
                                 draggable: {$literal: false},
                                 color: {$literal: "green"},
                                 icon: {$literal: "leaf"}}},

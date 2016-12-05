@@ -19,25 +19,15 @@ they get support by the conservator Eric Gouda.
 current plan
 ============
 
-this program adds geographic awareness to bauble.classic
+this program presents botanical collections in geographic context. the
+collection is managed with an independent program and we advocate usage of
+line 1.0 of ghini.desktop.
 
-interaction between server and client is quite simple:
+the user exports the complete plants collection in json format and we import
+it into ghini.web.
 
-on startup, the client waits for the document to be ready, then informs the
-server that it needs the coordinates of the plants. requests a 'refresh'.
-
-on receiving a 'refresh' request, the server sends the requesting client the
-complete list of plants with geographic coordinates.
-
-clients may modify documents, on change they send the server the modified
-document.
-
-on any change in the database, the server broadcasts, to all clients, the
-modified document. it may be a 'insert - document' or 'update - lookup -
-document', where 'lookup' is a set of properties that uniquely identify a
-document in the database.
-
-future is unwritten, but check the issues page.
+you need a script to import your data from the json export to the ghini.web
+database.
 
 Setting Up
 ==========
@@ -62,49 +52,22 @@ If npm gets confused, `rm -fr ./node_modules/` and try again.
 Database Connection
 ===================
 
-ghini.web works with the same databases as defined in ghini.desktop 1.1. The
-geographic information defined in the desktop application is not only
-unhandled by the web application.
-
-Have a look at the `config.js` file and make sure the `database_url` matches
-a data connection on your host.
-
-For example, `'postgresql://bscratch:btest52@localhost/bscratch'` means that
-you are using PosgreSQL on localhost, and you have created a `bscratch` role
-with password `btest52`, owner of the `bscratch` database.
-
-Log in as `postgres`, start `psql`, execute the following:
-
-```
-CREATE ROLE bscratch WITH LOGIN CREATEDB PASSWORD 'btest52';
-CREATE DATABASE bscratch WITH OWNER bscratch;
-```
-
-Should you be using MariaDB/MySQL, the above would be:
-
-```
-CREATE USER bscratch@localhost IDENTIFIED BY 'btest52';
-CREATE DATABASE bscratch;
-GRANT ALL PRIVILEGES ON bscratch.* TO bscratch@localhost;
-```
-
-start ghini.desktop (1.1), configure it as to connect to your database, let
-ghini.desktop initialize it, then you're set to run ghini.web too.
+ghini.web keeps its data in a mongodb database. initialize it by running the
+import tool, or set up a sample database by running the sometrees.js script.
 
 using it
 ========
 
-* use ghini.desktop to populate the database,
-* not yet decided how to do this, but you need define the coordinates of the plants,
-  * alter table plant add column position_lat float;
-  * alter table plant add column position_lon float;
-  * alter table plant add column visible_zoom integer;
-  * update plant set position_lat=cast(split_part(note,' ',1) as float), position_lon=cast(split_part(note,' ',2) as float) from plant_note where plant.id=plant_id and category='coords';
-  * alter table species rename column sp to epithet;
-  * alter table species rename column sp_author to author;
-  * alter table genus rename column genus to epithet;
-  * alter table family rename column family to epithet;
+* use ghini.desktop to export your database in json format,
 
+* not yet decided how to do this, but you need define the coordinates of the
+  plants,
+
+  * keep coordinates in a text note, with category coords, value decimal
+    degrees separated with a semicolon, first the latitude.
+  
 * start `nodejs web.js`,
+
 * look at your data on `http://localhost:5000/`,
+
 * open issues to suggest how to change ghini.web.

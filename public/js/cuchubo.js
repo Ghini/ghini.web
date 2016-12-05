@@ -145,7 +145,7 @@ function doAddPlant() {
 var prototype_format = {};
 prototype_format['gardens'] = '<b>{name}</b><br/>contact: {contact}<br/>mapped plants: {count}<br/>' +
     '<a onclick="fireSelectGarden(\'{name}\'); return false;", href="#">zoom to garden</a><br/>';
-prototype_format['plants'] = '<b>{code}</b><br/>{vernacular}<br/>{species}<br/>';
+prototype_format['plants'] = '<b>{code}</b><br/>{vernacular}<br/>{species} ({family})<br/>';
 prototype_format['photos'] = '<b>{title}</b><br/>{name}<br/>';
 prototype_format['infopanels'] = '<b>{title}</b><br/>{text}<br/>';
 

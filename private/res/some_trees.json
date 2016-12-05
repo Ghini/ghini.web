@@ -211,6 +211,7 @@ db.gardens.updateOne({name:/Ambiental/}, {$set:{contact:"Dania Paguaga"}});
 db.gardens.updateOne({name:/Medell.n/}, {$set:{contact:"Ana María Benavides"}});
 db.gardens.updateOne({name:/Foldyard/}, {$set:{contact:"Corrado Topi"}});
 db.gardens.updateOne({name:/Belize/}, {$set:{contact:"Rudy Aguilar", zoom: 17}});
+db.gardens.updateOne({name:/The Robert & Catherine Wilson/}, {$set:{zoom: 15}});
 db.gardens.updateMany({zoom:{$exists:false}}, {$set:{zoom:18}});
 
 db.plants.drop();

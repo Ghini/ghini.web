@@ -42,6 +42,7 @@ markers.highlighted = [];
 // whole session. other layers are dynamic, created if needed when entering
 // a garden, destroyed when leaving a garden.
 var objects_layer = {};
+var objects_container = {};
 
 //
 // GLOBAL FUNCTIONS
@@ -156,6 +157,11 @@ function fireSelectGarden(e) {
 }
 
 function finalAddObject(item) {
+    if(typeof objects_container[item._id] !== 'undefined') {
+        return;
+    }
+    objects_container[item._id] = 1;
+
     if ('icon' in item && 'color' in item) {
         var icon = L.AwesomeMarkers.icon({ color: item.color,
                                            icon: item.icon });
@@ -172,7 +178,7 @@ function finalAddObject(item) {
 
     var list_item, anchor, icon_element;
 
-    if((g === 'gardens') && ($('#gardens-menu-item-{lat}-{lon}'.formatU(item)).length == 0)) {
+    if(g === 'gardens') {
         list_item = $('<li/>', { id: 'gardens-menu-item-{lat}-{lon}'.formatU(item) });
         $('#gardens-menu-list').append(list_item);
         anchor = $('<a/>',

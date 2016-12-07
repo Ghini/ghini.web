@@ -143,13 +143,36 @@ function doAddPlant() {
     addToDom(item.plant, threshold, [item.lat, item.lng]);
 }
 
-var prototype_format = {};
-prototype_format['gardens'] = '<b>{name}</b><br/>contact: {contact}<br/>mapped plants: {count}<br/>' +
-    '<a onclick="fireSelectGarden(\'{name}\'); return false;", href="#">zoom to garden</a><br/>';
-prototype_format['plants'] = '<b>{code}</b><br/>{vernacular}<br/>{species} ({family})<br/>';
-prototype_format['photos'] = '<b>{title}</b><br/>{name}<br/>';
-prototype_format['infopanels'] = '<b>{title}</b><br/>{text}<br/>';
+var models = {};
 
+models['gardens'] = {
+    'text': '<b>{name}</b><br/>contact: {contact}<br/>mapped plants: {count}<br/>' +
+        '<a onclick="fireSelectGarden(\'{name}\'); return false;", href="#">zoom to garden</a><br/>',
+    'update_menu': function(item) {
+        var list_item = $('<li/>', { id: 'gardens-menu-item-{lat}-{lon}'.formatU(item) });
+        $('#gardens-menu-list').append(list_item);
+        var anchor = $('<a/>',
+                       { href: '#',
+                         onclick: "fireSelectGarden('" + item.title + "'); return false;"
+                       });
+        list_item.append(anchor);
+        var icon_element = $('<i/>', { class: 'icon-map-marker icon-black' });
+        anchor.append(icon_element);
+        anchor.append(" " + item.title);
+    }};
+
+models['plants'] = {
+    'text': '<b>{code}</b><br/>{vernacular}<br/>{species} ({family})<br/>',
+    'update_menu': function (item) {}};
+
+models['photos'] = {
+    'text': '<b>{title}</b><br/>{name}<br/>',
+    'update_menu': function (item) {}};
+
+models['infopanels'] = {
+    'text': '<b>{title}</b><br/>{text}<br/>',
+    'update_menu': function (item) {}};
+    
 function fireSelectGarden(e) {
     map.closePopup();
     socket.emit('select-garden', e);
@@ -157,7 +180,7 @@ function fireSelectGarden(e) {
 }
 
 function finalAddObject(item) {
-    if(typeof objects_container[item._id] !== 'undefined') {
+    if(objects_container[item._id] === 1) {
         return;
     }
     objects_container[item._id] = 1;
@@ -178,19 +201,7 @@ function finalAddObject(item) {
 
     var list_item, anchor, icon_element;
 
-    if(g === 'gardens') {
-        list_item = $('<li/>', { id: 'gardens-menu-item-{lat}-{lon}'.formatU(item) });
-        $('#gardens-menu-list').append(list_item);
-        anchor = $('<a/>',
-                       { href: '#',
-                         onclick: "fireSelectGarden('" + item.title + "'); return false;"
-                       });
-        list_item.append(anchor);
-        icon_element = $('<i/>', { class: 'icon-map-marker icon-black' });
-        anchor.append(icon_element);
-        anchor.append(" " + item.title);
-    }
-    
+    models[g].update_menu(item);
     if (typeof objects_layer[g] === 'undefined' || Object.keys(objects_layer[g]).length === 0) {
         console.log('not found layers', g, "... creating now");
         objects_layer[g] = {};
@@ -215,9 +226,8 @@ function finalAddObject(item) {
     }
     l = objects_layer[g][z];
 
-    marker.addTo(l).bindPopup(
-        prototype_format[g].formatU(item),
-        {marker: marker});    
+    marker.addTo(l).bindPopup(models[g].text.formatU(item),
+                              {marker: marker});    
 }
 
 function finalRemoveLayer(layer_name) {

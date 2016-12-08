@@ -392,27 +392,34 @@ function init() {
     // add the scale control
     L.control.scale().addTo(map);
 
+    // some tiles servers:
+    // -------------------------
+    // 'http://{s}.tile.osm.org/{z}/{x}/{y}.png', // osm server (most frequently updated)
+    // 'http://a.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png', // black & white
+    // 'http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png', // mapquest
+    // 'http://cuchubo.wdfiles.com/local--files/tiles-{z}/{z}.{y}.{x}.png', // our tiles on wikidot
+    // 'tiles-{z}/{z}.{y}.{x}.png', // local tiles on rune
+    // -------------------------
+    
     // create an OpenStreetMap tile layer
     L.tileLayer(
-        // 'http://{s}.tile.osm.org/{z}/{x}/{y}.png', // osm server (most frequently updated)
-        // 'http://a.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png', // black & white
-        // 'http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png', // mapquest
-        // 'http://cuchubo.wdfiles.com/local--files/tiles-{z}/{z}.{y}.{x}.png', // our tiles on wikidot
-        //'tiles-{z}/{z}.{y}.{x}.png', // local tiles on rune
-        'http://tilecache.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
+        '/tiles-{z}/{z}.{x}.{y}.png', // our tiles on the local nodejs server
         { attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-          minZoom: 19,
-          maxZoom: 20
+          minZoom: 1,
+          maxZoom: 3
         }).addTo(map);
 
     L.tileLayer(
         'http://{s}.tile.osm.org/{z}/{x}/{y}.png', // osm server (most frequently updated)
-        // 'http://a.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png', // black & white
-        // 'http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png', // mapquest
-        // 'http://cuchubo.wdfiles.com/local--files/tiles-{z}/{z}.{y}.{x}.png', // our tiles on wikidot
         { attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-          minZoom: 1,
-          maxZoom: 18
+          minZoom: 4,
+          maxZoom: 19
+        }).addTo(map);
+    L.tileLayer(
+        '/tiles-{z}/{z}.{x}.{y}.png', // our tiles on the local nodejs server
+        { attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+          minZoom: 20,
+          maxZoom: 22
         }).addTo(map);
 
 

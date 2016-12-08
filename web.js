@@ -78,7 +78,7 @@ io.sockets.on('connection', function (socket) {
             var cursor = db.collection('gardens').aggregate(
                 {$lookup:{from:"plants", foreignField:"garden", localField:"name", as:"plants"}},
                 {$project: {layer_name: {$literal: "gardens"},
-                            layer_zoom: {$literal: 2},
+                            layer_zoom: {$literal: 1},
                             name:1, lat: 1, lon: 1, contact: 1,
                             title: "$name",
                             count: {$size: "$plants"},

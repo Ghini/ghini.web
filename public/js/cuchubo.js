@@ -180,10 +180,13 @@ function fireSelectGarden(e) {
 }
 
 function finalAddObject(item) {
-    if(objects_container[item._id] === 1) {
+    var g = item.layer_name;
+    if(typeof objects_container[g] === 'undefined')
+        objects_container[g] = {};
+    if(objects_container[g][item._id] === 1) {
         return;
     }
-    objects_container[item._id] = 1;
+    objects_container[g][item._id] = 1;
 
     if ('icon' in item && 'color' in item) {
         var icon = L.AwesomeMarkers.icon({ color: item.color,
@@ -192,7 +195,6 @@ function finalAddObject(item) {
         item.icon = icon;
     }
 
-    var g = item.layer_name;
     var z = item.layer_zoom;
     var l;
 
@@ -255,6 +257,7 @@ function finalRemoveLayer(layer_name) {
     }
     $('#toggle-menu-item-' + g).remove();
     objects_layer[g] = {};
+    objects_container[g] = {};
 }
 
 // add info about named plant to DOM (so we can easily copy it)

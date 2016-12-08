@@ -191,9 +191,6 @@ function finalAddObject(item) {
         delete item.color;
         item.icon = icon;
     }
-    var marker = L.marker([item.lat, item.lon],
-                          item);
-    markers.push(marker);
 
     var g = item.layer_name;
     var z = item.layer_zoom;
@@ -226,8 +223,29 @@ function finalAddObject(item) {
     }
     l = objects_layer[g][z];
 
+    var marker = L.marker([item.lat, item.lon],
+                          item);
+    markers.push(marker);
     marker.addTo(l).bindPopup(models[g].text.formatU(item),
                               {marker: marker});    
+    if(item.lon > 100) {
+        item.lon -= 360;
+        marker = L.marker([item.lat, item.lon],
+                          item);
+        markers.push(marker);
+        item.lon += 360;
+        marker.addTo(l).bindPopup(models[g].text.formatU(item),
+                                  {marker: marker});    
+    }
+    if(item.lon < -100) {
+        item.lon += 360;
+        marker = L.marker([item.lat, item.lon],
+                          item);
+        markers.push(marker);
+        item.lon -= 360;
+        marker.addTo(l).bindPopup(models[g].text.formatU(item),
+                                  {marker: marker});    
+    }
 }
 
 function finalRemoveLayer(layer_name) {

@@ -166,7 +166,10 @@ models['plants'] = {
     'update_menu': function (item) {}};
 
 models['photos'] = {
-    'text': '<b>{title}</b><br/>{name}<br/>',
+    'text': '<b>{title}</b><br/>{name}<br/>' +
+        '<html><body><img src="data:image/jpeg;base64,'+
+        '{thumbnail}' +
+        '"/></body></html>',
     'update_menu': function (item) {}};
 
 models['infopanels'] = {

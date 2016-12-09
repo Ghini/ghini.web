@@ -157,7 +157,7 @@ io.sockets.on('connection', function (socket) {
                     {$match:{garden:name}},
                     {$project: {layer_name: {$literal: "photos"},
                                 layer_zoom: "$zoom",
-                                lat: 1, lon: 1, title: 1, name: 1, thumbnail: 1,
+                                lat: 1, lon: 1, title: 1, name: 1,
                                 draggable: {$literal: false},
                                 color: {$literal: "cadetblue"},
                                 icon: {$literal: "camera"}}},

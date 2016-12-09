@@ -167,9 +167,7 @@ models['plants'] = {
 
 models['photos'] = {
     'text': '<b>{title}</b><br/>{name}<br/>' +
-        '<html><body><img src="data:image/jpeg;base64,'+
-        '{thumbnail}' +
-        '"/></body></html>',
+        '<a href="/img/photos/{name}"><img src="/img/photos/thumbs/{name}"/></a>',
     'update_menu': function (item) {}};
 
 models['infopanels'] = {

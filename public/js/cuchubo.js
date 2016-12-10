@@ -167,7 +167,7 @@ models['plants'] = {
 
 models['photos'] = {
     'text': '<b>{title}</b><br/>{name}<br/>' +
-        '<a href="/img/photos/{name}" target="photo"><img src="/img/photos/thumbs/{name}"/></a>',
+        '<a href="/img/photos/{name}" target="photo"><img width="192" src="/img/photos/thumbs/{name}"/></a>',
     'update_menu': function (item) {}};
 
 models['infopanels'] = {
@@ -205,6 +205,7 @@ function finalAddObject(item) {
     if (typeof objects_layer[g] === 'undefined' || Object.keys(objects_layer[g]).length === 0) {
         console.log('not found layers', g, "... creating now");
         objects_layer[g] = {};
+        objects_layer[g].visible = true;
 
         list_item = $('<li/>', { id: 'toggle-menu-item-' + g });
         $('#toggle-menu-list').append(list_item);
@@ -254,6 +255,8 @@ function finalAddObject(item) {
 function finalRemoveLayer(layer_name) {
     var g = layer_name;
     for (var z in objects_layer[g]) {
+        if(isNaN(z))
+            continue;
         map.removeLayer(objects_layer[g][z]);
     }
     $('#toggle-menu-item-' + g).remove();
@@ -284,16 +287,17 @@ function onDragend(event) {
 }
 
 function toggleLayerCheck(anchor, layerName) {
-    var removing = false;
+    var removing = objects_layer[layerName].visible;
+    objects_layer[layerName].visible = !removing;
     for(var z in objects_layer[layerName]) {
-        if(z > map.getZoom())
-            break;
+        if(isNaN(z))
+            continue;
         var layer = objects_layer[layerName][z];
-        if(map.hasLayer(layer)) {
+        if(removing) {
             map.removeLayer(layer);
-            removing = true;
         } else {
-            map.addLayer(layer);
+            if(z <= map.getZoom())
+                map.addLayer(layer);
         }
     }
     var check = anchor.childNodes[0];
@@ -365,7 +369,7 @@ function onZoomend() {
         } else {
             // or zooming in !!!
             l = objects_layer[g][map.getZoom()];
-            if (typeof l !== 'undefined')
+            if (typeof l !== 'undefined' && objects_layer[g].visible)
                 map.addLayer(l);
         }
     }

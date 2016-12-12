@@ -16,8 +16,14 @@ html, body {
 }
 #map {
     margin-top:40px;
-    width:100%;
+    width:80%;
     height:100%;
+    float: left;
+}
+#search {
+    margin-left: 80%;
+    margin-top: 50px;
+    width: 20%;
 }
 #loading {
     position: absolute;

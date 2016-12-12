@@ -238,7 +238,7 @@ function match_people(input) {
 }
 
 function present_item(item) {
-    return '<div class="match_item">' + item._id.species + zip([item.garden, item['plant-count']]).map(function(i){return '<div class="match_part">' + i + '</div>';}).join('') + '</div>';
+    return '<div class="match_item">' + item._id.species + item.taxon[0].family + zip([item.garden, item['plant-count']]).map(function(i){return '<div class="match_part">' + i + '</div>';}).join('') + '</div>';
 }
 
 function match_species(val) {

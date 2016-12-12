@@ -238,15 +238,28 @@ function match_people(input) {
 }
 
 function present_item(item) {
-    return '<div class="match_item">' + item._id.species + item.taxon[0].family + zip([item.garden, item['plant-count']]).map(function(i){return '<div class="match_part">' + i + '</div>';}).join('') + '</div>';
+    var result = $('<div/>', {class: 'match_item'});
+    var species = $('<div/>', {class: 'binomial'});
+    var family = $('<div/>', {class: 'family'});
+    species.append(item._id.species);
+    family.append(item.taxon[0].family);
+    result.append(species);
+    result.append(family);
+    for(var i=0; i<item.garden.length; i++) {
+        result.append(item.garden[i]);
+        result.append(item['plant-count'][i]);
+    }
+    return result;
 }
 
 function match_species(val) {
     if(val.length <= 2) {           
-        document.getElementById("result").innerHTML = ''; } else {
-            var autoCompleteResult = match_people(val);
-            var species = autoCompleteResult.map(present_item);
-            document.getElementById("result").innerHTML = species.join('');}
+        document.getElementById("result").innerHTML = '';
+    } else {
+        var autoCompleteResult = match_people(val);
+        var species = autoCompleteResult.map(present_item);
+        $('#result').append(species);
+    }
 }
 
 function zip(arrays) {

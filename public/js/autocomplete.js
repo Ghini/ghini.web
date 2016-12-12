@@ -239,31 +239,24 @@ function match_people(input) {
 
 function present_item(item) {
     var result = $('<div/>', {class: 'match_item'});
-    var species = $('<div/>', {class: 'binomial'});
-    var family = $('<div/>', {class: 'family'});
-    species.append(item._id.species);
-    family.append(item.taxon[0].family);
-    result.append(species);
-    result.append(family);
+    result.append($('<div/>', {class: 'binomial', text: item._id.species}));
+    result.append($('<div/>', {class: 'family', text: item.taxon[0].family}));
     for(var i=0; i<item.garden.length; i++) {
-        result.append(item.garden[i]);
-        result.append(item['plant-count'][i]);
+        result.append($('<div/>', {class: 'garden_name', text: item.garden[i]}));
+        result.append($('<div/>', {class: 'plant_count', text: item['plant-count'][i]}));
     }
     return result;
 }
 
 function match_species(val) {
-    if(val.length <= 2) {           
-        document.getElementById("result").innerHTML = '';
-    } else {
-        var autoCompleteResult = match_people(val);
-        var species = autoCompleteResult.map(present_item);
-        $('#result').append(species);
+    $('#result').empty();
+    if(val.length > 2) {
+        $('#result').append(match_people(val).map(present_item));
     }
 }
 
 function zip(arrays) {
     return arrays[0].map(function(_,i){
-        return arrays.map(function(array) { return array[i] } );
+        return arrays.map(function(array) { return array[i]; } );
     });
 }      

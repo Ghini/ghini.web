@@ -20,10 +20,33 @@ html, body {
     height:100%;
     float: left;
 }
+table#result {
+    padding: 4pt;
+    width: 100%;
+}
 #search {
     margin-left: 80%;
     margin-top: 50px;
     width: 20%;
+}
+.match-item {
+}
+.binomial {
+    width: 50%;
+    font-style: italic;
+    font-weight: bold;
+    background-color: #e0e0e0;
+}
+.family {
+    background-color: #e0e0e0;
+    font-weight: bold;
+}
+.garden_name {
+    margin: 2pt;
+    margin-left: 8pt;
+}
+.plant_count {
+    margin: 2pt;
 }
 #loading {
     position: absolute;

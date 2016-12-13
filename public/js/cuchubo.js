@@ -173,6 +173,9 @@ models['photos'] = {
 models['infopanels'] = {
     'text': '<b>{title}</b><br/>{text}<br/>',
     'update_menu': function (item) {}};
+
+models['__taxa'] = {
+    'update_menu': function (item) {}};
     
 function fireSelectGarden(e) {
     map.closePopup();
@@ -184,10 +187,15 @@ function finalAddObject(item) {
     var g = item.layer_name;
     if(typeof objects_container[g] === 'undefined')
         objects_container[g] = {};
-    if(objects_container[g][item._id] === 1) {
+    if(g.startsWith('__')) {
+        objects_container[g][item._id] = item;
         return;
+    } else {
+        if(objects_container[g][item._id] === 1) {
+            return;
+        }
+        objects_container[g][item._id] = 1;
     }
-    objects_container[g][item._id] = 1;
 
     if ('icon' in item && 'color' in item) {
         var icon = L.AwesomeMarkers.icon({ color: item.color,

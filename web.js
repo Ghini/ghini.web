@@ -96,6 +96,23 @@ io.sockets.on('connection', function (socket) {
                     socket.emit('add-object', doc);
                 }
             });
+            cursor = db.collection('plants').aggregate(
+                {$group: {_id: {species:"$species", garden: "$garden"}, count: {$sum: 1}}},
+                {$group: {_id: {species:"$_id.species"}, garden: {$push: "$_id.garden"}, plant_count: {$push: "$count"}}},
+                {$lookup: {from:"taxa", localField:"_id.species", foreignField:"name", as:"taxon"}},
+                {$project: {_id: "$_id.species", garden: 1, plant_count: 1, taxon: 1,
+                            layer_name: {$literal: "__taxa"}}},
+                {});
+            // Lets iterate on the result.
+            // this will access the database, so we act in a callback.
+            cursor.each(function (err, doc) {
+                if (err || !doc) {
+                    console.log("err:", err, "; doc:", doc);
+                } else {
+                    console.log(doc);
+                    socket.emit('add-object', doc);
+                }
+            });
             db.close();
             socket.emit('map-set-view', {zoom:2, lat:32.0, lon:8.0});
         }});

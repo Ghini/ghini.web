@@ -176,7 +176,7 @@ models['infopanels'] = {
 
 models['__taxa'] = {
     'update_menu': function (item) {}};
-    
+
 function fireSelectGarden(e) {
     map.closePopup();
     socket.emit('select-garden', e);
@@ -239,7 +239,7 @@ function finalAddObject(item) {
                           item);
     markers.push(marker);
     marker.addTo(l).bindPopup(models[g].text.formatU(item),
-                              {marker: marker});    
+                              {marker: marker});
     if(item.lon > 100) {
         item.lon -= 360;
         marker = L.marker([item.lat, item.lon],
@@ -247,7 +247,7 @@ function finalAddObject(item) {
         markers.push(marker);
         item.lon += 360;
         marker.addTo(l).bindPopup(models[g].text.formatU(item),
-                                  {marker: marker});    
+                                  {marker: marker});
     }
     if(item.lon < -100) {
         item.lon += 360;
@@ -256,7 +256,7 @@ function finalAddObject(item) {
         markers.push(marker);
         item.lon -= 360;
         marker.addTo(l).bindPopup(models[g].text.formatU(item),
-                                  {marker: marker});    
+                                  {marker: marker});
     }
 }
 
@@ -357,6 +357,25 @@ function getFileFromServer(url, doneCallback) {
     }
 }
 
+L.Control.Watermark = L.Control.extend({
+    onAdd: function(map) {
+        var img = L.DomUtil.create('img');
+
+        img.src = '../img/photos/panoramica.jpg';
+        img.style.width = '40%';
+
+        return img;
+    },
+
+    onRemove: function(map) {
+        // Nothing to do here
+    }
+});
+
+L.control.watermark = function(opts) {
+    return new L.Control.Watermark(opts);
+};
+
 // set by zoomstart, examined by zoomend.
 var previous_zoom = 0;
 
@@ -404,8 +423,7 @@ function init() {
     socket = io.connect(window.location.href);
 
     // create a map in the "map" div
-    map = L.map('map');
-
+    map = L.map('map', {zoomControl: false});
     icon = {
         'garden': L.AwesomeMarkers.icon({ color: '#ffffff',
                                           icon: 'info-sign' }),
@@ -424,7 +442,12 @@ function init() {
     };
 
     // add the scale control
-    L.control.scale().addTo(map);
+    L.control.scale({ position: 'bottomleft' }).addTo(map);
+    // add the zoom control
+    L.control.zoom({ position: 'topright' }).addTo(map);
+
+    // add our own control, for managing the search tool
+    //L.control.watermark({ position: 'topright' }).addTo(map);
 
     // some tiles servers:
     // -------------------------
@@ -434,7 +457,7 @@ function init() {
     // 'http://cuchubo.wdfiles.com/local--files/tiles-{z}/{z}.{y}.{x}.png', // our tiles on wikidot
     // 'tiles-{z}/{z}.{y}.{x}.png', // local tiles on rune
     // -------------------------
-    
+
     // create an OpenStreetMap tile layer
     L.tileLayer(
         '/tiles-{z}/{z}.{x}.{y}.png', // our tiles on the local nodejs server

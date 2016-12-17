@@ -15,19 +15,22 @@ html, body {
     overflow:hidden;
 }
 #map {
-    margin-top:40px;
-    width:80%;
+    width:100%;
     height:100%;
     float: left;
 }
+#map-ui {
+    display: block;
+    margin-left:80%;
+    width:20%;
+}
 table#result {
     padding: 4pt;
+    margin: 1pt;
+    border: 1pt;
     width: 100%;
 }
 #search {
-    margin-left: 80%;
-    margin-top: 50px;
-    width: 20%;
 }
 .match-item {
 }
@@ -43,7 +46,7 @@ table#result {
 }
 .garden_name {
     margin: 2pt;
-    margin-left: 8pt;
+    padding-left: 5pt;
 }
 .plant_count {
     margin: 2pt;
@@ -96,6 +99,10 @@ label > input {
     top: -3px;
     *overflow: hidden;
 }  
-.leaflet-bottom {
-    bottom: 38px;
+#content {
+    overflow: hidden;
+    position: absolute;
+    top: 45px;
+    bottom: 0;
+    width: 100%;
 }

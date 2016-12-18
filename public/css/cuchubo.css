@@ -53,8 +53,8 @@ table#result {
     background-color: #47f2f2;
 }
 .family {
-    background-color: #47f2f2;
     font-weight: bold;
+    background-color: #47f2f2;
 }
 .garden_name {
     margin: 2pt;
@@ -117,4 +117,16 @@ label > input {
     top: 45px;
     bottom: 0;
     width: 100%;
+}
+tr.ghini-highlighted-true {
+    border: 0px;
+    margin: 1px;
+    border-color: black;
+    color: #ff4500;
+}
+tr.ghini-highlighted-false {
+    border: 1px;
+    margin: 0px;
+    border-color: black;
+    color: black;
 }

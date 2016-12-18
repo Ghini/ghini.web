@@ -23,12 +23,24 @@ html, body {
     display: block;
     margin-left:80%;
     width:20%;
+    height: 100%;
+    background-color: #d8f2f2;
+    overflow-y:auto;
+    overflow-x:hidden;
 }
 table#result {
     padding: 4pt;
     margin: 1pt;
     border: 1pt;
     width: 100%;
+}
+.panel-heading {
+    width: 100%;
+    height: 35px;
+}
+.panel-content {
+    overflow-y:auto;
+    overflow-x:hidden;
 }
 #search {
 }
@@ -38,10 +50,10 @@ table#result {
     width: 50%;
     font-style: italic;
     font-weight: bold;
-    background-color: #e0e0e0;
+    background-color: #47f2f2;
 }
 .family {
-    background-color: #e0e0e0;
+    background-color: #47f2f2;
     font-weight: bold;
 }
 .garden_name {

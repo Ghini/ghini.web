@@ -357,25 +357,6 @@ function getFileFromServer(url, doneCallback) {
     }
 }
 
-L.Control.Watermark = L.Control.extend({
-    onAdd: function(map) {
-        var img = L.DomUtil.create('img');
-
-        img.src = '../img/photos/panoramica.jpg';
-        img.style.width = '40%';
-
-        return img;
-    },
-
-    onRemove: function(map) {
-        // Nothing to do here
-    }
-});
-
-L.control.watermark = function(opts) {
-    return new L.Control.Watermark(opts);
-};
-
 // set by zoomstart, examined by zoomend.
 var previous_zoom = 0;
 
@@ -413,6 +394,7 @@ String.prototype.formatU = function() {
     return str;
 };
 
+
 // to be called at document ready!
 function init() {
 
@@ -445,6 +427,16 @@ function init() {
     L.control.scale({ position: 'bottomleft' }).addTo(map);
     // add the zoom control
     L.control.zoom({ position: 'topright' }).addTo(map);
+    var status = 0;
+    L.easyButton('icon-search', function(){
+        if(status === 0) {
+            $('#map').css('width', '80%');
+            status = 1;
+        } else {
+            $('#map').css('width', '100%');
+            status = 0;
+        }
+    }).setPosition('topright').addTo(map);
 
     // add our own control, for managing the search tool
     //L.control.watermark({ position: 'topright' }).addTo(map);

@@ -9,10 +9,12 @@ head
   script(src='/lib/leaflet.awesome-markers.js')
   script(src='/js/cuchubo.js')
   script(src='/js/autocomplete.js')
+  script(src='/js/easy-button.js')
   link(rel='stylesheet', href='/css/bootstrap.css')
   link(rel='stylesheet', href='/css/leaflet.css')
   link(rel='stylesheet', href='/css/leaflet.awesome-markers.css')
   link(rel='stylesheet', href='/css/cuchubo.css')
+  link(rel='stylesheet', href='/css/easy-button.css')
 
 
   link(rel="apple-touch-icon", sizes="180x180", href="/apple-touch-icon.png")
@@ -73,12 +75,14 @@ body
                     |  reset
 
   #content
-    #map(style='width:80%;')
+    #map
     #map-ui
-      h4
-      | species lookup
-      input(type='text', onkeyup='match_species(Object.keys(objects_container.__taxa).map(function (key) { return objects_container.__taxa[key]; }), this.value)')
-      table#result
+      div.panel.panel-danger
+        div.panel-heading 
+          h4 species lookup
+        input(type='text', onkeyup='match_species(Object.keys(objects_container.__taxa).map(function (key) { return objects_container.__taxa[key]; }), this.value)', style='margin:3pt;')
+        div.panel-content
+          table#result.table
     #accessions
 
   #highlightModal.modal.hide.fade(aria-hidden='true', style='display: none;')

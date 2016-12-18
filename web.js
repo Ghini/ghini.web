@@ -100,7 +100,10 @@ io.sockets.on('connection', function (socket) {
                 {$group: {_id: {species:"$species", garden: "$garden"}, count: {$sum: 1}}},
                 {$group: {_id: {species:"$_id.species"}, garden: {$push: "$_id.garden"}, plant_count: {$push: "$count"}}},
                 {$lookup: {from:"taxa", localField:"_id.species", foreignField:"name", as:"taxon"}},
-                {$project: {_id: "$_id.species", garden: 1, plant_count: 1, taxon: 1,
+                {$unwind: {path: "$taxon"}},
+                {$project: {_id: "$taxon.phonetic",
+                            name: "$_id.species",
+                            garden: 1, plant_count: 1, taxon: 1,
                             layer_name: {$literal: "__taxa"}}},
                 {});
             // Lets iterate on the result.

@@ -316,7 +316,10 @@ function toggleLayerCheck(anchor, layerName) {
     }
 }
 
-function markers_setcolor(collection, markers, color) {
+function markers_setcolor(event, markers, color) {
+    if(markers.length === 0) {
+        markers = [event.currentTarget.children[0].textContent];
+    }
     for(var item in markers) {
         var selector = "div.awesome-marker[title='" + markers[item] + "']";
         $(selector).removeClass(function (index, css) {

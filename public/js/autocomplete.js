@@ -21,15 +21,16 @@ function generate_guid() {
 
 function present_item(item) {
     var result = [];
-    var row = $('<tr/>', {class: 'match_item'});
-    row.append($('<td/>', {class: 'binomial', text: item.name})
-               .click(function(x){markers_setcolor('gardens', item.garden, 'orange');})
-               .mouseleave(function(x){markers_setcolor('gardens', item.garden, 'red');})
-              );
+    var row = $('<tr/>', {class: 'match_item'})
+        .mouseenter(function(x){markers_setcolor(x, item.garden, 'orange');})
+        .mouseleave(function(x){markers_setcolor(x, item.garden, 'red');});
+    row.append($('<td/>', {class: 'binomial', text: item.name}));
     row.append($('<td/>', {class: 'family', text: item.taxon.family}));
     result.push(row);
     for(var i in item.garden) {
-        row = $('<tr/>', {class: 'garden_row'});
+        row = $('<tr/>', {class: 'garden_row'})
+            .mouseenter(function(x){markers_setcolor(x, [], 'orange');})
+            .mouseleave(function(x){markers_setcolor(x, [], 'red');});
         row.append($('<td/>', {class: 'garden_name', text: item.garden[i]}));
         row.append($('<td/>', {class: 'plant_count', text: item.plant_count[i]}));
         result.push(row);

@@ -316,6 +316,16 @@ function toggleLayerCheck(anchor, layerName) {
     }
 }
 
+function markers_setcolor(collection, markers, color) {
+    for(var item in markers) {
+        var selector = "div.awesome-marker[title='" + markers[item] + "']";
+        $(selector).removeClass(function (index, css) {
+            return (css.match (/(^|\s)awesome-marker-icon-\S+/g) || []).join(' ');
+        });
+        $(selector).addClass('awesome-marker-icon-' + color);
+    }
+}
+
 // MIT-licensed code by Benjamin Becquet
 // https://github.com/bbecquet/Leaflet.PolylineDecorator
 L.RotatedMarker = L.Marker.extend({

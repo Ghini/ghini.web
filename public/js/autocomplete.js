@@ -12,10 +12,20 @@ function match_people(plant_species, input) {
     });
 }
 
+function generate_guid() {
+    var S4 = function() {
+       return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+    };
+    return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+}
+
 function present_item(item) {
     var result = [];
     var row = $('<tr/>', {class: 'match_item'});
-    row.append($('<td/>', {class: 'binomial', text: item.name}));
+    row.append($('<td/>', {class: 'binomial', text: item.name})
+               .click(function(x){markers_setcolor('gardens', item.garden, 'orange');})
+               .mouseleave(function(x){markers_setcolor('gardens', item.garden, 'red');})
+              );
     row.append($('<td/>', {class: 'family', text: item.taxon.family}));
     result.push(row);
     for(var i in item.garden) {

@@ -191,10 +191,10 @@ function finalAddObject(item) {
         objects_container[g][item._id] = item;
         return;
     } else {
-        if(objects_container[g][item._id] === 1) {
+        if(typeof objects_container[g][item._id] !== 'undefined') {
             return;
         }
-        objects_container[g][item._id] = 1;
+        objects_container[g][item._id] = item;
     }
 
     if ('icon' in item && 'color' in item) {
@@ -314,6 +314,18 @@ function toggleLayerCheck(anchor, layerName) {
     } else {
         check.className = "icon-ok icon-black";
     }
+}
+
+Object.values = function(obj) {
+    return Object.keys(obj).map(function(key) {return obj[key];});
+};
+
+function zoomToSelection(g, markers) {
+    console.log(markers);
+    var selection = Object.values(objects_container[g])
+        .filter(function(x) {return markers.includes(x.name);});
+    console.log(selection);
+    map.fitBounds(selection.map(function(x) { return [x.lat, x.lon]; }));
 }
 
 function markers_setcolor(markers, options) {
@@ -488,7 +500,7 @@ function init() {
     map.on('zoomstart', onZoomstart);
     $("#keyword").val("");
     $("#keyword").on('change', function(e){computeHighlightOptions($("#keyword").val());});
-    $("#addendum").on('change', function(e){return false;});
+    $("#addendum").on('change', function(e) {return false;});
 
     map.on('popupopen', function(e) {
         map._popup.options.minWidth = $('div.leaflet-popup-content img').width() + 10;

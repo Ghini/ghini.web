@@ -23,6 +23,10 @@ function generate_guid() {
 function present_item(item) {
     var result = [];
     var row = $('<tr/>', {class: 'match_item'})
+        .dblclick(function(x) {
+            zoomToSelection('gardens', item.garden);
+            window.getSelection().removeAllRanges();                
+            return false; } )
         .mouseenter(function(x) {
             $(x.currentTarget).removeClass('ghini-highlighted-false');
             $(x.currentTarget).addClass('ghini-highlighted-true');

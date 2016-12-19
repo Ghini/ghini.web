@@ -2254,10 +2254,6 @@ table th[class*="span"],
   background-position: -456px 0;
 }
 
-.icon-faucet {
-  background-position: -480px 0;
-}
-
 .icon-home {
   background-position: 0 -24px;
 }
@@ -2738,6 +2734,26 @@ table th[class*="span"],
 
 .icon-fullscreen {
   background-position: -456px -144px;
+}
+
+.icon-faucet {
+  background-position: -480px 0;
+}
+
+.icon-grain {
+  background-position: -480px -24px;
+}
+
+.icon-tree-deciduous {
+  background-position: -480px -48px;
+}
+
+.icon-tree-conifer {
+  background-position: -480px -72px;
+}
+
+.icon-tree-palm {
+  background-position: -480px -96px;
 }
 
 .dropup,

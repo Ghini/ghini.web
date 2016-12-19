@@ -316,13 +316,7 @@ function toggleLayerCheck(anchor, layerName) {
     }
 }
 
-function markers_setcolor(event, markers, options) {
-    if(markers.length === 0) {
-        markers = [event.currentTarget.children[0].textContent];
-    }
-    $(event.currentTarget).removeClass('ghini-highlighted-false');
-    $(event.currentTarget).removeClass('ghini-highlighted-true');
-    $(event.currentTarget).addClass('ghini-highlighted-' + options.border);
+function markers_setcolor(markers, options) {
     for(var item in markers) {
         var selector = "div.awesome-marker[title='" + markers[item] + "']";
         $(selector).removeClass(function (index, css) {

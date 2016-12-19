@@ -6,7 +6,8 @@ var shorten = function(x) {
 };
 
 function match_people(plant_species, input) {
-    var reg = new RegExp(shorten(input), 'i');
+    input = input.replace(/-/g, '.*');
+    var reg = new RegExp('^' + shorten(input), 'i');
     return plant_species.filter(function (item) {
         return item['_id'].match(reg);
     });
@@ -22,15 +23,31 @@ function generate_guid() {
 function present_item(item) {
     var result = [];
     var row = $('<tr/>', {class: 'match_item'})
-        .mouseenter(function(x){markers_setcolor(x, item.garden, {border: true, color: 'orange'});})
-        .mouseleave(function(x){markers_setcolor(x, item.garden, {border: false, color: 'red'});});
+        .mouseenter(function(x) {
+            $(x.currentTarget).removeClass('ghini-highlighted-false');
+            $(x.currentTarget).addClass('ghini-highlighted-true');
+            markers_setcolor(item.garden, {color: 'orange'}); } )
+        .mouseleave(function(x) {
+            $(x.currentTarget).removeClass('ghini-highlighted-true');
+            $(x.currentTarget).addClass('ghini-highlighted-false');
+            markers_setcolor(item.garden, {color: 'red'}); } );
     row.append($('<td/>', {class: 'binomial', text: item.name}));
     row.append($('<td/>', {class: 'family', text: item.taxon.family}));
     result.push(row);
     for(var i in item.garden) {
         row = $('<tr/>', {class: 'garden_row'})
-            .mouseenter(function(x){markers_setcolor(x, [], {border: true, color: 'orange'});})
-            .mouseleave(function(x){markers_setcolor(x, [], {border: false, color: 'red'});});
+            .dblclick(function(x) {
+                fireSelectGarden(x.currentTarget.children[0].textContent);
+                window.getSelection().removeAllRanges();                
+                return false; } )
+            .mouseenter(function(x) {
+                $(x.currentTarget).removeClass('ghini-highlighted-false');
+                $(x.currentTarget).addClass('ghini-highlighted-true');
+                markers_setcolor([x.currentTarget.children[0].textContent], {color: 'orange'}); } )
+            .mouseleave(function(x) {
+                $(x.currentTarget).removeClass('ghini-highlighted-true');
+                $(x.currentTarget).addClass('ghini-highlighted-false');
+                markers_setcolor([x.currentTarget.children[0].textContent], {color: 'red'}); } );
         row.append($('<td/>', {class: 'garden_name', text: item.garden[i]}));
         row.append($('<td/>', {class: 'plant_count', text: item.plant_count[i]}));
         result.push(row);

@@ -117,7 +117,6 @@ io.sockets.on('connection', function (socket) {
                 }
             });
             db.close();
-            socket.emit('map-set-view', {zoom:2, lat:32.0, lon:8.0});
         }});
 
     socket.on('select-garden', function (name) {

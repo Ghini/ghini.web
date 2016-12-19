@@ -572,6 +572,7 @@ function init() {
         }
     });
     socket.on('map-remove-objects', finalRemoveLayer);
+    socket.emit('select-garden', '');
 }
 
 

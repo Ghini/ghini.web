@@ -321,6 +321,11 @@ Object.values = function(obj) {
 };
 
 function zoomToSelection(g, markers) {
+    for(var layername in objects_layer) {
+        if(layername === g)
+            continue;
+        finalRemoveLayer(layername);
+    }
     console.log(markers);
     var selection = Object.values(objects_container[g])
         .filter(function(x) {return markers.includes(x.name);});

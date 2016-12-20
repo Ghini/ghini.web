@@ -51,28 +51,6 @@ body
                 |  toggle
                 b.caret
               ul#toggle-menu-list.dropdown-menu
-            li.dropdown
-              a.dropdown-toggle(href='#', data-toggle='dropdown')
-                i.icon-star.icon-white
-                |  highlight
-                b.caret
-              ul#highlight-menu-list.dropdown-menu
-                li
-                  a(onclick='fireHighlightModal(); return false;', href='#')
-                    i.icon-check.icon-black
-                    |  selection
-                li
-                  a(href='#')
-                    i.icon-filter.icon-black
-                    |  taxon...
-                li
-                  a(href='#')
-                    i.icon-tag.icon-black
-                    |  tags...
-                li
-                  a(onclick='resetHighlightOptions(); return false;', href='#')
-                    i.icon-refresh.icon-black
-                    |  reset
 
   #content
     #map
@@ -80,12 +58,12 @@ body
       div.panel.panel-danger
         div.panel-heading 
           ul.nav.nav-pills
-            li.active
-              a(data-toggle='tab' href='#input-species') species<br/>lookup
-            li 
-              a(data-toggle='tab' href='#input-accession') accession<br/>lookup
-            li 
-              a(data-toggle='tab' href='#input-tag') tag<br/>lookup
+            li.active(style='display: block;')
+              a(data-toggle='pill' href='#input-species') species<br/>lookup
+            li(style='display: none;')
+              a(data-toggle='pill' href='#input-accession') accession<br/>lookup
+            li(style='display: none;')
+              a(data-toggle='pill' href='#input-tag') tag<br/>lookup
           div.class-content.tab-content
             div#input-species.tab-pane.fade.in.active    
               input(type='text', onkeyup='match_species(Object.keys(objects_container.__taxa).map(function (key) { return objects_container.__taxa[key]; }), this.value)', style='margin:3pt;')

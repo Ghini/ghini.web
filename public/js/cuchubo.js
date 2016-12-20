@@ -183,6 +183,13 @@ function fireSelectGarden(e) {
     return false;
 }
 
+function set_alternative(selector, lead, trail) {
+    $(selector).removeClass(function (index, css) {
+        return (css.split(' ').filter(function(x) { return x.startsWith(lead); }).join(' '));
+    });
+    $(selector).addClass(lead + '-' + trail);
+}
+
 function finalAddObject(item) {
     var g = item.layer_name;
     if(typeof objects_container[g] === 'undefined')
@@ -200,7 +207,6 @@ function finalAddObject(item) {
     if ('icon' in item && 'color' in item) {
         var icon = L.AwesomeMarkers.icon({ color: item.color,
                                            icon: item.icon });
-        delete item.color;
         item.icon = icon;
     }
 
@@ -235,11 +241,22 @@ function finalAddObject(item) {
     }
     l = objects_layer[g][z];
 
+    var marker_id = generate_guid();
     var marker = L.marker([item.lat, item.lon],
                           item);
     markers.push(marker);
     marker.addTo(l).bindPopup(models[g].text.formatU(item),
                               {marker: marker});
+    marker.on('mouseover',
+              function() {
+                  marker._icon.id = marker_id;
+                  set_alternative('#' + marker_id, 'awesome-marker-icon', 'orange');
+              });
+    marker.on('mouseout',
+              function() {
+                  set_alternative('#' + marker_id, 'awesome-marker-icon', item.color);
+              });
+
     if(item.lon > 100) {
         item.lon -= 360;
         marker = L.marker([item.lat, item.lon],
@@ -335,11 +352,8 @@ function zoomToSelection(g, markers) {
 
 function markers_setcolor(markers, options) {
     for(var item in markers) {
-        var selector = "div.awesome-marker[title='" + markers[item] + "']";
-        $(selector).removeClass(function (index, css) {
-            return (css.match(/(^|\s)awesome-marker-icon-\S+/g) || []).join(' ');
-        });
-        $(selector).addClass('awesome-marker-icon-' + options.color);
+        set_alternative("div.awesome-marker[title='" + markers[item] + "']",
+                       'awesome-marker-icon', options.color);
     }
 }
 

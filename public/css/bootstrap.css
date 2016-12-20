@@ -2756,6 +2756,14 @@ table th[class*="span"],
   background-position: -480px -96px;
 }
 
+.icon-tree-banana {
+  background-position: -480px -120px;
+}
+
+.icon-grass {
+  background-position: -480px -144px;
+}
+
 .dropup,
 .dropdown {
   position: relative;

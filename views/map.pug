@@ -30,7 +30,7 @@ head
 body
 
   .navbar.navbar-inverse.navbar-fixed-top
-    .navbar-inner 
+    .navbar-inner
       .container
         a.brand ghini gardens
         .collapse.nav-collapse
@@ -56,7 +56,7 @@ body
     #map
     #map-ui
       div.panel.panel-danger
-        div.panel-heading 
+        div.panel-heading
           ul.nav.nav-pills
             li.active(style='display: block;')
               a(data-toggle='pill' href='#input-species') species<br/>lookup
@@ -65,8 +65,8 @@ body
             li(style='display: none;')
               a(data-toggle='pill' href='#input-tag') tag<br/>lookup
           div.class-content.tab-content
-            div#input-species.tab-pane.fade.in.active    
-              input(type='text', onkeyup='match_species(Object.keys(objects_container.__taxa).map(function (key) { return objects_container.__taxa[key]; }), this.value)', style='margin:3pt;')
+            div#input-species.tab-pane.fade.in.active
+              input(type='text', onkeyup='match_species(this.value)', style='margin:3pt;')
               div.panel-content
                 table#result.table
             div#input-accession.tab-pane.fade

@@ -5,11 +5,12 @@ var shorten = function(x) {
         .replace(/(.)\1/g, '$1');
 };
 
-function match_people(plant_species, input) {
+function match_people(plant_species, input, field_name) {
+    console.log(plant_species, input, field_name);
     input = input.replace(/-/g, '.*');
     var reg = new RegExp('^' + shorten(input), 'i');
     return plant_species.filter(function (item) {
-        return item['_id'].match(reg);
+        return item[field_name].match(reg);
     });
 }
 
@@ -35,7 +36,7 @@ function present_item(item) {
             $(x.currentTarget).removeClass('ghini-highlighted-true');
             $(x.currentTarget).addClass('ghini-highlighted-false');
             markers_setcolor(item.garden, {color: 'red'}); } );
-    row.append($('<td/>', {class: 'binomial', text: item.name}));
+    row.append($('<td/>', {class: 'binomial', text: item.species_name}));
     row.append($('<td/>', {class: 'family', text: item.taxon.family}));
     result.push(row);
     for(var i in item.garden) {
@@ -59,10 +60,16 @@ function present_item(item) {
     return result;
 }
 
-function match_species(objs, val) {
+function match_species(val) {
+    var objs;
+    if(Object.getOwnPropertyNames(objects_container.plants).length === 0) {
+        objs = Object.values(objects_container.__taxa);
+    } else {
+        objs = Object.values(objects_container.plants);
+    }
     $('#result').empty();
     if(val.length > 2) {
-        var to_add = match_people(objs, val).map(present_item);
+        var to_add = match_people(objs, val, 'phonetic').map(present_item);
         for(var i in to_add) {
             console.log(i, to_add[i]);
             $('#result').append(to_add[i]);

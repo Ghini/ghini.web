@@ -79,10 +79,26 @@ body
     #map-ui
       div.panel.panel-danger
         div.panel-heading 
-          h4 species lookup
-        input(type='text', onkeyup='match_species(Object.keys(objects_container.__taxa).map(function (key) { return objects_container.__taxa[key]; }), this.value)', style='margin:3pt;')
-        div.panel-content
-          table#result.table
+          ul.nav.nav-pills
+            li.active
+              a(data-toggle='tab' href='#input-species') species<br/>lookup
+            li 
+              a(data-toggle='tab' href='#input-accession') accession<br/>lookup
+            li 
+              a(data-toggle='tab' href='#input-tag') tag<br/>lookup
+          div.class-content.tab-content
+            div#input-species.tab-pane.fade.in.active    
+              input(type='text', onkeyup='match_species(Object.keys(objects_container.__taxa).map(function (key) { return objects_container.__taxa[key]; }), this.value)', style='margin:3pt;')
+              div.panel-content
+                table#result.table
+            div#input-accession.tab-pane.fade
+              p todo - accession
+              div.panel-content
+                table#result-a.table
+            div#input-tag.tab-pane.fade.in
+              p todo - tag
+              div.panel-content
+                table#result-t.table
     #accessions
 
   #highlightModal.modal.hide.fade(aria-hidden='true', style='display: none;')

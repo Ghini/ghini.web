@@ -44,6 +44,9 @@ markers.highlighted = [];
 var objects_layer = {};
 var objects_container = {};
 
+// the garden we're zooming into
+var active_garden = '';
+
 //
 // GLOBAL FUNCTIONS
 
@@ -180,6 +183,14 @@ models['__taxa'] = {
 function fireSelectGarden(e) {
     map.closePopup();
     socket.emit('select-garden', e);
+    active_garden = e;
+    if(active_garden === ''){
+        $('li#search-by-accession-tab').css('display', 'none');
+        $('li#search-by-tag-tab').css('display', 'none');
+    }else{
+        $('li#search-by-accession-tab').css('display', 'block');
+        $('li#search-by-tag-tab').css('display', 'block');
+    }
     return false;
 }
 
@@ -343,10 +354,8 @@ function zoomToSelection(g, markers) {
             continue;
         finalRemoveLayer(layername);
     }
-    console.log(markers);
     var selection = Object.values(objects_container[g])
         .filter(function(x) {return markers.includes(x.name);});
-    console.log(selection);
     map.fitBounds(selection.map(function(x) { return [x.lat, x.lon]; }));
 }
 

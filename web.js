@@ -97,14 +97,14 @@ io.sockets.on('connection', function (socket) {
                 }
             });
             cursor = db.collection('plants').aggregate(
-                {$group: {_id: {species:"$species", garden: "$garden"}, count: {$sum: 1}}},
-                {$group: {_id: {species:"$_id.species"}, garden: {$push: "$_id.garden"}, plant_count: {$push: "$count"}}},
+                {$group: {_id: {species:"$species", garden: "$garden"}, count: {$sum: 1}, codes: {$push: "$code"}}},
+                {$group: {_id: {species:"$_id.species"}, gardens: {$push: {name: "$_id.garden", plant_count: "$count", codes: "$codes"}}}},
                 {$lookup: {from:"taxa", localField:"_id.species", foreignField:"name", as:"taxon"}},
                 {$unwind: {path: "$taxon"}},
                 {$project: {_id: "$taxon._id",
                             phonetic: "$taxon.phonetic",
                             species_name: "$_id.species",
-                            garden: 1, plant_count: 1, taxon: 1,
+                            gardens: 1, taxon: 1,
                             layer_name: {$literal: "__taxa"}}},
                 {});
             // Lets iterate on the result.

@@ -60,9 +60,9 @@ body
           ul.nav.nav-pills
             li.active(style='display: block;')
               a(data-toggle='pill' href='#input-species') species<br/>lookup
-            li(style='display: none;')
+            li#search-by-accession-tab(style='display: none;')
               a(data-toggle='pill' href='#input-accession') accession<br/>lookup
-            li(style='display: none;')
+            li#search-by-tag-tab(style='display: none;')
               a(data-toggle='pill' href='#input-tag') tag<br/>lookup
           div.class-content.tab-content
             div#input-species.tab-pane.fade.in.active

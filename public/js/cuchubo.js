@@ -21,10 +21,6 @@ var map = null;
 
 var socket;
 
-// properties of 'listOf' are accessions, species, genera, familiae, and
-// their values are the list of the matching markers.
-var listOf = {};
-
 // properties of 'taxonOf' are accessions and the associated value is
 // the list of taxa at rank family, genus, species.
 var taxonOf = {};
@@ -151,18 +147,6 @@ function computeHighlightOptions(name) {
         addRadioButton(taxonOf[name].genus, taxonOf[name].genus);
         addRadioButton(taxonOf[name].genus + " " + taxonOf[name].species, taxonOf[name].species);
         addRadioButton(name, name);
-    }
-}
-
-function doHighlight() {
-    var whatToHighlight = $("input[name=taxon]:checked").val();
-    console.log(whatToHighlight);
-    console.log(listOf[whatToHighlight]);
-    for (var i = 0; i<listOf[whatToHighlight].length; i++) {
-        var marker = listOf[whatToHighlight][i];
-        console.log(marker);
-        marker.setIcon(icon.black);
-        markers.highlighted.push(marker);
     }
 }
 
@@ -594,11 +578,6 @@ function init() {
             $('#showPhotoModal').modal('show');
         });
         return false;
-    });
-
-    // REACT ON MESSAGES ON THE COMMUNICATION SOCKET
-    socket.on('move', function(data) {
-        listOf[data.plant].setLatLng([data.lat, data.lng]);
     });
 
     // initialize the help menu

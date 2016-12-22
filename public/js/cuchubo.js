@@ -178,7 +178,8 @@ models['gardens'] = {
     }};
 
 models['plants'] = {
-    'text': '<b>{code}</b><br/>{vernacular}<br/>{species} ({family})<br/>',
+    'text': '<b>{code}</b><br/>{vernacular}<br/>{species} ({family})<br/>' +
+        '<div onclick="$(\'div.tab-content > div.active > input\')[0].value = \'{species}\'; $(\'div.tab-content > div.active > input\').keyup(); return false;">search species</div>',
     'update_menu': function (item) {}};
 
 models['photos'] = {

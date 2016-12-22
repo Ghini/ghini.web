@@ -33,7 +33,7 @@ var taxonOf = {};
 var icon;
 
 // all markers!!!
-var markers = [];
+var markers = {};
 // highlighted markers!
 markers.highlighted = [];
 
@@ -149,7 +149,7 @@ function doAddPlant() {
 var models = {};
 
 models['gardens'] = {
-    'text': '<b>{name}</b><br/>contact: {contact}<br/>mapped plants: {count}<br/>' +
+    'text': '<b>{name}</b><br/>contact: {contact}<br/>mapped plants: {plants}<br/>mapped photos: {photos}<br/>mapped panels: {infopanels}<br/>' +
         '<a onclick="fireSelectGarden(\'{name}\'); return false;", href="#">zoom to garden</a><br/>',
     'update_menu': function(item) {
         var list_item = $('<li/>', { id: 'gardens-menu-item-{lat}-{lon}'.formatU(item) });
@@ -252,12 +252,13 @@ function finalAddObject(item) {
     }
     l = objects_layer[g][z];
 
-    var marker_id = generate_guid();
     var marker = L.marker([item.lat, item.lon],
                           item);
-    markers.push(marker);
     marker.addTo(l).bindPopup(models[g].text.formatU(item),
                               {marker: marker});
+    var marker_id = generate_guid(item._id);
+
+    markers[item._id] = marker;
     marker.on('mouseover',
               function() {
                   marker._icon.id = marker_id;
@@ -272,7 +273,6 @@ function finalAddObject(item) {
         item.lon -= 360;
         marker = L.marker([item.lat, item.lon],
                           item);
-        markers.push(marker);
         item.lon += 360;
         marker.addTo(l).bindPopup(models[g].text.formatU(item),
                                   {marker: marker});
@@ -281,7 +281,6 @@ function finalAddObject(item) {
         item.lon += 360;
         marker = L.marker([item.lat, item.lon],
                           item);
-        markers.push(marker);
         item.lon -= 360;
         marker.addTo(l).bindPopup(models[g].text.formatU(item),
                                   {marker: marker});
@@ -357,13 +356,6 @@ function zoomToSelection(g, markers) {
     var selection = Object.values(objects_container[g])
         .filter(function(x) {return markers.includes(x.name);});
     map.fitBounds(selection.map(function(x) { return [x.lat, x.lon]; }));
-}
-
-function markers_setcolor(markers, options) {
-    for(var item in markers) {
-        set_alternative("div.awesome-marker[title='" + markers[item] + "']",
-                       'awesome-marker-icon', options.color);
-    }
 }
 
 // MIT-licensed code by Benjamin Becquet

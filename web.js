@@ -77,11 +77,15 @@ io.sockets.on('connection', function (socket) {
             // Having a cursor does not mean we performed any database access, yet.
             var cursor = db.collection('gardens').aggregate(
                 {$lookup:{from:"plants", foreignField:"garden", localField:"name", as:"plants"}},
+                {$lookup:{from:"photos", foreignField:"garden", localField:"name", as:"photos"}},
+                {$lookup:{from:"infopanels", foreignField:"garden", localField:"name", as:"infopanels"}},
                 {$project: {layer_name: {$literal: "gardens"},
                             layer_zoom: {$literal: 1},
                             name:1, lat: 1, lon: 1, contact: 1,
                             title: "$name",
-                            count: {$size: "$plants"},
+                            plants: {$size: "$plants"},
+                            photos: {$size: "$photos"},
+                            infopanels: {$size: "$infopanels"},
                             draggable: {$literal: false},
                             color: {$literal: "red"},
                             icon: {$literal: "home"}}},
@@ -97,8 +101,8 @@ io.sockets.on('connection', function (socket) {
                 }
             });
             cursor = db.collection('plants').aggregate(
-                {$group: {_id: {species:"$species", garden: "$garden"}, count: {$sum: 1}, codes: {$push: "$code"}}},
-                {$group: {_id: {species:"$_id.species"}, gardens: {$push: {name: "$_id.garden", plant_count: "$count", codes: "$codes"}}}},
+                {$group: {_id: {species:"$species", garden: "$garden"}, count: {$sum: 1}, plants: {$push: {_id: "$_id", code: "$code"}}}},
+                {$group: {_id: {species:"$_id.species"}, gardens: {$push: {name: "$_id.garden", plant_count: "$count", plants: "$plants"}}}},
                 {$lookup: {from:"taxa", localField:"_id.species", foreignField:"name", as:"taxon"}},
                 {$unwind: {path: "$taxon"}},
                 {$project: {_id: "$taxon._id",

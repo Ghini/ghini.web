@@ -50,6 +50,59 @@ var active_garden = '';
 //
 // GLOBAL FUNCTIONS
 
+Object.values = function(obj) {
+    return Object.keys(obj).map(function(key) {return obj[key];});
+};
+
+String.prototype.formatU = function() {
+    var str = this.toString();
+    if (!arguments.length)
+        return str;
+    var args = typeof arguments[0];
+    args = (("string" == args || "number" == args) ? arguments : arguments[0]);
+    for (var arg in args)
+        str = str.replace(RegExp("\\{" + arg + "\\}", "gi"), args[arg]);
+    return str;
+};
+
+function generate_guid(mongo_id) {
+    if(mongo_id === undefined) {
+        var S4 = function() {
+            return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+        };
+        return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+    } else {
+        return mongo_id;
+    }
+}
+
+function zip(arrays) {
+    return arrays[0].map(function(_,i){
+        return arrays.map(function(array) { return array[i]; } );
+    });
+}      
+
+function set_alternative(selector, lead, trail) {
+    $(selector).removeClass(function (index, css) {
+        return (css.split(' ').filter(function(x) { return x.startsWith(lead); }).join(' '));
+    });
+    $(selector).addClass(lead + '-' + trail);
+}
+
+function shorten(x) {
+    return x.toLowerCase().replace(/-/, '').replace(/ph/g, 'f')
+        .replace(/h/g, '').replace(/[cq]/g, 'k').replace(/z/g, 's')
+        .replace(/ae/g, 'e').replace(/[ye]/g, 'i').replace(/u/g, 'o')
+        .replace(/(.)\1/g, '$1');
+};
+
+function markers_setcolor(markers, options) {
+    for(var item in markers) {
+        set_alternative("div.awesome-marker[title='" + markers[item] + "']",
+                       'awesome-marker-icon', options.color);
+    }
+}
+
 function openHighlightModal(e) {
     $('#highlightModal').modal('show');
     map.closePopup();
@@ -121,31 +174,6 @@ function fireAddPlant(e) {
     return false;
 }
 
-function doAddPlant() {
-    var threshold = map.getZoom();
-    var layer = objects_layer['plants'][threshold];
-    if (layer === null)
-        return;
-    if ($('#addendum').val() === "")
-        return;
-
-    var item= {};
-    var plantParts = $('#addendum').val().split(".");
-    plantParts.push("1");
-    item.plant_short = "{2}".formatU(plantParts);
-    item.plant = "{0}.{1}.{2}".formatU(plantParts);
-    item.accession = "{0}.{1}".formatU(plantParts);
-    item.lat = lastEvent.latlng.lat;
-    item.lng = lastEvent.latlng.lng;
-    item.zoom = threshold;
-    item.family = item.genus = item.species = item.vernacular = "";
-
-    finalAddObject(item);
-    socket.emit("add-object", item);
-
-    addToDom(item.plant, threshold, [item.lat, item.lng]);
-}
-
 var models = {};
 
 models['gardens'] = {
@@ -192,13 +220,6 @@ function fireSelectGarden(e) {
         $('li#search-by-tag-tab').css('display', 'block');
     }
     return false;
-}
-
-function set_alternative(selector, lead, trail) {
-    $(selector).removeClass(function (index, css) {
-        return (css.split(' ').filter(function(x) { return x.startsWith(lead); }).join(' '));
-    });
-    $(selector).addClass(lead + '-' + trail);
 }
 
 function finalAddObject(item) {
@@ -299,28 +320,6 @@ function finalRemoveLayer(layer_name) {
     objects_container[g] = {};
 }
 
-// add info about named plant to DOM (so we can easily copy it)
-function addToDom(name, threshold, location) {
-    // is it already there? (id contains dots, so we select carefully)
-    var paragraph = $(document.getElementById(name));
-    if (paragraph.length === 0) {
-        paragraph = $('<p/>', { id: name });
-        $('#accessions').append(paragraph);
-    }
-    paragraph.html(name + "," + threshold + "," + location);
-}
-
-function onDragend(event) {
-    var marker = event.target;
-    var data = { accession: marker.options.accession,
-                 plant: marker.options.plant,
-                 lat: marker.getLatLng().lat,
-                 lng: marker.getLatLng().lng
-               };
-    data.plant_short = data.plant.split(".")[2];
-    socket.emit('move', data);
-}
-
 function toggleLayerCheck(anchor, layerName) {
     var removing = objects_layer[layerName].visible;
     objects_layer[layerName].visible = !removing;
@@ -343,10 +342,6 @@ function toggleLayerCheck(anchor, layerName) {
     }
 }
 
-Object.values = function(obj) {
-    return Object.keys(obj).map(function(key) {return obj[key];});
-};
-
 function zoomToSelection(g, markers) {
     for(var layername in objects_layer) {
         if(layername === g)
@@ -356,47 +351,6 @@ function zoomToSelection(g, markers) {
     var selection = Object.values(objects_container[g])
         .filter(function(x) {return markers.includes(x.name);});
     map.fitBounds(selection.map(function(x) { return [x.lat, x.lon]; }));
-}
-
-// MIT-licensed code by Benjamin Becquet
-// https://github.com/bbecquet/Leaflet.PolylineDecorator
-L.RotatedMarker = L.Marker.extend({
-    options: { angle: 0 },
-    _setPos: function(pos) {
-        L.Marker.prototype._setPos.call(this, pos);
-        if (L.DomUtil.TRANSFORM) {
-            // use the CSS transform rule if available
-            this._icon.style[L.DomUtil.TRANSFORM] += ' rotate(' + this.options.angle + 'deg)';
-        } else if (L.Browser.ie) {
-            // fallback for IE6, IE7, IE8
-            var rad = this.options.angle * L.LatLng.DEG_TO_RAD,
-            costheta = Math.cos(rad),
-            sintheta = Math.sin(rad);
-            this._icon.style.filter += ' progid:DXImageTransform.Microsoft.Matrix(sizingMethod=\'auto expand\', M11=' +
-                costheta + ', M12=' + (-sintheta) + ', M21=' + sintheta + ', M22=' + costheta + ')';
-        }
-    }
-});
-
-L.rotatedMarker = function(pos, options) {
-    return new L.RotatedMarker(pos, options);
-};
-// MIT-licensed code - end
-
-// read a file from the server (asynchronously)
-function getFileFromServer(url, doneCallback) {
-    var xhr;
-
-    xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = handleStateChange;
-    xhr.open("GET", url, true);
-    xhr.send();
-
-    function handleStateChange() {
-        if (xhr.readyState === 4) {
-            doneCallback(xhr.status == 200 ? xhr.responseText : null);
-        }
-    }
 }
 
 // set by zoomstart, examined by zoomend.
@@ -425,16 +379,121 @@ function onZoomend() {
     }
 }
 
-String.prototype.formatU = function() {
-    var str = this.toString();
-    if (!arguments.length)
-        return str;
-    var args = typeof arguments[0];
-    args = (("string" == args || "number" == args) ? arguments : arguments[0]);
-    for (var arg in args)
-        str = str.replace(RegExp("\\{" + arg + "\\}", "gi"), args[arg]);
-    return str;
-};
+
+function toggle_collapse_table_section(tr_elem) {
+    var display;
+    if(/ghini-collapsed-true/.test(tr_elem.className)) {
+        set_alternative(tr_elem, 'ghini-collapsed', 'false');
+        display = 'table-row';
+    } else {
+        set_alternative(tr_elem, 'ghini-collapsed', 'true');
+        display = 'none';
+    }
+    for(var a=tr_elem.nextSibling; a !== null && /garden-row/.test(a.className); a = a.nextSibling) {
+        $(a).css('display', display);
+    }
+    return false;
+}    
+
+function present_item(item) {
+    var result = [];
+    var marker_names;
+    if(active_garden === '') {
+        marker_names = item.gardens.map(function(x){return x.name;});
+    } else {
+        marker_names = [active_garden];
+        if(false)
+            return [];
+    }
+    if(active_garden === '') {
+        var row = $('<tr/>', {class: 'match_item'})
+            .dblclick(function(x) {
+                zoomToSelection('gardens', marker_names);
+                window.getSelection().removeAllRanges();                
+                return false; } )
+            .mouseenter(function(x) {
+                set_alternative(x.currentTarget, 'ghini-highlighted', 'true');
+                markers_setcolor(marker_names, {color: 'orange'}); } )
+            .mouseleave(function(x) {
+                set_alternative(x.currentTarget, 'ghini-highlighted', 'false');
+                markers_setcolor(marker_names, {color: 'red'}); } );
+        row.append($('<td/>', {class: 'binomial', text: item.species_name}));
+        row.append($('<td/>', {class: 'family', text: item.taxon.family}));
+        result.push(row);
+        for(var i in item.gardens) {
+            row = $('<tr/>', {class: 'garden-row'})
+                .dblclick(function(x) {
+                    fireSelectGarden(x.currentTarget.children[0].textContent);
+                    window.getSelection().removeAllRanges();                
+                    return false; } )
+                .mouseenter(function(x) {
+                    set_alternative(x.currentTarget, 'ghini-highlighted', 'true');
+                    markers_setcolor([x.currentTarget.children[0].textContent], {color: 'orange'}); } )
+                .mouseleave(function(x) {
+                    set_alternative(x.currentTarget, 'ghini-highlighted', 'false');
+                    markers_setcolor([x.currentTarget.children[0].textContent], {color: 'red'}); } );
+            row.append($('<td/>', {class: 'garden-name', text: item.gardens[i].name}));
+            row.append($('<td/>', {class: 'plant-count', text: item.gardens[i].plant_count}));
+            result.push(row);
+        }
+    } else {
+        var active_garden_item = item.gardens.filter(function(x){return x.name === active_garden;});
+        if(active_garden_item.length === 0)
+            return [];
+        var active_garden_plants = active_garden_item[0].plants;
+        marker_names = active_garden_plants.map(function(x){return x.code;});
+        row = $('<tr/>', {class: 'match_item'})
+            .mouseenter(function(x) {
+                set_alternative(x.currentTarget, 'ghini-highlighted', 'true');
+                markers_setcolor(marker_names, {color: 'orange'}); } )
+            .mouseleave(function(x) {
+                set_alternative(x.currentTarget, 'ghini-highlighted', 'false');
+                markers_setcolor(marker_names, {color: 'green'}); } )
+            .contextmenu(function(x) { toggle_collapse_table_section(x.currentTarget); return false; });
+        row.append($('<td/>', {class: 'binomial', text: item.species_name}));
+        row.append($('<td/>', {class: 'family', text: item.taxon.family}));
+        result.push(row);
+        for(i in active_garden_plants) {
+            row = $('<tr/>', {class: 'garden-row', plant_id: active_garden_plants[i]._id})
+                .dblclick(function(x) {
+                    center_plant(x.currentTarget);
+                    window.getSelection().removeAllRanges();
+                    return false; } )
+                .mouseenter(function(x) {
+                    set_alternative(x.currentTarget, 'ghini-highlighted', 'true');
+                    markers_setcolor([x.currentTarget.children[0].textContent], {color: 'orange'}); } )
+                .mouseleave(function(x) {
+                    set_alternative(x.currentTarget, 'ghini-highlighted', 'false');
+                    markers_setcolor([x.currentTarget.children[0].textContent], {color: 'green'}); } );
+            row.append($('<td/>', {class: 'garden-name', text: active_garden_plants[i].code}));
+            result.push(row);
+        }
+    }
+    return result;
+}
+
+function center_plant(x) {
+    var plant = objects_container['plants'][x.getAttribute('plant_id')];
+    map.setView([plant.lat, plant.lon], Math.max(plant.layer_zoom, map.getZoom()));
+}
+
+function does_item_match(item, input, field_name) {
+    input = input.replace(/-/g, '.*');
+    var reg = new RegExp('^' + shorten(input), 'i');
+    return item[field_name].match(reg);
+}
+
+function match_species(val) {
+    // when inside of a garden, results are plants, when browsing globally,
+    // results are gardens.
+    var objs = Object.values(objects_container.__taxa);
+    $('#result').empty();
+    if(val.length > 2) {
+        objs = objs.filter(function(x) { return does_item_match(x, val, 'phonetic');});
+        var elements = objs.map(present_item);
+        elements.map(function(x) {$('#result').append(x);});
+    }
+}
 
 
 // to be called at document ready!
@@ -589,20 +648,3 @@ function init() {
     socket.on('map-remove-objects', finalRemoveLayer);
     socket.emit('select-garden', '');
 }
-
-
-/*
-
-icons we could use
-user
-trash
-home
-flag
-tag
-camera
-info-sign
-leaf
-comment
-globe
-
-*/

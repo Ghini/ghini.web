@@ -23,6 +23,21 @@ function markers_setcolor(markers, options) {
     }
 }
 
+function toggle_collapse_table_section(tr_elem) {
+    var display;
+    if(/ghini-collapsed-true/.test(tr_elem.className)) {
+        set_alternative(tr_elem, 'ghini-collapsed', 'false');
+        display = 'table-row';
+    } else {
+        set_alternative(tr_elem, 'ghini-collapsed', 'true');
+        display = 'none';
+    }
+    for(var a=tr_elem.nextSibling; a !== null && /garden-row/.test(a.className); a = a.nextSibling) {
+        $(a).css('display', display);
+    }
+    return false;
+}    
+
 function present_item(item) {
     var result = [];
     var marker_names;
@@ -40,32 +55,28 @@ function present_item(item) {
                 window.getSelection().removeAllRanges();                
                 return false; } )
             .mouseenter(function(x) {
-                $(x.currentTarget).removeClass('ghini-highlighted-false');
-                $(x.currentTarget).addClass('ghini-highlighted-true');
+                set_alternative(x.currentTarget, 'ghini-highlighted', 'true');
                 markers_setcolor(marker_names, {color: 'orange'}); } )
             .mouseleave(function(x) {
-                $(x.currentTarget).removeClass('ghini-highlighted-true');
-                $(x.currentTarget).addClass('ghini-highlighted-false');
+                set_alternative(x.currentTarget, 'ghini-highlighted', 'false');
                 markers_setcolor(marker_names, {color: 'red'}); } );
         row.append($('<td/>', {class: 'binomial', text: item.species_name}));
         row.append($('<td/>', {class: 'family', text: item.taxon.family}));
         result.push(row);
         for(var i in item.gardens) {
-            row = $('<tr/>', {class: 'garden_row'})
+            row = $('<tr/>', {class: 'garden-row'})
                 .dblclick(function(x) {
                     fireSelectGarden(x.currentTarget.children[0].textContent);
                     window.getSelection().removeAllRanges();                
                     return false; } )
                 .mouseenter(function(x) {
-                    $(x.currentTarget).removeClass('ghini-highlighted-false');
-                    $(x.currentTarget).addClass('ghini-highlighted-true');
+                    set_alternative(x.currentTarget, 'ghini-highlighted', 'true');
                     markers_setcolor([x.currentTarget.children[0].textContent], {color: 'orange'}); } )
                 .mouseleave(function(x) {
-                    $(x.currentTarget).removeClass('ghini-highlighted-true');
-                    $(x.currentTarget).addClass('ghini-highlighted-false');
+                    set_alternative(x.currentTarget, 'ghini-highlighted', 'false');
                     markers_setcolor([x.currentTarget.children[0].textContent], {color: 'red'}); } );
-            row.append($('<td/>', {class: 'garden_name', text: item.gardens[i].name}));
-            row.append($('<td/>', {class: 'plant_count', text: item.gardens[i].plant_count}));
+            row.append($('<td/>', {class: 'garden-name', text: item.gardens[i].name}));
+            row.append($('<td/>', {class: 'plant-count', text: item.gardens[i].plant_count}));
             result.push(row);
         }
     } else {
@@ -76,31 +87,28 @@ function present_item(item) {
         marker_names = active_garden_plants.map(function(x){return x.code;});
         row = $('<tr/>', {class: 'match_item'})
             .mouseenter(function(x) {
-                $(x.currentTarget).removeClass('ghini-highlighted-false');
-                $(x.currentTarget).addClass('ghini-highlighted-true');
+                set_alternative(x.currentTarget, 'ghini-highlighted', 'true');
                 markers_setcolor(marker_names, {color: 'orange'}); } )
             .mouseleave(function(x) {
-                $(x.currentTarget).removeClass('ghini-highlighted-true');
-                $(x.currentTarget).addClass('ghini-highlighted-false');
-                markers_setcolor(marker_names, {color: 'green'}); } );
+                set_alternative(x.currentTarget, 'ghini-highlighted', 'false');
+                markers_setcolor(marker_names, {color: 'green'}); } )
+            .contextmenu(function(x) { toggle_collapse_table_section(x.currentTarget); return false; });
         row.append($('<td/>', {class: 'binomial', text: item.species_name}));
         row.append($('<td/>', {class: 'family', text: item.taxon.family}));
         result.push(row);
         for(i in active_garden_plants) {
-            row = $('<tr/>', {class: 'garden_row', plant_id: active_garden_plants[i]._id})
+            row = $('<tr/>', {class: 'garden-row', plant_id: active_garden_plants[i]._id})
                 .dblclick(function(x) {
                     center_plant(x.currentTarget);
                     window.getSelection().removeAllRanges();
                     return false; } )
                 .mouseenter(function(x) {
-                    $(x.currentTarget).removeClass('ghini-highlighted-false');
-                    $(x.currentTarget).addClass('ghini-highlighted-true');
+                    set_alternative(x.currentTarget, 'ghini-highlighted', 'true');
                     markers_setcolor([x.currentTarget.children[0].textContent], {color: 'orange'}); } )
                 .mouseleave(function(x) {
-                    $(x.currentTarget).removeClass('ghini-highlighted-true');
-                    $(x.currentTarget).addClass('ghini-highlighted-false');
+                    set_alternative(x.currentTarget, 'ghini-highlighted', 'false');
                     markers_setcolor([x.currentTarget.children[0].textContent], {color: 'green'}); } );
-            row.append($('<td/>', {class: 'garden_name', text: active_garden_plants[i].code}));
+            row.append($('<td/>', {class: 'garden-name', text: active_garden_plants[i].code}));
             result.push(row);
         }
     }

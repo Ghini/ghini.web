@@ -56,11 +56,11 @@ table#result {
     font-weight: bold;
     background-color: #47f2f2;
 }
-.garden_name {
+.garden-name {
     margin: 2pt;
     padding-left: 5pt;
 }
-.plant_count {
+.plant-count {
     margin: 2pt;
 }
 #loading {

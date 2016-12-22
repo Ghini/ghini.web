@@ -205,6 +205,7 @@ function fireSelectGarden(e) {
         $('li#search-by-accession-tab').css('display', 'block');
         $('li#search-by-tag-tab').css('display', 'block');
     }
+    $('div.tab-content > div.active > input').keyup();
     return false;
 }
 

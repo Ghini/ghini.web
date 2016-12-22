@@ -47,10 +47,13 @@ var active_garden = '';
 // GLOBAL FUNCTIONS
 
 Object.values = function(obj) {
+    // Object.values({key: 'value'}) => ['value']
     return Object.keys(obj).map(function(key) {return obj[key];});
 };
 
 String.prototype.formatU = function() {
+    // "abc.{0}-{1}".formatU([5, 6]) => abc.5-6
+    // "abc.{key}-{key}".formatU({key: 5}) => abc.5-5
     var str = this.toString();
     if (!arguments.length)
         return str;
@@ -116,6 +119,12 @@ function fireHighlightModal() {
     return false;
 }
 
+function showPhotoModal(picture_name) {
+    $('#showPhotoModal').modal('show');
+    $('#showPhotoModal h3').html($(this).attr('title-text'));
+    $('#showPhotoModal img').attr('src', '/img/photos/' + picture_name);
+}
+
 function resetHighlightOptions() {
     $("#highlightOptions").empty();
     while(markers.highlighted.length)
@@ -150,14 +159,6 @@ function computeHighlightOptions(name) {
     }
 }
 
-var lastEvent;
-function fireAddPlant(e) {
-    lastEvent = e;
-    $('#addendum').val("2014.0");
-    $('#addPlantModal').modal('show');
-    return false;
-}
-
 var models = {};
 
 models['gardens'] = {
@@ -183,6 +184,7 @@ models['plants'] = {
 models['photos'] = {
     'text': '<b>{title}</b><br/>{name}<br/>' +
         '<a href="/img/photos/{name}" target="photo"><img width="192" src="/img/photos/thumbs/{name}"/></a>',
+//        '<a href="#" onclick="showPhotoModal(\'{name}\'); return false;"><img width="192" src="/img/photos/thumbs/{name}"/></a>',
     'update_menu': function (item) {}};
 
 models['infopanels'] = {
@@ -362,7 +364,6 @@ function onZoomend() {
         }
     }
 }
-
 
 function toggle_collapse_table_section(tr_elem) {
     var display;
@@ -558,7 +559,6 @@ function init() {
 
 
     // associate callbacks to events
-    //map.on('contextmenu', fireAddPlant);
     map.on('zoomend', onZoomend);
     map.on('zoomstart', onZoomstart);
     $("#keyword").val("");

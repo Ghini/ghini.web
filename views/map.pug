@@ -79,39 +79,6 @@ body
                 table#result-t.table
     #accessions
 
-  #highlightModal.modal.hide.fade(aria-hidden='true', style='display: none;')
-    .modal-header
-      a.close(data-dismiss='modal') ✕
-      h3 highlight a selection
-    .modal-body
-      table(width='100%')
-        tbody
-          tr
-            td(width='30%') what to look for
-            td
-              input#keyword(name='keyword')
-          tr
-            td what to highlight
-            td
-              form#highlightOptions.well(enctype='multipart/form-data')
-    .modal-footer
-      a.btn.btn-primary(href='#', onclick='$(\'#highlightModal\').modal(\'hide\'); doHighlight(); return false;') HighLight!
-
-  #addPlantModal.modal.hide.fade
-    .modal-header
-      button.close(type='button', data-dismiss='modal') ×
-      h3 add a plant at the location
-    .modal-body
-      input(type='hidden')
-      table(width='100%')
-        tbody
-          tr
-            td(width='30%') accession#.plant#
-            td
-              input#addendum(name='keyword', type='text')
-    .modal-footer
-      a#doAddPlant.btn.btn-primary(href='#', onclick='$(\'#addPlantModal\').modal(\'hide\'); doAddPlant(); return false;') OK
-
   #showPhotoModal.modal.hide.fade(tabindex='-1', role='dialog', style='width: 800px;')
     .modal-header
       button.close(type='button', data-dismiss='modal', aria-hidden='true') ×

@@ -120,9 +120,9 @@ function fireHighlightModal() {
 }
 
 function showPhotoModal(picture_name) {
-    $('#showPhotoModal').modal('show');
     $('#showPhotoModal h3').html($(this).attr('title-text'));
     $('#showPhotoModal img').attr('src', '/img/photos/' + picture_name);
+    $('#showPhotoModal').modal('show');
 }
 
 function resetHighlightOptions() {
@@ -367,12 +367,16 @@ function onZoomend() {
     }
 }
 
-function toggle_collapse_table_section(tr_elem) {
+function toggle_collapse_table_section(event) {
+    var tr_elem = event.currentTarget.parentElement.parentElement;
+    var i_elem = event.currentTarget;
     var display;
     if(/ghini-collapsed-true/.test(tr_elem.className)) {
+        set_alternative(i_elem, 'icon', 'chevron-down');
         set_alternative(tr_elem, 'ghini-collapsed', 'false');
         display = 'table-row';
     } else {
+        set_alternative(i_elem, 'icon', 'plus');
         set_alternative(tr_elem, 'ghini-collapsed', 'true');
         display = 'none';
     }
@@ -385,6 +389,7 @@ function toggle_collapse_table_section(tr_elem) {
 function present_item(item) {
     var result = [];
     var marker_names;
+    var row, td;
     if(active_garden === '') {
         marker_names = item.gardens.map(function(x){return x.name;});
     } else {
@@ -393,7 +398,7 @@ function present_item(item) {
             return [];
     }
     if(active_garden === '') {
-        var row = $('<tr/>', {class: 'match_item'})
+        row = $('<tr/>', {class: 'match_item'})
             .dblclick(function(x) {
                 zoomToSelection('gardens', marker_names);
                 window.getSelection().removeAllRanges();                
@@ -435,9 +440,15 @@ function present_item(item) {
                 markers_setcolor(marker_names, {color: 'orange'}); } )
             .mouseleave(function(x) {
                 set_alternative(x.currentTarget, 'ghini-highlighted', 'false');
-                markers_setcolor(marker_names, {color: 'green'}); } )
-            .contextmenu(function(x) { toggle_collapse_table_section(x.currentTarget); return false; });
-        row.append($('<td/>', {class: 'binomial', text: item.species_name}));
+                markers_setcolor(marker_names, {color: 'green'}); } );
+        td = $('<td/>', {class: 'binomial'})
+            .mouseenter(function(x) { set_alternative(x.currentTarget.children[2], 'icon', 'magnet'); })
+            .mouseleave(function(x) { set_alternative(x.currentTarget.children[2], 'icon', 'grass'); });
+        td.append($('<i/>', {class: 'icon-chevron-down', style: 'float: left;'})
+                  .click(function(x) { toggle_collapse_table_section(x); return false; }));
+        td.append($('<div/>', {style: 'float: left; clear: both;', text: item.species_name}));
+        td.append($('<i/>', {class: 'ghini-magnet icon icon-grass'}));
+        row.append(td);
         row.append($('<td/>', {class: 'family', text: item.taxon.family}));
         result.push(row);
         for(i in active_garden_plants) {

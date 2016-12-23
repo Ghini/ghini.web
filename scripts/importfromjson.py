@@ -4,8 +4,8 @@ import pymongo
 client = pymongo.MongoClient('localhost:27017')
 db = client.gardens
 
-garden = u'Tanager'
-filename = '/tmp/tanager.json'
+garden = u'Villa Sofía'
+filename = '/tmp/villasofía.json'
 content = json.load(open(filename))
 
 ## content has taxonomic information plus accessions, plants and plant
@@ -101,7 +101,7 @@ for code, plant in plants.items():
         db.plants.update_one({'code': code, 'garden': garden}, {'$set': plant})
         upserted['plants'][1] += 1
     else:
-        plant['zoom'].setdefault(18)
+        plant.setdefault('zoom', 18)
         db.plants.insert_one(plant)
         upserted['plants'][0] += 1
 

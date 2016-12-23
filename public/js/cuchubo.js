@@ -270,14 +270,14 @@ function finalAddObject(item) {
     markers[item._id] = marker;
     marker.on('mouseover',
               function() {
-                  if($('i.ghini-magnet.icon-magnet').length !== 0)
+                  if($('i.ghini-magnet.icon-thumbs-up').length !== 0)
                       return;
                   marker._icon.id = marker_id;
                   set_alternative('#' + marker_id, 'awesome-marker-icon', 'orange');
               });
     marker.on('mouseout',
               function() {
-                  if($('i.ghini-magnet.icon-magnet').length !== 0)
+                  if($('i.ghini-magnet.icon-thumbs-up').length !== 0)
                       return;
                   set_alternative('#' + marker_id, 'awesome-marker-icon', item.color);
               });
@@ -440,18 +440,18 @@ function present_item(item) {
         marker_names = active_garden_plants.map(function(x){return x.code;});
         row = $('<tr/>', {class: 'match_item'})
             .mouseenter(function(x) {
-                if($('i.ghini-magnet.icon-magnet.ghini-frozen').length !== 0)
+                if($('i.ghini-magnet.icon-thumbs-up.ghini-frozen').length !== 0)
                     return;
                 set_alternative(x.currentTarget, 'ghini-highlighted', 'true');
                 markers_setcolor(marker_names, {color: 'orange'}); } )
             .mouseleave(function(x) {
-                if($('i.ghini-magnet.icon-magnet.ghini-frozen').length !== 0)
+                if($('i.ghini-magnet.icon-thumbs-up.ghini-frozen').length !== 0)
                     return;
                 set_alternative(x.currentTarget, 'ghini-highlighted', 'false');
                 markers_setcolor(marker_names, {color: 'green'}); } );
         td = $('<td/>', {class: 'binomial'})
             .mouseenter(function(x) {
-                if($('i.ghini-magnet.icon-magnet').length === 0)
+                if($('i.ghini-magnet.icon-thumbs-up').length === 0)
                     set_alternative(x.currentTarget.children[2], 'icon', 'magnet');
             })
             .mouseleave(function(x) {
@@ -468,6 +468,11 @@ function present_item(item) {
         td.append($('<i/>', {class: 'ghini-magnet icon-grass'})
                   .click(function(x) {
                       $(x.currentTarget).toggleClass('ghini-frozen');
+                      if($(x.currentTarget).hasClass('ghini-frozen')) {
+                          set_alternative(x.currentTarget, 'icon', 'thumbs-up');
+                      } else {
+                          set_alternative(x.currentTarget, 'icon', 'magnet');
+                      }
                   }));
         row.append(td);
         row.append($('<td/>', {class: 'family', text: item.taxon.family}));
@@ -479,12 +484,12 @@ function present_item(item) {
                     window.getSelection().removeAllRanges();
                     return false; } )
                 .mouseenter(function(x) {
-                    if($('i.ghini-magnet.icon-magnet').length !== 0)
+                    if($('i.ghini-magnet.icon-thumbs-up').length !== 0)
                         return;
                     set_alternative(x.currentTarget, 'ghini-highlighted', 'true');
                     markers_setcolor([x.currentTarget.children[0].textContent], {color: 'orange'}); } )
                 .mouseleave(function(x) {
-                    if($('i.ghini-magnet.icon-magnet').length !== 0)
+                    if($('i.ghini-magnet.icon-thumbs-up').length !== 0)
                         return;
                     set_alternative(x.currentTarget, 'ghini-highlighted', 'false');
                     markers_setcolor([x.currentTarget.children[0].textContent], {color: 'green'}); } );

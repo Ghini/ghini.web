@@ -450,7 +450,7 @@ function present_item(item) {
                 set_alternative(x.currentTarget, 'ghini-highlighted', 'false');
                 markers_setcolor(marker_names, {color: 'green'}); } )
             .click(function(x) {
-                var magnet = $('i.ghini-magnet');
+                var magnet = $('tr.ghini-highlighted-true > td > i.ghini-magnet');
                 magnet.toggleClass('ghini-frozen');
                 if(magnet.hasClass('ghini-frozen')) {
                     set_alternative(magnet, 'icon', 'thumbs-up');

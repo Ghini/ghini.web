@@ -76,6 +76,7 @@ io.sockets.on('connection', function (socket) {
             // We store our find criteria in a cursor.
             // Having a cursor does not mean we performed any database access, yet.
             var cursor = db.collection('gardens').aggregate(
+                {$sort:{name:1}},
                 {$lookup:{from:"plants", foreignField:"garden", localField:"name", as:"plants"}},
                 {$lookup:{from:"photos", foreignField:"garden", localField:"name", as:"photos"}},
                 {$lookup:{from:"infopanels", foreignField:"garden", localField:"name", as:"infopanels"}},
@@ -101,6 +102,7 @@ io.sockets.on('connection', function (socket) {
                 }
             });
             cursor = db.collection('plants').aggregate(
+                {$sort:{code:1}},
                 {$group: {_id: {species:"$species", garden: "$garden"}, count: {$sum: 1}, plants: {$push: {_id: "$_id", code: "$code"}}}},
                 {$group: {_id: {species:"$_id.species"}, gardens: {$push: {name: "$_id.garden", plant_count: "$count", plants: "$plants"}}}},
                 {$lookup: {from:"taxa", localField:"_id.species", foreignField:"name", as:"taxon"}},

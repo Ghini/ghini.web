@@ -106,3 +106,4 @@ for code, plant in plants.items():
         upserted['plants'][0] += 1
 
 print upserted
+print "remember to add the phonetic field"

@@ -105,6 +105,7 @@ io.sockets.on('connection', function (socket) {
                 {$sort:{code:1}},
                 {$group: {_id: {species:"$species", garden: "$garden"}, count: {$sum: 1}, plants: {$push: {_id: "$_id", code: "$code"}}}},
                 {$group: {_id: {species:"$_id.species"}, gardens: {$push: {name: "$_id.garden", plant_count: "$count", plants: "$plants"}}}},
+                {$sort:{_id:1}},
                 {$lookup: {from:"taxa", localField:"_id.species", foreignField:"name", as:"taxon"}},
                 {$unwind: {path: "$taxon"}},
                 {$project: {_id: "$taxon._id",

@@ -1130,3 +1130,6 @@ db.taxa.aggregate({$match:{vernacular:/mirto/}}, {$lookup:{from:"plants", foreig
 // taxa of a specific family, with physical plants
 db.taxa.aggregate({$match:{family:"Rutaceae"}}, {$lookup:{from:"plants", foreignField:"species", localField:"name", as:"plants"}});
 
+// todo...
+db.taxa.updateMany({family:'-'}, {$set:{family:'zzz-unknown'}});
+

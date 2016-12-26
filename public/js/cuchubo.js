@@ -455,12 +455,12 @@ function present_item(item) {
                 if(magnet.hasClass('ghini-frozen')) {
                     set_alternative(magnet, 'icon', 'pushpin');
                 } else {
-                    set_alternative(magnet, 'icon', 'magnet');
+                    set_alternative(magnet, 'icon', 'pushme');
                 } });
         td = $('<td/>', {class: 'binomial'})
             .mouseenter(function(x) {
                 if($('i.ghini-magnet.icon-pushpin').length === 0)
-                    set_alternative(x.currentTarget.children[2], 'icon', 'magnet');
+                    set_alternative(x.currentTarget.children[2], 'icon', 'pushme');
             })
             .mouseleave(function(x) {
                 var magnet = x.currentTarget.children[2];
@@ -523,15 +523,16 @@ function match_species(val) {
     }
 }
 
-L.Control.Search = L.Control.extend({
+L.Control.SearchButton = L.Control.extend({
     onAdd: function (map) {
         var status = 0;
         var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
-        $(container).append($('<a/>').append($('<i/>').addClass('icon icon-search')));
+        $(container).append($('<a/>').append($('<i/>').addClass('icon icon-search'))
+                            .css('height', '32px'));
             
         container.style.backgroundColor = 'white';
         container.style.width = '26px';
-        container.style.height = '26px';
+        container.style.height = '32px';
  
         container.onclick = function(){
             if(status === 0) {
@@ -550,8 +551,8 @@ L.Control.Search = L.Control.extend({
     }
 });
 
-L.control.search = function(opts) {
-    return new L.Control.Search(opts);
+L.control.searchbutton = function(opts) {
+    return new L.Control.SearchButton(opts);
 };
 
 // to be called at document ready!
@@ -587,7 +588,7 @@ function init() {
     // add the zoom control
     L.control.zoom({ position: 'topright' }).addTo(map);
     // add our own control, for managing the search tool
-    L.control.search({ position: 'topright' }).addTo(map);
+    L.control.searchbutton({ position: 'topright' }).addTo(map);
 
     // some tiles servers:
     // -------------------------

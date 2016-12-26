@@ -523,6 +523,36 @@ function match_species(val) {
     }
 }
 
+L.Control.Search = L.Control.extend({
+    onAdd: function (map) {
+        var status = 0;
+        var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
+        $(container).append($('<a/>').append($('<i/>').addClass('icon icon-search')));
+            
+        container.style.backgroundColor = 'white';
+        container.style.width = '26px';
+        container.style.height = '26px';
+ 
+        container.onclick = function(){
+            if(status === 0) {
+                $('#map').css('width', '80%');
+                status = 1;
+            } else {
+                $('#map').css('width', '100%');
+                status = 0;
+            }
+        };
+        return container;
+    },
+
+    onRemove: function(map) {
+        // Nothing to do here
+    }
+});
+
+L.control.search = function(opts) {
+    return new L.Control.Search(opts);
+};
 
 // to be called at document ready!
 function init() {
@@ -556,19 +586,8 @@ function init() {
     L.control.scale({ position: 'bottomleft' }).addTo(map);
     // add the zoom control
     L.control.zoom({ position: 'topright' }).addTo(map);
-    var status = 0;
-    L.easyButton('icon-search', function(){
-        if(status === 0) {
-            $('#map').css('width', '80%');
-            status = 1;
-        } else {
-            $('#map').css('width', '100%');
-            status = 0;
-        }
-    }).setPosition('topright').addTo(map);
-
     // add our own control, for managing the search tool
-    //L.control.watermark({ position: 'topright' }).addTo(map);
+    L.control.search({ position: 'topright' }).addTo(map);
 
     // some tiles servers:
     // -------------------------

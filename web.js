@@ -104,15 +104,17 @@ io.sockets.on('connection', function (socket) {
             cursor = db.collection('plants').aggregate(
                 {$sort:{code:1}},
                 {$group: {_id: {species:"$species", garden: "$garden"}, count: {$sum: 1}, plants: {$push: {_id: "$_id", code: "$code"}}}},
-                {$group: {_id: {species:"$_id.species"}, gardens: {$push: {name: "$_id.garden", plant_count: "$count", plants: "$plants"}}}},
-                {$sort:{_id:1}},
+                {$group: {_id: {species:"$_id.species"},
+                          gardens: {$push: {name: "$_id.garden", plant_count: "$count", plants: "$plants"}}}},
                 {$lookup: {from:"taxa", localField:"_id.species", foreignField:"name", as:"taxon"}},
                 {$unwind: {path: "$taxon"}},
                 {$project: {_id: "$taxon._id",
                             phonetic: "$taxon.phonetic",
-                            species_name: "$_id.species",
+                            species_name: "$taxon.name",
+                            family_name: "$taxon.family",
                             gardens: 1, taxon: 1,
                             layer_name: {$literal: "__taxa"}}},
+                {$sort:{family_name:1, species_name:1}},
                 {});
             // Lets iterate on the result.
             // this will access the database, so we act in a callback.

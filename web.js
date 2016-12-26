@@ -168,7 +168,7 @@ io.sockets.on('connection', function (socket) {
                                 family: "$taxon.family",
                                 draggable: {$literal: false},
                                 color: {$literal: "green"},
-                                icon: {$literal: "tree-deciduous"}}},
+                                icon: {$literal: "tree-evergreen"}}},
                     {}
                 );
                 // Lets iterate on the result.

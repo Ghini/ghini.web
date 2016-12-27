@@ -179,6 +179,19 @@ io.sockets.on('connection', function (socket) {
                     if (err || !doc) {
                         console.log("err:", err, "; doc:", doc);
                     } else {
+                        switch(doc.family){
+                        case 'Arecaceae':
+                            doc.icon = 'palm-tree';
+                            break;
+                        case 'Musaceae':
+                            doc.icon = 'banana-tree';
+                            break;
+                        case 'Cupressaceae':
+                        case 'Pinaceae':
+                        case 'Podocarpaceae':
+                            doc.icon = 'tree-conifer';
+                            break;
+                        } 
                         console.log(doc);
                         socket.emit('add-object', doc);
                     }

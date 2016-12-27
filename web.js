@@ -16,6 +16,9 @@
 //
 // this is the remote server
 
+var http = require('http');
+http.globalAgent.maxSockets = 10;
+
 var config = require('./config');
 var express = require("express");
 var app = express();
@@ -126,7 +129,6 @@ io.sockets.on('connection', function (socket) {
                     socket.emit('add-object', doc);
                 }
             });
-            db.close();
         }});
 
     socket.on('select-garden', function (name) {
@@ -237,7 +239,6 @@ io.sockets.on('connection', function (socket) {
                     }
                 });
 
-                db.close();
             }});
     });
     

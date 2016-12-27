@@ -1133,3 +1133,4 @@ db.taxa.aggregate({$match:{family:"Rutaceae"}}, {$lookup:{from:"plants", foreign
 // todo...
 db.taxa.updateMany({family:'-'}, {$set:{family:'zzz-unknown'}});
 
+DBQuery.shellBatchSize = 300

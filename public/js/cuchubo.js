@@ -551,7 +551,7 @@ L.Control.SearchButton = L.Control.extend({
     }
 });
 
-L.control.searchbutton = function(opts) {
+L.control.searchButton = function(opts) {
     return new L.Control.SearchButton(opts);
 };
 
@@ -588,7 +588,7 @@ function init() {
     // add the zoom control
     L.control.zoom({ position: 'topright' }).addTo(map);
     // add our own control, for managing the search tool
-    L.control.searchbutton({ position: 'topright' }).addTo(map);
+    L.control.searchButton({ position: 'topright' }).addTo(map);
 
     // some tiles servers:
     // -------------------------

@@ -100,7 +100,6 @@ io.sockets.on('connection', function (socket) {
                 if (err || !doc) {
                     console.log("err:", err, "; doc:", doc);
                 } else {
-                    console.log(doc);
                     socket.emit('add-object', doc);
                 }
             });
@@ -125,7 +124,6 @@ io.sockets.on('connection', function (socket) {
                 if (err || !doc) {
                     console.log("err:", err, "; doc:", doc);
                 } else {
-                    console.log(doc);
                     socket.emit('add-object', doc);
                 }
             });
@@ -150,7 +148,6 @@ io.sockets.on('connection', function (socket) {
                     if (err || !doc) {
                         console.log("err:", err, "; doc:", doc);
                     } else {
-                        console.log(doc);
                         socket.emit('map-set-view', doc);
                     }
                 });
@@ -194,7 +191,6 @@ io.sockets.on('connection', function (socket) {
                             doc.icon = 'tree-conifer';
                             break;
                         } 
-                        console.log(doc);
                         socket.emit('add-object', doc);
                     }
                 });
@@ -214,7 +210,6 @@ io.sockets.on('connection', function (socket) {
                     if (err || !doc) {
                         console.log("err:", err, "; doc:", doc);
                     } else {
-                        console.log(doc);
                         socket.emit('add-object', doc);
                     }
                 });
@@ -234,7 +229,6 @@ io.sockets.on('connection', function (socket) {
                     if (err || !doc) {
                         console.log("err:", err, "; doc:", doc);
                     } else {
-                        console.log(doc);
                         socket.emit('add-object', doc);
                     }
                 });

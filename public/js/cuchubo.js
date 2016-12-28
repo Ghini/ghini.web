@@ -528,10 +528,10 @@ L.Control.SearchButton = L.Control.extend({
         var status = 0;
         var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
         $(container).append($('<a/>').append($('<i/>').addClass('icon icon-search'))
-                            .css('height', '32px'));
+                            .css('height', '30px').css('width', 'inherit'));
             
         container.style.backgroundColor = 'white';
-        container.style.width = '26px';
+        container.style.width = $('.leaflet-control-zoom-out').css('width');
         container.style.height = '32px';
  
         container.onclick = function(){

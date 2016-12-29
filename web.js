@@ -185,10 +185,74 @@ io.sockets.on('connection', function (socket) {
                         case 'Musaceae':
                             doc.icon = 'banana-tree';
                             break;
+                        case 'Araucariaceae':
                         case 'Cupressaceae':
+                        case 'Cycadaceae':
+                        case 'Ephedraceae':
+                        case 'Ginkgoaceae':
+                        case 'Gnetaceae':
                         case 'Pinaceae':
                         case 'Podocarpaceae':
+                        case 'Sciadopityaceae':
+                        case 'Taxaceae':
+                        case 'Welwitschiaceae':
+                        case 'Zamiaceae ':
                             doc.icon = 'tree-conifer';
+                            break;
+                        case 'Anemiaceae':
+                        case 'Apleniaceae':
+                        case 'Aspleniaceae':
+                        case 'Athyriaceae':
+                        case 'Blechnaceae':
+                        case 'Cibotiaceae':
+                        case 'Culcitaceae':
+                        case 'Cyatheaceae':
+                        case 'Cystodiaceae':
+                        case 'Cystopteridaceae':
+                        case 'Davalliaceae':
+                        case 'Dennstaedtiaceae':
+                        case 'Dicksoniaceae':
+                        case 'Diplaziopsidaceae':
+                        case 'Dipteridaceae':
+                        case 'Dryopteridacae':
+                        case 'Dryopteridaceae':
+                        case 'Equisetaceae':
+                        case 'Gleicheniaceae':
+                        case 'Hymenophyllaceae':
+                        case 'Hypodematiaceae':
+                        case 'Isoëtaceae':
+                        case 'Lindsaeaceae':
+                        case 'Lomariopsidaceae':
+                        case 'Lonchitidaceae':
+                        case 'Loxsomataceae':
+                        case 'Lycopodiaceae':
+                        case 'Lygodiaceae':
+                        case 'Marattiaceae':
+                        case 'Marsileaceae':
+                        case 'Matoniaceae':
+                        case 'Metaxyaceae':
+                        case 'Nephrolepidaceae':
+                        case 'Oleandraceae':
+                        case 'Onocleaceae':
+                        case 'Ophioglossaceae':
+                        case 'Osmundaceae':
+                        case 'Plagiogyriaceae':
+                        case 'Polypodiaceae':
+                        case 'Psilotaceae':
+                        case 'Pteridaceae':
+                        case 'Rhachidosoraceae':
+                        case 'Saccolomataceae':
+                        case 'Salviniaceae':
+                        case 'Schizaeaceae':
+                        case 'Selaginellaceae':
+                        case 'Tectariaceae':
+                        case 'Thelypteridaceae':
+                        case 'Thyrsopteridaceae':
+                        case 'Woodsiaceae':
+                            // doc.icon = 'fern'; // there is no such icon yet
+                            break;
+                        case 'Asteraceae':
+                            doc.icon = 'compositae';
                             break;
                         } 
                         socket.emit('add-object', doc);

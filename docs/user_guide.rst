@@ -12,7 +12,7 @@ and an anticipation of the intended result, and it describes the limitations
 of the approach taken.
 
 The Articles
-===================
+------------------
 
 .. toctree::
    :maxdepth: 1

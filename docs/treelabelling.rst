@@ -1,4 +1,4 @@
-Statement
+physical tags and labels
 -------------------------------------------------------------
 
 You know what is an accession number, and you want to clearly associate each

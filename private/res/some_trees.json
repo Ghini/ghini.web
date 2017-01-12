@@ -643,11 +643,11 @@ db.gardens.insert([
     {name: "parque centenario", lat:  10.422582, lon: -75.5472843},
     {name: "Tanager", contact: "Loes Roos", email: "tanagertourism@gmail.com", phone: "+50766760220", lat: 7.59203, lon: -80.96175},
     {name: "Jardin Botanique des Cayes", contact: "William Cinea", phone: "+50943092809", lat:  18.2348, lon: -73.75561},
-    {name: "Jardín Botánico de Medellín", lat:  6.27057, lon: -75.56380},
+    {name: "Jardín Botánico de Medellín", lat:  6.27057, lon: -75.56380}, // bounding box: 6.27289,-75.56530,-75.56186,6.26819
     {name: "Jardín Botánico Ambiental", lat:  12.43411, lon: -86.91369},
     {name: "Jardín Botánico de Quito", contact: "Felipe Andrade", lat: -0.1862, lon: -78.4851},
     {name: "Den Helder Oranjerie", lat: 52.9578, lon: 4.7545, zoom: 19},
-    {name: "The Robert & Catherine Wilson BG", lat:  8.785, lon: -82.959},
+    {name: "The Robert & Catherine Wilson BG", lat:  8.785, lon: -82.959}, // bounding box: 8.8017,-82.9800,-82.9553,8.7788
     {name: "Mackay Regional BG", lat: -21.1585, lon: 149.1571, zoom: 16},
     {name: "Foldyard Cottage Mediterranean and Herb Garden", lat: 53.9431, lon: -0.8075},
     {name: "Belize Botanical Gardens", lat: 17.0885, lon: -89.0683},

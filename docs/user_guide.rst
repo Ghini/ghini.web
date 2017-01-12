@@ -17,12 +17,12 @@ The Articles
 .. toctree::
    :maxdepth: 1
 
-   structure a botanical database
-   what is this Accession thing
-   tree labelling
-   mapping your garden
-   putting your trees in the map
-   what do botanists do when they examine an area
-   information gathering as a one-day group activity
-   useful mapping hardware 
-   useful mapping software
+   structureofabotanicdatabase
+   whatisthisaccessionthing
+   treelabelling
+   mappingyourgarden
+   puttingyourtreesinthemap
+   whatdobotanistsdowhentheyexamineanarea
+   informationgatheringasaone-daygroupactivity
+   usefulmappinghardware 
+   usefulmappingsoftware

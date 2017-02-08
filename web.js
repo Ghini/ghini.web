@@ -53,7 +53,7 @@ app.get("/", function(req, res){
     console.log(dburl);
 });
 
-// make the application listen to the port 
+// make the application listen to the port
 // we pass the ExpressJS server to Socket.io. In effect, our real time
 // communication will still happen on the same port.
 var io = require('socket.io').listen(app.listen(port, function() {
@@ -129,13 +129,24 @@ io.sockets.on('connection', function (socket) {
             });
         }});
 
-    socket.on('select-garden', function (name) {
+    socket.on('select-garden', function (args) {
         // wipe all data which is relative to the current garden
         socket.emit('map-remove-objects', 'plants');
         socket.emit('map-remove-objects', 'photos');
         socket.emit('map-remove-objects', 'infopanels');
-        if (name === '') {
-            socket.emit('map-set-view', {zoom:2, lat:32.0, lon:8.0});
+        var defaults = {
+            zoom: 2,
+            lat: 32.0,
+            lon: 8.0
+        };
+        if ('map' in args) {
+            Object.assign(args, args.map);
+        } else {
+            Object.assign(args, defaults);
+        }
+        if (!('garden' in args)) {
+            console.log(args);
+            socket.emit('map-set-view', args);
             return;
         }
         dbclient.connect(dburl, function (err, db) {
@@ -144,10 +155,16 @@ io.sockets.on('connection', function (socket) {
             } else {
                 // first of all, tell the client to set the view on the
                 // garden; the garden document contains lat, lon, and zoom.
-                var cursor = db.collection('gardens').findOne({name:name}, function(err, doc) {
+                var cursor = db.collection('gardens').findOne({name:args['garden']}, function(err, doc) {
                     if (err || !doc) {
-                        console.log("err:", err, "; doc:", doc);
+                        console.log("err:", err, "; doc:", doc, "garden not found", args);
+                        console.log('map-set-view', args);
+                        socket.emit('map-set-view', args);
                     } else {
+                        if ('map' in args) {
+                            Object.assign(doc, args.map);
+                        }
+                        console.log('map-set-view', doc);
                         socket.emit('map-set-view', doc);
                     }
                 });
@@ -156,7 +173,7 @@ io.sockets.on('connection', function (socket) {
                 // We store our find criteria in a cursor.
                 // Having a cursor does not mean we performed any database access, yet.
                 cursor = db.collection('plants').aggregate(
-                    {$match:{garden:name}},
+                    {$match:{garden:args['garden']}},
                     {$lookup:{from:"taxa", localField:"species", foreignField:"name", as:"taxon"}},
                     {$unwind: {path: "$taxon"}},
                     {$project: {layer_name: {$literal: "plants"},
@@ -254,14 +271,14 @@ io.sockets.on('connection', function (socket) {
                         case 'Asteraceae':
                             doc.icon = 'compositae';
                             break;
-                        } 
+                        }
                         socket.emit('add-object', doc);
                     }
                 });
 
                 // same for the photos
                 cursor = db.collection('photos').aggregate(
-                    {$match:{garden:name}},
+                    {$match:{garden:args['garden']}},
                     {$project: {layer_name: {$literal: "photos"},
                                 layer_zoom: "$zoom",
                                 lat: 1, lon: 1, title: 1, name: 1,
@@ -280,7 +297,7 @@ io.sockets.on('connection', function (socket) {
 
                 // same for the infopanels
                 cursor = db.collection('infopanels').aggregate(
-                    {$match:{garden:name}},
+                    {$match:{garden:args['garden']}},
                     {$project: {layer_name: {$literal: "infopanels"},
                                 layer_zoom: "$zoom",
                                 lat: 1, lon: 1, title: 1, text: 1,
@@ -299,6 +316,5 @@ io.sockets.on('connection', function (socket) {
 
             }});
     });
-    
-});
 
+});

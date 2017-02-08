@@ -59,8 +59,13 @@ String.prototype.formatU = function() {
         return str;
     var args = typeof arguments[0];
     args = (("string" == args || "number" == args) ? arguments : arguments[0]);
-    for (var arg in args)
-        str = str.replace(RegExp("\\{" + arg + "\\}", "gi"), args[arg]);
+    for (var arg in args) {
+        var value = args[arg];
+        if (typeof(value) === 'number') {
+            value = value.toFixed(6).replace(/\.?0*$/, '');
+        }
+        str = str.replace(RegExp("\\{" + arg + "\\}", "gi"), value);
+    }
     return str;
 };
 
@@ -79,7 +84,7 @@ function zip(arrays) {
     return arrays[0].map(function(_,i){
         return arrays.map(function(array) { return array[i]; } );
     });
-}      
+}
 
 function set_alternative(selector, lead, trail) {
     $(selector).removeClass(function (index, css) {
@@ -197,7 +202,7 @@ models['__taxa'] = {
 
 function fireSelectGarden(e) {
     map.closePopup();
-    socket.emit('select-garden', e);
+    socket.emit('select-garden', {'garden': e});
     active_garden = e;
     if(active_garden === ''){
         $('li#search-by-accession-tab').css('display', 'none');
@@ -345,16 +350,31 @@ function zoomToSelection(g, markers) {
     map.fitBounds(selection.map(function(x) { return [x.lat, x.lon]; }));
 }
 
+function updateLocationHash() {
+    var centre = map.getCenter();
+    var tail = '';
+    centre.zoom = map.getZoom();
+    if (active_garden !== '') {
+        tail = ';garden=' + active_garden;
+    }
+    window.location.hash = '#map={zoom}/{lat}/{lng}'.formatU(centre) + tail;
+}
+
 // set by zoomstart, examined by zoomend.
 var previous_zoom = 0;
 
-function onZoomstart() {
+function onZoomStart() {
     // remember the previous zoom, so you know whether you're zooming
     // in, or out.
     previous_zoom = map.getZoom();
 }
 
-function onZoomend() {
+function onMoveEnd() {
+    updateLocationHash();
+}
+
+function onZoomEnd() {
+    updateLocationHash();
     var l = {};
     for(var g in objects_layer) {
         if (previous_zoom > map.getZoom()) {
@@ -388,7 +408,7 @@ function toggle_collapse_table_section(event) {
         $(a).css('display', display);
     }
     return false;
-}    
+}
 
 function present_item(item) {
     var result = [];
@@ -405,7 +425,7 @@ function present_item(item) {
         row = $('<tr/>', {class: 'match_item'})
             .dblclick(function(x) {
                 zoomToSelection('gardens', marker_names);
-                window.getSelection().removeAllRanges();                
+                window.getSelection().removeAllRanges();
                 return false; } )
             .mouseenter(function(x) {
                 set_alternative(x.currentTarget, 'ghini-highlighted', 'true');
@@ -420,7 +440,7 @@ function present_item(item) {
             row = $('<tr/>', {class: 'garden-row'})
                 .dblclick(function(x) {
                     fireSelectGarden(x.currentTarget.children[0].textContent);
-                    window.getSelection().removeAllRanges();                
+                    window.getSelection().removeAllRanges();
                     return false; } )
                 .mouseenter(function(x) {
                     set_alternative(x.currentTarget, 'ghini-highlighted', 'true');
@@ -500,6 +520,42 @@ function present_item(item) {
     return result;
 }
 
+function parse_hash(s) {
+    var result = {};
+    var tests = [
+        function(s) {
+            var test = /^(garden)=([-a-zA-Z \'\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*)$/;
+            var match = test.exec(decodeURIComponent(s));
+            if(match) {
+                return [match[1], decodeURIComponent(match[2])];
+            }
+            return false;
+        },
+        function(s) {
+            var test = /^(map)=([1-9][0-9]*)\/(-?[0-9]*(?:\.[0-9]*)?)\/(-?[0-9]*(?:\.[0-9]*)?)$/;
+            var match = test.exec(s);
+            if(match) {
+                return [match[1], {zoom: Number(match[2]),
+                                   lat: Number(match[3]),
+                                   lon: Number(match[4])}];
+            }
+            return false;
+        }];
+    if (s.startsWith('#')) {
+        var parts = s.slice(1).split(';');
+        for(var hh in parts) {
+            var hash_part = parts[hh];
+            for(var i in tests) {
+                var match = tests[i](hash_part);
+                if(match) {
+                    result[match[0]] = match[1];
+                }
+            }
+        }
+    }
+    return result;
+}
+
 function center_plant(x) {
     var plant = objects_container['plants'][x.getAttribute('plant_id')];
     map.setView([plant.lat, plant.lon], Math.max(plant.layer_zoom, map.getZoom()));
@@ -529,11 +585,11 @@ L.Control.SearchButton = L.Control.extend({
         var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
         $(container).append($('<a/>').append($('<i/>').addClass('icon icon-search'))
                             .css('height', '30px').css('width', 'inherit'));
-            
+
         container.style.backgroundColor = 'white';
         container.style.width = $('.leaflet-control-zoom-out').css('width');
         container.style.height = '32px';
- 
+
         container.onclick = function(){
             if(status === 0) {
                 $('#map').css('width', '80%');
@@ -554,6 +610,20 @@ L.Control.SearchButton = L.Control.extend({
 L.control.searchButton = function(opts) {
     return new L.Control.SearchButton(opts);
 };
+
+function mapSetView(lat, lon, zoom) {
+    map.setView([lat, lon], zoom);
+    updateLocationHash();
+    for (var g in objects_layer) {
+        for(var z in objects_layer[g]) {
+            if(z <= zoom) {
+                map.addLayer(objects_layer[g][z]);
+            } else {
+                map.removeLayer(objects_layer[g][z]);
+            }
+        }
+    }
+}
 
 // to be called at document ready!
 function init() {
@@ -620,10 +690,20 @@ function init() {
           maxZoom: 22
         }).addTo(map);
 
+    // handling the hash tail in the URL, initially and changes to it.
+    var hash_parts = {};
+    if(window.location.hash) {
+        hash_parts = parse_hash(window.location.hash);
+        console.log(hash_parts);
+    }
+    window.onhashchange = function() {
+        // doYourStuff();
+    };
 
     // associate callbacks to events
-    map.on('zoomend', onZoomend);
-    map.on('zoomstart', onZoomstart);
+    map.on('moveend', onMoveEnd);
+    map.on('zoomend', onZoomEnd);
+    map.on('zoomstart', onZoomStart);
     $("#keyword").val("");
     $("#keyword").on('change', function(e){computeHighlightOptions($("#keyword").val());});
     $("#addendum").on('change', function(e) {return false;});
@@ -676,17 +756,11 @@ function init() {
 
     socket.on('add-object', finalAddObject);
     socket.on('map-set-view', function(doc) {
-        map.setView([doc.lat, doc.lon], doc.zoom);
-        for (var g in objects_layer) {
-            for(var z in objects_layer[g]) {
-                if(z <= doc.zoom) {
-                    map.addLayer(objects_layer[g][z]);
-                } else {
-                    map.removeLayer(objects_layer[g][z]);
-                }
-            }
+        if('name' in doc) {
+            active_garden = doc.name;
         }
+        mapSetView(doc.lat, doc.lon, doc.zoom);
     });
     socket.on('map-remove-objects', finalRemoveLayer);
-    socket.emit('select-garden', '');
+    socket.emit('select-garden', hash_parts);
 }

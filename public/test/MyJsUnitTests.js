@@ -56,3 +56,17 @@ QUnit.test('shorten', function(assert) {
     assert.deepEqual(shorten('Cocos nocifera'), 'kokos nokifira');
     assert.deepEqual(shorten('Coccos nocifera'), 'kokos nokifira');
 });
+
+
+QUnit.test('set_alternative', function(assert) {
+    var fix = $('#qunit-fixture');
+    fix.append($('<i/>', { id: 'test', class: 'icon-black' }));
+    assert.ok($('i#test').hasClass('icon-black'));
+    assert.notOk($('i#test').hasClass('icon-orange'));
+    set_alternative('i#test', 'icon', 'orange');
+    assert.ok($('i#test').hasClass('icon-orange'));
+    assert.notOk($('i#test').hasClass('icon-black'));
+    set_alternative('i#test', 'icon', 'red');
+    assert.ok($('i#test').hasClass('icon-red'));
+    assert.notOk($('i#test').hasClass('icon-orange'));
+});

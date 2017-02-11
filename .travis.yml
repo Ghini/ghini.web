@@ -1,10 +1,15 @@
- language: node_js
- node_js: "0.10"
+language: node_js
+
+node_js: "0.10"
 
 before_install:
     - npm install grunt
+    - npm install grunt-cli
     - npm install grunt-contrib-qunit
 
 install:
     # nope possibly useless
     - echo taking no action for 'install'
+
+script:
+    - npm test

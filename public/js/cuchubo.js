@@ -541,7 +541,7 @@ function parse_hash(s) {
             }
             return false;
         }];
-    if (s.startsWith('#')) {
+    if (s[0] === '#') {
         var parts = s.slice(1).split(';');
         for(var hh in parts) {
             var hash_part = parts[hh];

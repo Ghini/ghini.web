@@ -12,15 +12,15 @@ QUnit.test('String.formatU', function (assert) {
 });
 
 QUnit.test('String.formatU-decimal_number', function (assert) {
-    assert.equal("abc.{0}-{1}".formatU([5.1, 6]), 'abc.5.1-6', 'one decimal');
-    assert.equal("abc.{0}-{1}".formatU([5.11, 6]), 'abc.5.11-6', '2 decimals');
-    assert.equal("abc.{0}-{1}".formatU([5.111, 6]), 'abc.5.111-6', '3 decimals');
-    assert.equal("abc.{0}-{1}".formatU([5.1111, 6]), 'abc.5.1111-6', '4 decimals');
-    assert.equal("abc.{0}-{1}".formatU([5.11111, 6]), 'abc.5.11111-6', '5 decimals');
-    assert.equal("abc.{0}-{1}".formatU([5.111111, 6]), 'abc.5.111111-6', '6 decimals');
-    assert.equal("abc.{0}-{1}".formatU([5.1111111, 6]), 'abc.5.111111-6', '7 decimals - trimmed');
-    assert.equal("abc.{0}-{1}".formatU([0.000006, 6]), 'abc.0.000006-6', '6 decimals - ok');
-    assert.equal("abc.{0}-{1}".formatU([0.0000066, 6]), 'abc.0.000007-6', '7 decimals - rounded');
+    assert.equal("abc.{0}".formatU([5.1]), 'abc.5.1', 'one decimal');
+    assert.equal("abc.{0}".formatU([5.11]), 'abc.5.11', '2 decimals');
+    assert.equal("abc.{0}".formatU([5.111]), 'abc.5.111', '3 decimals');
+    assert.equal("abc.{0}".formatU([5.1111]), 'abc.5.1111', '4 decimals');
+    assert.equal("abc.{0}".formatU([5.11111]), 'abc.5.11111', '5 decimals');
+    assert.equal("abc.{0}".formatU([5.111111]), 'abc.5.111111', '6 decimals');
+    assert.equal("abc.{0}".formatU([5.1111111]), 'abc.5.111111', '7 decimals - trimmed');
+    assert.equal("abc.{0}".formatU([0.000006]), 'abc.0.000006', '6 decimals - ok');
+    assert.equal("abc.{0}".formatU([0.0000066]), 'abc.0.000007', '7 decimals - rounded');
 });
 
 QUnit.test('parse_hash-garden', function(assert) {

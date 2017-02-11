@@ -43,3 +43,16 @@ QUnit.test('parse_hash-ignore', function(assert) {
     assert.deepEqual(parse_hash('#maps=1/2/3'), {});
     assert.deepEqual(parse_hash('#mapu=1/2.1/3.2'), {});
 });
+
+QUnit.test('shorten', function(assert) {
+    assert.deepEqual(shorten(''), '');
+    assert.deepEqual(shorten('Cnidoscolus'), 'knidoskolos');
+    assert.deepEqual(shorten('Cnidoscolos'), 'knidoskolos');
+    assert.deepEqual(shorten('Cnedoscolos'), 'knidoskolos');
+    assert.deepEqual(shorten('Theobroma'), 'tiobroma');
+    assert.deepEqual(shorten('Chamomilla'), 'kamomila');
+    assert.deepEqual(shorten('Chamomila'), 'kamomila');
+    assert.deepEqual(shorten('Cocos nucifera'), 'kokos nokifira');
+    assert.deepEqual(shorten('Cocos nocifera'), 'kokos nokifira');
+    assert.deepEqual(shorten('Coccos nocifera'), 'kokos nokifira');
+});

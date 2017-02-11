@@ -94,10 +94,17 @@ function set_alternative(selector, lead, trail) {
 }
 
 function shorten(x) {
-    return x.toLowerCase().replace(/-/, '').replace(/ph/g, 'f')
-        .replace(/h/g, '').replace(/[cq]/g, 'k').replace(/z/g, 's')
-        .replace(/ae/g, 'e').replace(/[ye]/g, 'i').replace(/u/g, 'o')
-        .replace(/(.)\1/g, '$1');
+    x = x.toLowerCase();  // ignore case
+    x = x.replace(/-/, '');  // remove hyphen
+    x = x.replace(/ph/g, 'f');  // ph sounds like f
+    x = x.replace(/h/g, '');  // h sounds like nothing
+    x = x.replace(/[cq]/g, 'k');  // c and q sound like k
+    x = x.replace(/z/g, 's');  // z sounds like s
+    x = x.replace(/ae/g, 'e');  // ae sounds like e
+    x = x.replace(/[ye]/g, 'i');  // y and e sound like i
+    x = x.replace(/u/g, 'o');  // u sounds like o
+    x = x.replace(/(.)\1/g, '$1');  // doubled letters sound like single
+    return x;
 };
 
 function markers_setcolor(markers, options) {

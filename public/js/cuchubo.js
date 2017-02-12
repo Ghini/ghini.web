@@ -88,7 +88,9 @@ function zip(arrays) {
 
 function set_alternative(selector, lead, trail) {
     $(selector).removeClass(function (index, css) {
-        return (css.split(' ').filter(function(x) { return x.startsWith(lead); }).join(' '));
+        return (css.split(' ').filter(function(x) {
+            return x.toString().match("^" + lead);
+        }).join(' '));
     });
     $(selector).addClass(lead + '-' + trail);
 }

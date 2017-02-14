@@ -101,3 +101,4 @@ public/js/autocomplete.html
 docs/_build
 .coveralls.yml
 report/
+public/js/*.tmp.js

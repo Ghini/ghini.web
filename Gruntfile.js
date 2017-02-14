@@ -1,43 +1,88 @@
-module.exports = function(grunt) {
-    // Project configuration.
-    grunt.initConfig({
-        qunit: {
-            files: ['public/test/test.html'],
-            options: {
-                '--web-security': 'no',
-                coverage: {
-                    disposeCollector: true,
-                    src: ['public/js/cuchubo.js'],
-                    instrumentedFiles: 'temp/',
-                    htmlReport: 'report/coverage/',
-                    lcovReport: "report/lcov",
-                    coberturaReport: 'report/'
-                }
-            },
-        },
-        coveralls: {
-            // Options relevant to all targets 
-            options: {
-                // When true, grunt-coveralls will only print a warning rather than 
-                // an error, to prevent CI builds from failing unnecessarily (e.g. if 
-                // coveralls.io is down). Optional, defaults to false. 
-                force: false
-            },
-    
-            ghini_web: {
-                // LCOV coverage file (can be string, glob or array) 
-                src: 'report/lcov/lcov.info',
-                options: {
-                    // Any options for just this target 
-                }
-            },
-        },
-    });
+var path = require("path");
 
-    // Load plugins
-    grunt.loadNpmTasks('grunt-contrib-qunit');
-    grunt.loadNpmTasks('grunt-qunit-istanbul');
+module.exports = function(grunt) {
+  // Project configuration.
+  grunt.initConfig({
+    qunit: {
+      files: ['test/test.html'],
+      options: {
+        inject: [
+          path.resolve("test/coverage-bridge.js"),
+          require.resolve("grunt-contrib-qunit/phantomjs/bridge")
+        ],
+        '--web-security': 'no'
+      }
+    },
+    instrument: {
+      files: 'public/js/*.js',
+      options: {
+        lazy: false,
+        basePath: 'coverage/instrumented/'
+      }
+    },
+    copy: {
+      // Moves files around during coverage runs
+      "save-origs": {
+        src: "public/js/cuchubo.js",
+        dest: "public/js/cuchubo.tmp.js"
+      },
+      "instrumented-to-origs": {
+        src: "coverage/instrumented/public/js/cuchubo.js",
+        dest: "public/js/cuchubo.js"
+      },
+      "restore-origs": {
+        src: "public/js/cuchubo.tmp.js",
+        dest: "public/js/cuchubo.js"
+      }
+    },
+    storeCoverage: {
+      options: {
+        dir: 'coverage/reports/'
+      }
+    },
+    makeReport: {
+      src: 'coverage/reports/**/*.json',
+      options: {
+        type: 'lcov',
+        dir: 'coverage/reports',
+        print: 'detail'
+      }
+    },
+    coveralls: {
+      options: { // Options relevant to all targets 
+        force: false
+      },
+      qunit: { // 
+        src: 'coverage/reports/ghini/coverage.json',
+        options: { // Any options for just this target 
+        }
+      }
+    }
+  });
+
+  grunt.event.on("qunit.coverage", function(coverage) {
+    var reportPath = "coverage/reports/ghini/coverage.json";
+
+    // Create the coverage file
+    grunt.file.write(reportPath, JSON.stringify(coverage));
+  });
     
-    // Task to run tests
-    grunt.registerTask('test', 'qunit');
+  // Load plugins
+  grunt.loadNpmTasks('grunt-contrib-qunit');
+  grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-istanbul');
+  grunt.loadNpmTasks('grunt-coveralls');
+
+  // Task to run tests
+  grunt.registerTask('test', 'qunit');
+  grunt.registerTask('coverage', [
+    'test',  // run first plain: if anything is wrong we stop here
+    'instrument',
+    'copy:save-origs',
+    'copy:instrumented-to-origs',
+    'test',
+    'copy:restore-origs',
+    'storeCoverage',
+    'makeReport',
+    'coveralls']);
 };

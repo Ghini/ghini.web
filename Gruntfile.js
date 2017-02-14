@@ -35,11 +35,6 @@ module.exports = function(grunt) {
         dest: "public/js/cuchubo.js"
       }
     },
-    storeCoverage: {
-      options: {
-        dir: 'coverage/reports/'
-      }
-    },
     makeReport: {
       src: 'coverage/reports/**/*.json',
       options: {
@@ -53,7 +48,7 @@ module.exports = function(grunt) {
         force: false
       },
       qunit: { // 
-        src: 'coverage/reports/ghini/coverage.json',
+        src: 'coverage/reports/lcov.info',
         options: { // Any options for just this target 
         }
       }
@@ -82,7 +77,6 @@ module.exports = function(grunt) {
     'copy:instrumented-to-origs',
     'test',
     'copy:restore-origs',
-    'storeCoverage',
     'makeReport',
     'coveralls']);
 };

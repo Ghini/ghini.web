@@ -98,13 +98,17 @@ function set_alternative(selector, lead, trail) {
 function shorten(x) {
     x = x.toLowerCase();  // ignore case
     x = x.replace(/-/, '');  // remove hyphen
+    x = x.replace(/c([ie])/g, 'z$1');  // palatal c sounds like z
+    x = x.replace(/g([ie])/g, 'j$1');  // palatal g sounds like j
     x = x.replace(/ph/g, 'f');  // ph sounds like f
+    x = x.replace(/v/g, 'f');  // v sounds like f // fricative (voiced or not)
+  
     x = x.replace(/h/g, '');  // h sounds like nothing
-    x = x.replace(/[cq]/g, 'k');  // c and q sound like k
-    x = x.replace(/z/g, 's');  // z sounds like s
+    x = x.replace(/[gcq]/g, 'k');  // g, c, q sound like k // guttural
+    x = x.replace(/[xz]/g, 's');  // x, z sound like s
     x = x.replace(/ae/g, 'e');  // ae sounds like e
-    x = x.replace(/[ye]/g, 'i');  // y and e sound like i
-    x = x.replace(/u/g, 'o');  // u sounds like o
+    x = x.replace(/[ye]/g, 'i');  // y, e sound like i
+    x = x.replace(/[ou]/g, 'u');  // o, u sound like u // so we only have a, i, u
     x = x.replace(/(.)\1/g, '$1');  // doubled letters sound like single
     return x;
 };

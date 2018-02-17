@@ -28,6 +28,7 @@ console.log(dburl);
 
 var mongodb = require('mongodb');
 var dbclient = mongodb.MongoClient;
+const mongoose = require('mongoose');
 
 String.prototype.formatU = function() {
     var str = this.toString();
@@ -51,6 +52,31 @@ app.use(favicon(__dirname + '/public/img/favicon.ico'));
 app.get("/", function(req, res){
     res.render("map");
     console.log(dburl);
+});
+
+app.get("/gardens", (req, res) => {
+    var connection = mongoose.createConnection(dburl);
+    connection.on('connected', () => {
+        var schema = new mongoose.Schema({});
+        var Garden = connection.model('garden', schema);
+        var result = [];
+
+        Garden.
+            aggregate([ {$sort: {name:1}},
+                        {$lookup: {from:"infopanels", foreignField:"garden", localField:"name", as:"infopanels"}},
+                        {$project: {name:1, lat: 1, lon: 1, contact: 1,
+                                    title: "$name",
+                                    infopanels: {$size: "$infopanels"}}} ]).
+            cursor().
+            exec().
+            on('data', (doc) => {result.push(doc)}).
+            on('error', (err) => {
+                console.log("err:", err);
+            }).
+            on('end', () => {
+                res.render('garden', {doc: result});
+            });
+    });
 });
 
 // make the application listen to the port

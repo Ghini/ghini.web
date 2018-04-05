@@ -54,6 +54,27 @@ app.get("/", function(req, res){
     console.log(dburl);
 });
 
+app.get("/panels/:garden_id", (req, res) => {
+    var connection = mongoose.createConnection(dburl);
+    connection.on('connected', () => {
+        var schema = new mongoose.Schema({});
+        var Panel = connection.model('infopanels', schema);
+        var result = [];
+
+        Panel.
+            aggregate([{$match: {garden_id: parseInt(req.params.garden_id)}}]).
+            cursor().
+            exec().
+            on('data', (doc) => {result.push(doc)}).
+            on('error', (err) => {
+                console.log("err:", err);
+            }).
+            on('end', () => {
+                res.render('panel', {doc: result});
+            });
+    });
+});
+
 app.get("/gardens", (req, res) => {
     var connection = mongoose.createConnection(dburl);
     connection.on('connected', () => {

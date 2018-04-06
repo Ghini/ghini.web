@@ -54,8 +54,9 @@ If npm gets confused, `rm -fr ./node_modules/` and try again.
 Database Connection
 ===================
 
-ghini.web keeps its data in a mongodb database. initialize it by running the
-import tool, or set up a sample database by running the sometrees.js script.
+ghini.web keeps its data in a mongodb database.  You can set up a sample
+database by running the some_trees.json script, or you can initialize it by
+running the import tool, feeding it the ghini.desktop 'export to ghini.web'.
 
 using it
 ========

@@ -55,6 +55,10 @@ app.get("/", function(req, res){
 });
 
 app.get("/panels/:garden_id/:language?", (req, res) => {
+    var language = req.params.language || "en";
+    if (!language.match("^[a-z][a-z]$")) {
+        language = "en";
+    }
     var connection = mongoose.createConnection(dburl);
     connection.on('connected', () => {
         var schema = new mongoose.Schema({});
@@ -66,10 +70,6 @@ app.get("/panels/:garden_id/:language?", (req, res) => {
             cursor().
             exec().
             on('data', (doc) => {
-                var language = req.params.language || "en";
-                if (!language.match("^[a-z][a-z]$")) {
-                    language = "en";
-                }
                 doc.url = ("http://www.ghini.me/raw/" +
                            doc.audio.substr(0,6) + language + doc.audio.substr(5));
                 result.push(doc);

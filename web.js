@@ -93,7 +93,7 @@ app.get("/gardens", (req, res) => {
         Garden.
             aggregate([ {$sort: {name:1}},
                         {$lookup: {from:"infopanels", foreignField:"garden", localField:"name", as:"infopanels"}},
-                        {$project: {name:1, lat: 1, lon: 1, contact: 1,
+                        {$project: {name:1, lat: 1, lon: 1, contact: 1, id: 1,
                                     title: "$name",
                                     infopanels: {$size: "$infopanels"}}} ]).
             cursor().

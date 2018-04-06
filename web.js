@@ -65,7 +65,12 @@ app.get("/panels/:garden_id", (req, res) => {
             aggregate([{$match: {garden_id: parseInt(req.params.garden_id)}}]).
             cursor().
             exec().
-            on('data', (doc) => {result.push(doc)}).
+            on('data', (doc) => {
+                var language = "en";  // hard coded fttb
+                doc.url = ("http://www.ghini.me/raw/" +
+                           doc.audio.substr(0,6) + language + doc.audio.substr(5));
+                result.push(doc);
+            }).
             on('error', (err) => {
                 console.log("err:", err);
             }).

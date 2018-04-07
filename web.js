@@ -41,6 +41,11 @@ String.prototype.formatU = function() {
     return str;
 };
 
+var sizethree = function (i) {
+    var result = '000' + (i || 0);
+    return (result).substr(result.length-3);
+}
+
 app.set('views', __dirname + '/views');
 app.set('view engine', "pug");
 app.engine('pug', require('pug').__express);
@@ -70,8 +75,8 @@ app.get("/panels/:garden_id/:language?", (req, res) => {
             cursor().
             exec().
             on('data', (doc) => {
-                doc.url = ("http://www.ghini.me/raw/" +
-                           doc.audio.substr(0,6) + language + doc.audio.substr(5));
+                doc.url = ("http://www.ghini.me/raw/g_{0}_{1}_{2}.mp3").formatU(
+                    sizethree(doc.garden_id), language, sizethree(doc.id_within_garden));
                 result.push(doc);
             }).
             on('error', (err) => {

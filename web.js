@@ -126,11 +126,12 @@ io.sockets.on('connection', function (socket) {
     // have associated the colour red and the icon home, and the zoom at which
     // they appear is 2. then we issue the command 'map-set-view' to the world.
 
-    // The client will use the garden icons or menu item to zoom into a
-    // garden (issue the 'select-garden' command), upon receiving this
-    // command, we issue the command 'map-set-view' to the garden position
-    // and extent, followed by the lists of objects relative to the selected
-    // garden. these include plants, photos, infopanels.
+    // As instructed by the final user (perusing garden icons or menu item),
+    // the clients issue the 'select-garden' command.  Upon receiving this
+    // command from a client, the server issues the command 'map-set-view'
+    // (garden position and extent), followed by as many 'add-object'
+    // commands as needed to send the lists of objects relative to the
+    // selected garden.  These include plants, photos, infopanels.
     dbclient.connect(dburl, function (err, db) {
         if (err) {
             console.log('Unable to connect to the mongoDB server. Error:', err);
@@ -190,7 +191,7 @@ io.sockets.on('connection', function (socket) {
         }});
 
     socket.on('select-garden', function (args) {
-        // wipe all data which is relative to the current garden
+        // require that client wipes all data relative to the current garden
         socket.emit('map-remove-objects', 'plants');
         socket.emit('map-remove-objects', 'photos');
         socket.emit('map-remove-objects', 'infopanels');

@@ -40,15 +40,22 @@ markers.highlighted = [];
 var objects_layer = {};
 var objects_container = {};
 
-// the garden we're zooming into
+// the active hashes
 var active_garden = '';
+var active_binomial = '';
+var active_accession = '';
+var active_tag = '';
 
 //
 // GLOBAL FUNCTIONS
 
 Object.values = function(obj) {
     // Object.values({key: 'value'}) => ['value']
-    return Object.keys(obj).map(function(key) {return obj[key];});
+    if(obj === undefined) {
+        return [];
+    } else {
+        return Object.keys(obj).map(function(key) {return obj[key];});
+    }
 };
 
 String.prototype.formatU = function() {
@@ -368,7 +375,16 @@ function updateLocationHash() {
     var tail = '';
     centre.zoom = map.getZoom();
     if (active_garden !== '') {
-        tail = ';garden=' + active_garden;
+        tail = tail + ';garden=' + active_garden;
+    }
+    if (active_binomial !== '') {
+        tail = tail + ';binomial=' + active_binomial;
+    }
+    if (active_accession !== '') {
+        tail = tail + ';accession=' + active_accession;
+    }
+    if (active_tag !== '') {
+        tail = tail + ';tag=' + active_tag;
     }
     window.location.hash = '#map={zoom}/{lat}/{lng}'.formatU(centre) + tail;
 }
@@ -553,6 +569,15 @@ function parse_hash(s) {
                                    lon: Number(match[4])}];
             }
             return false;
+        },
+        function(s) {
+            var test = /^(binomial)=([^\ ]*) ([^\ ]*)$/;
+            var match = test.exec(decodeURIComponent(s));
+            if(match) {
+                return [match[1], {genus: decodeURIComponent(match[2]),
+                                   species: decodeURIComponent(match[3])}];
+            }
+            return false;
         }];
     if (s[0] === '#') {
         var parts = s.slice(1).split(';');
@@ -589,7 +614,11 @@ function match_species(val) {
         objs = objs.filter(function(x) { return does_item_match(x, val, 'phonetic');});
         var elements = objs.map(present_item);
         elements.map(function(x) {$('#result').append(x);});
+        active_binomial = val;
+    } else {
+        active_binomial = '';
     }
+    updateLocationHash();
 }
 
 L.Control.SearchButton = L.Control.extend({
@@ -610,6 +639,7 @@ L.Control.SearchButton = L.Control.extend({
             } else {
                 $('#map').css('width', '100%');
                 status = 0;
+                match_species('');
             }
         };
         return container;
@@ -706,11 +736,12 @@ function init() {
     // handling the hash tail in the URL, initially and changes to it.
     var hash_parts = {};
     if(window.location.hash) {
+        console.log(window.location.hash);
         hash_parts = parse_hash(window.location.hash);
         console.log(hash_parts);
     }
     window.onhashchange = function() {
-        // doYourStuff();
+        console.log(window.location.hash);
     };
 
     // associate callbacks to events
@@ -769,10 +800,19 @@ function init() {
 
     socket.on('add-object', finalAddObject);
     socket.on('map-set-view', function(doc) {
-        if('name' in doc) {
-            active_garden = doc.name;
+        console.log(doc);
+        if('garden' in doc) {
+            active_garden = doc.garden;
         }
         mapSetView(doc.lat, doc.lon, doc.zoom);
+        if('binomial' in doc) {
+            match_species('{genus} {species}'.formatU(doc.binomial));
+            $("#input-species > input").val(active_binomial);
+            $('#map').css('width', '80%');
+        }
+        if('tag' in doc) {
+            active_tag = doc.tag;
+        }
     });
     socket.on('map-remove-objects', finalRemoveLayer);
     socket.emit('select-garden', hash_parts);

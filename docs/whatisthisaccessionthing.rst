@@ -23,3 +23,10 @@ several Plantings at different places in our ‘Tanager’ garden, obtained
 vegetatively (asexually) from the first 5 plants. Plants obtained by sexual
 reproduction come in the database under different Accessions, where our
 garden is the Source.«
+
+Anyhow, in Ghini you can add plant and accession within the same action:
+simply choose the "intended location" for the accession, and indicate that
+you want ghini to immediately add the plant at that location.  By adding the
+"accession", Ghini also adds the "plant", using all the accessed plant
+material.  Quite obviously, if you intend to split your new accession into
+multiple plants at distinct locations, you need to go through all the steps.

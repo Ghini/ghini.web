@@ -96,9 +96,9 @@ app.get("/gardens", (req, res) => {
         var result = [];
 
         Garden.
-            aggregate([ {$sort: {name:1}},
-                        {$lookup: {from:"infopanels", foreignField:"garden", localField:"name", as:"infopanels"}},
-                        {$project: {name:1, lat: 1, lon: 1, contact: 1, id: 1,
+            aggregate([ {$sort: {name: 1}},
+                        {$lookup: {from: "infopanels", foreignField: "garden", localField: "name", as: "infopanels"}},
+                        {$project: {name: 1, lat: 1, lon: 1, contact: 1, id: 1,
                                     title: "$name",
                                     infopanels: {$size: "$infopanels"}}} ]).
             cursor().
@@ -140,13 +140,13 @@ io.sockets.on('connection', function (socket) {
             // We store our find criteria in a cursor.
             // Having a cursor does not mean we performed any database access, yet.
             var cursor = db.collection('gardens').aggregate(
-                {$sort:{name:1}},
-                {$lookup:{from:"plants", foreignField:"garden", localField:"name", as:"plants"}},
-                {$lookup:{from:"photos", foreignField:"garden", localField:"name", as:"photos"}},
-                {$lookup:{from:"infopanels", foreignField:"garden", localField:"name", as:"infopanels"}},
+                {$sort: {name: 1}},
+                {$lookup: {from: "plants", foreignField: "garden", localField: "name", as: "plants"}},
+                {$lookup: {from: "photos", foreignField: "garden", localField: "name", as: "photos"}},
+                {$lookup: {from: "infopanels", foreignField: "garden", localField: "name", as: "infopanels"}},
                 {$project: {layer_name: {$literal: "gardens"},
                             layer_zoom: {$literal: 1},
-                            name:1, lat: 1, lon: 1, contact: 1,
+                            name: 1, lat: 1, lon: 1, contact: 1,
                             title: "$name",
                             plants: {$size: "$plants"},
                             photos: {$size: "$photos"},
@@ -165,11 +165,12 @@ io.sockets.on('connection', function (socket) {
                 }
             });
             cursor = db.collection('plants').aggregate(
-                {$sort:{code:1}},
-                {$group: {_id: {species:"$species", garden: "$garden"}, count: {$sum: 1}, plants: {$push: {_id: "$_id", code: "$code"}}}},
-                {$group: {_id: {species:"$_id.species"},
+                {$sort: {code: 1}},
+                {$group: {_id: {species: "$species", garden: "$garden"},
+                          count: {$sum: 1}, plants: {$push: {_id: "$_id", code: "$code"}}}},
+                {$group: {_id: {species: "$_id.species"},
                           gardens: {$push: {name: "$_id.garden", plant_count: "$count", plants: "$plants"}}}},
-                {$lookup: {from:"taxa", localField:"_id.species", foreignField:"name", as:"taxon"}},
+                {$lookup: {from: "taxa", localField: "_id.species", foreignField: "name", as: "taxon"}},
                 {$unwind: {path: "$taxon"}},
                 {$project: {_id: "$taxon._id",
                             phonetic: "$taxon.phonetic",
@@ -177,7 +178,7 @@ io.sockets.on('connection', function (socket) {
                             family_name: "$taxon.family",
                             gardens: 1, taxon: 1,
                             layer_name: {$literal: "__taxa"}}},
-                {$sort:{family_name:1, species_name:1}},
+                {$sort: {family_name: 1, species_name: 1}},
                 {});
             // Lets iterate on the result.
             // this will access the database, so we act in a callback.
@@ -216,7 +217,7 @@ io.sockets.on('connection', function (socket) {
             } else {
                 // first of all, tell the client to set the view on the
                 // garden; the garden document contains lat, lon, and zoom.
-                var cursor = db.collection('gardens').findOne({name:args['garden']}, function(err, doc) {
+                var cursor = db.collection('gardens').findOne({name: args['garden']}, function(err, doc) {
                     if (err || !doc) {
                         console.log("err:", err, "; doc:", doc, "garden not found", args);
                         console.log('map-set-view', args);
@@ -234,12 +235,12 @@ io.sockets.on('connection', function (socket) {
                 // We store our find criteria in a cursor.
                 // Having a cursor does not mean we performed any database access, yet.
                 cursor = db.collection('plants').aggregate(
-                    {$match:{garden:args['garden']}},
-                    {$lookup:{from:"taxa", localField:"species", foreignField:"name", as:"taxon"}},
+                    {$match: {garden: args['garden']}},
+                    {$lookup: {from: "taxa", localField: "species", foreignField: "name", as: "taxon"}},
                     {$unwind: {path: "$taxon"}},
                     {$project: {layer_name: {$literal: "plants"},
                                 layer_zoom: "$zoom",
-                                lat: 1, lon: 1, species:1, taxon:1, code:1,
+                                lat: 1, lon: 1, species: 1, taxon: 1, code: 1,
                                 title: "$code",
                                 species_name: "$taxon.name",
                                 vernacular: "$taxon.vernacular",
@@ -339,7 +340,7 @@ io.sockets.on('connection', function (socket) {
 
                 // same for the photos
                 cursor = db.collection('photos').aggregate(
-                    {$match:{garden:args['garden']}},
+                    {$match: {garden: args['garden']}},
                     {$project: {layer_name: {$literal: "photos"},
                                 layer_zoom: "$zoom",
                                 lat: 1, lon: 1, title: 1, name: 1,
@@ -358,7 +359,7 @@ io.sockets.on('connection', function (socket) {
 
                 // same for the infopanels
                 cursor = db.collection('infopanels').aggregate(
-                    {$match:{garden:args['garden']}},
+                    {$match: {garden: args['garden']}},
                     {$project: {layer_name: {$literal: "infopanels"},
                                 layer_zoom: "$zoom",
                                 lat: 1, lon: 1, title: 1, text: 1,

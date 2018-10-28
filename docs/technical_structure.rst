@@ -94,11 +94,11 @@ the slugify function::
 
   slugify = function (text) {
     return text.toLowerCase().
-      replace(/[áàä]/,'a').
-      replace(/[éèë]/,'e').
-      replace(/[íìï]/,'i').
-      replace(/[óòö]/,'o').
-      replace(/[úùü]/,'u').
+      replace(/[áàä]/g,'a').
+      replace(/[éèë]/g,'e').
+      replace(/[íìï]/g,'i').
+      replace(/[óòö]/g,'o').
+      replace(/[úùü]/g,'u').
       replace(/ /g,'-').
       replace(/[-]+/g, '-').
       replace(/[^\w-]+/g,'');}``

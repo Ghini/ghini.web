@@ -83,3 +83,21 @@ updating dependencies
 | ``ncu -u``
 | ``npm install``
 
+setting aliases
+------------------
+
+``db.gardens.find().
+    forEach(function(item) {db.gardens.update(
+        {_id: item._id},
+        {$set:{aliases:[item.name, slugify(item.name)]}})});``
+
+``slugify = function (text) {
+return text.toLowerCase().
+    replace(/[áàä]/,'a').
+    replace(/[éèë]/,'e').
+    replace(/[íìï]/,'i').
+    replace(/[óòö]/,'o').
+    replace(/[úùü]/,'u').
+    replace(/ /g,'-').
+    replace(/[-]+/g, '-').
+    replace(/[^\w-]+/g,'');}``

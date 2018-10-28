@@ -333,7 +333,7 @@ io.sockets.on('connection', function (socket) {
                                 case 'Thelypteridaceae':
                                 case 'Thyrsopteridaceae':
                                 case 'Woodsiaceae':
-                                    // doc.icon = 'fern'; // there is no such icon yet
+                                    // doc.icon = 'fern'; // there is no such icon yet; issue #33
                                     break;
                                 case 'Asteraceae':
                                     doc.icon = 'compositae';

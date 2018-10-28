@@ -217,7 +217,7 @@ io.sockets.on('connection', function (socket) {
             } else {
                 // first of all, tell the client to set the view on the
                 // garden; the garden document contains lat, lon, and zoom.
-                var cursor = db.collection('gardens').findOne({name: args['garden']}, function(err, doc) {
+                var cursor = db.collection('gardens').findOne({aliases: args['garden']}, function(err, doc) {
                     if (err || !doc) {
                         console.log("err:", err, "; doc:", doc, "garden not found", args);
                         console.log('map-set-view', args);
@@ -228,154 +228,154 @@ io.sockets.on('connection', function (socket) {
                         }
                         console.log('map-set-view', doc);
                         socket.emit('map-set-view', doc);
+
+                        // Get the plants relative to this garden.
+                        // We store our find criteria in a cursor.
+                        // Having a cursor does not mean we performed any database access, yet.
+                        cursor = db.collection('plants').aggregate(
+                            {$match: {garden: doc['name']}},
+                            {$lookup: {from: "taxa", localField: "species", foreignField: "name", as: "taxon"}},
+                            {$unwind: {path: "$taxon"}},
+                            {$project: {layer_name: {$literal: "plants"},
+                                        layer_zoom: "$zoom",
+                                        lat: 1, lon: 1, species: 1, taxon: 1, code: 1,
+                                        title: "$code",
+                                        species_name: "$taxon.name",
+                                        vernacular: "$taxon.vernacular",
+                                        phonetic: "$taxon.phonetic",
+                                        family: "$taxon.family",
+                                        draggable: {$literal: false},
+                                        color: {$literal: "green"},
+                                        icon: {$literal: "tree-evergreen"}}},
+                            {}
+                        );
+                        // Lets iterate on the result.
+                        // this will access the database, so we act in a callback.
+                        cursor.each(function (err, doc) {
+                            if (err || !doc) {
+                                console.log("err:", err, "; doc:", doc);
+                            } else {
+                                switch(doc.family){
+                                case 'Arecaceae':
+                                    doc.icon = 'palm-tree';
+                                    break;
+                                case 'Musaceae':
+                                    doc.icon = 'banana-tree';
+                                    break;
+                                case 'Araucariaceae':
+                                case 'Cupressaceae':
+                                case 'Cycadaceae':
+                                case 'Ephedraceae':
+                                case 'Ginkgoaceae':
+                                case 'Gnetaceae':
+                                case 'Pinaceae':
+                                case 'Podocarpaceae':
+                                case 'Sciadopityaceae':
+                                case 'Taxaceae':
+                                case 'Welwitschiaceae':
+                                case 'Zamiaceae ':
+                                    doc.icon = 'tree-conifer';
+                                    break;
+                                case 'Anemiaceae':
+                                case 'Apleniaceae':
+                                case 'Aspleniaceae':
+                                case 'Athyriaceae':
+                                case 'Blechnaceae':
+                                case 'Cibotiaceae':
+                                case 'Culcitaceae':
+                                case 'Cyatheaceae':
+                                case 'Cystodiaceae':
+                                case 'Cystopteridaceae':
+                                case 'Davalliaceae':
+                                case 'Dennstaedtiaceae':
+                                case 'Dicksoniaceae':
+                                case 'Diplaziopsidaceae':
+                                case 'Dipteridaceae':
+                                case 'Dryopteridacae':
+                                case 'Dryopteridaceae':
+                                case 'Equisetaceae':
+                                case 'Gleicheniaceae':
+                                case 'Hymenophyllaceae':
+                                case 'Hypodematiaceae':
+                                case 'Isoëtaceae':
+                                case 'Lindsaeaceae':
+                                case 'Lomariopsidaceae':
+                                case 'Lonchitidaceae':
+                                case 'Loxsomataceae':
+                                case 'Lycopodiaceae':
+                                case 'Lygodiaceae':
+                                case 'Marattiaceae':
+                                case 'Marsileaceae':
+                                case 'Matoniaceae':
+                                case 'Metaxyaceae':
+                                case 'Nephrolepidaceae':
+                                case 'Oleandraceae':
+                                case 'Onocleaceae':
+                                case 'Ophioglossaceae':
+                                case 'Osmundaceae':
+                                case 'Plagiogyriaceae':
+                                case 'Polypodiaceae':
+                                case 'Psilotaceae':
+                                case 'Pteridaceae':
+                                case 'Rhachidosoraceae':
+                                case 'Saccolomataceae':
+                                case 'Salviniaceae':
+                                case 'Schizaeaceae':
+                                case 'Selaginellaceae':
+                                case 'Tectariaceae':
+                                case 'Thelypteridaceae':
+                                case 'Thyrsopteridaceae':
+                                case 'Woodsiaceae':
+                                    // doc.icon = 'fern'; // there is no such icon yet
+                                    break;
+                                case 'Asteraceae':
+                                    doc.icon = 'compositae';
+                                    break;
+                                }
+                                socket.emit('add-object', doc);
+                            }
+                        });
+
+                        // same for the photos
+                        cursor = db.collection('photos').aggregate(
+                            {$match: {garden: doc['name']}},
+                            {$project: {layer_name: {$literal: "photos"},
+                                        layer_zoom: "$zoom",
+                                        lat: 1, lon: 1, title: 1, name: 1,
+                                        draggable: {$literal: false},
+                                        color: {$literal: "cadetblue"},
+                                        icon: {$literal: "camera"}}},
+                            {}
+                        );
+                        cursor.each(function (err, doc) {
+                            if (err || !doc) {
+                                console.log("err:", err, "; doc:", doc);
+                            } else {
+                                socket.emit('add-object', doc);
+                            }
+                        });
+
+                        // same for the infopanels
+                        cursor = db.collection('infopanels').aggregate(
+                            {$match: {garden: doc['name']}},
+                            {$project: {layer_name: {$literal: "infopanels"},
+                                        layer_zoom: "$zoom",
+                                        lat: 1, lon: 1, title: 1, text: 1,
+                                        draggable: {$literal: false},
+                                        color: {$literal: "purple"},
+                                        icon: {$literal: "info-sign"}}},
+                            {}
+                        );
+                        cursor.each(function (err, doc) {
+                            if (err || !doc) {
+                                console.log("err:", err, "; doc:", doc);
+                            } else {
+                                socket.emit('add-object', doc);
+                            }
+                        });
+
                     }
                 });
-
-                // Get the plants relative to this garden.
-                // We store our find criteria in a cursor.
-                // Having a cursor does not mean we performed any database access, yet.
-                cursor = db.collection('plants').aggregate(
-                    {$match: {garden: args['garden']}},
-                    {$lookup: {from: "taxa", localField: "species", foreignField: "name", as: "taxon"}},
-                    {$unwind: {path: "$taxon"}},
-                    {$project: {layer_name: {$literal: "plants"},
-                                layer_zoom: "$zoom",
-                                lat: 1, lon: 1, species: 1, taxon: 1, code: 1,
-                                title: "$code",
-                                species_name: "$taxon.name",
-                                vernacular: "$taxon.vernacular",
-                                phonetic: "$taxon.phonetic",
-                                family: "$taxon.family",
-                                draggable: {$literal: false},
-                                color: {$literal: "green"},
-                                icon: {$literal: "tree-evergreen"}}},
-                    {}
-                );
-                // Lets iterate on the result.
-                // this will access the database, so we act in a callback.
-                cursor.each(function (err, doc) {
-                    if (err || !doc) {
-                        console.log("err:", err, "; doc:", doc);
-                    } else {
-                        switch(doc.family){
-                        case 'Arecaceae':
-                            doc.icon = 'palm-tree';
-                            break;
-                        case 'Musaceae':
-                            doc.icon = 'banana-tree';
-                            break;
-                        case 'Araucariaceae':
-                        case 'Cupressaceae':
-                        case 'Cycadaceae':
-                        case 'Ephedraceae':
-                        case 'Ginkgoaceae':
-                        case 'Gnetaceae':
-                        case 'Pinaceae':
-                        case 'Podocarpaceae':
-                        case 'Sciadopityaceae':
-                        case 'Taxaceae':
-                        case 'Welwitschiaceae':
-                        case 'Zamiaceae ':
-                            doc.icon = 'tree-conifer';
-                            break;
-                        case 'Anemiaceae':
-                        case 'Apleniaceae':
-                        case 'Aspleniaceae':
-                        case 'Athyriaceae':
-                        case 'Blechnaceae':
-                        case 'Cibotiaceae':
-                        case 'Culcitaceae':
-                        case 'Cyatheaceae':
-                        case 'Cystodiaceae':
-                        case 'Cystopteridaceae':
-                        case 'Davalliaceae':
-                        case 'Dennstaedtiaceae':
-                        case 'Dicksoniaceae':
-                        case 'Diplaziopsidaceae':
-                        case 'Dipteridaceae':
-                        case 'Dryopteridacae':
-                        case 'Dryopteridaceae':
-                        case 'Equisetaceae':
-                        case 'Gleicheniaceae':
-                        case 'Hymenophyllaceae':
-                        case 'Hypodematiaceae':
-                        case 'Isoëtaceae':
-                        case 'Lindsaeaceae':
-                        case 'Lomariopsidaceae':
-                        case 'Lonchitidaceae':
-                        case 'Loxsomataceae':
-                        case 'Lycopodiaceae':
-                        case 'Lygodiaceae':
-                        case 'Marattiaceae':
-                        case 'Marsileaceae':
-                        case 'Matoniaceae':
-                        case 'Metaxyaceae':
-                        case 'Nephrolepidaceae':
-                        case 'Oleandraceae':
-                        case 'Onocleaceae':
-                        case 'Ophioglossaceae':
-                        case 'Osmundaceae':
-                        case 'Plagiogyriaceae':
-                        case 'Polypodiaceae':
-                        case 'Psilotaceae':
-                        case 'Pteridaceae':
-                        case 'Rhachidosoraceae':
-                        case 'Saccolomataceae':
-                        case 'Salviniaceae':
-                        case 'Schizaeaceae':
-                        case 'Selaginellaceae':
-                        case 'Tectariaceae':
-                        case 'Thelypteridaceae':
-                        case 'Thyrsopteridaceae':
-                        case 'Woodsiaceae':
-                            // doc.icon = 'fern'; // there is no such icon yet
-                            break;
-                        case 'Asteraceae':
-                            doc.icon = 'compositae';
-                            break;
-                        }
-                        socket.emit('add-object', doc);
-                    }
-                });
-
-                // same for the photos
-                cursor = db.collection('photos').aggregate(
-                    {$match: {garden: args['garden']}},
-                    {$project: {layer_name: {$literal: "photos"},
-                                layer_zoom: "$zoom",
-                                lat: 1, lon: 1, title: 1, name: 1,
-                                draggable: {$literal: false},
-                                color: {$literal: "cadetblue"},
-                                icon: {$literal: "camera"}}},
-                    {}
-                );
-                cursor.each(function (err, doc) {
-                    if (err || !doc) {
-                        console.log("err:", err, "; doc:", doc);
-                    } else {
-                        socket.emit('add-object', doc);
-                    }
-                });
-
-                // same for the infopanels
-                cursor = db.collection('infopanels').aggregate(
-                    {$match: {garden: args['garden']}},
-                    {$project: {layer_name: {$literal: "infopanels"},
-                                layer_zoom: "$zoom",
-                                lat: 1, lon: 1, title: 1, text: 1,
-                                draggable: {$literal: false},
-                                color: {$literal: "purple"},
-                                icon: {$literal: "info-sign"}}},
-                    {}
-                );
-                cursor.each(function (err, doc) {
-                    if (err || !doc) {
-                        console.log("err:", err, "; doc:", doc);
-                    } else {
-                        socket.emit('add-object', doc);
-                    }
-                });
-
             }});
     });
 

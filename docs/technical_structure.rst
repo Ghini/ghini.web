@@ -77,27 +77,28 @@ it offers more future flexibility.
 frequent actions
 ------------------
 
-updating dependencies
+updating dependencies::
 
-| ``sudo npm install -g npm-check-updates``
-| ``ncu -u``
-| ``npm install``
+  sudo npm install -g npm-check-updates
+  ncu -u
+  npm install
 
-setting aliases
-------------------
+setting aliases::
 
-``db.gardens.find().
+  db.gardens.find().
     forEach(function(item) {db.gardens.update(
-        {_id: item._id},
-        {$set:{aliases:[item.name, slugify(item.name)]}})});``
+      {_id: item._id},
+      {$set:{aliases:[item.name, slugify(item.name)]}})});
 
-``slugify = function (text) {
-return text.toLowerCase().
-    replace(/[áàä]/,'a').
-    replace(/[éèë]/,'e').
-    replace(/[íìï]/,'i').
-    replace(/[óòö]/,'o').
-    replace(/[úùü]/,'u').
-    replace(/ /g,'-').
-    replace(/[-]+/g, '-').
-    replace(/[^\w-]+/g,'');}``
+the slugify function::
+
+  slugify = function (text) {
+    return text.toLowerCase().
+      replace(/[áàä]/,'a').
+      replace(/[éèë]/,'e').
+      replace(/[íìï]/,'i').
+      replace(/[óòö]/,'o').
+      replace(/[úùü]/,'u').
+      replace(/ /g,'-').
+      replace(/[-]+/g, '-').
+      replace(/[^\w-]+/g,'');}``

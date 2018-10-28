@@ -201,13 +201,13 @@ io.sockets.on('connection', function (socket) {
             lat: 32.0,
             lon: 8.0
         };
+        console.log("args: ", args);
         if ('map' in args) {
             Object.assign(args, args.map);
         } else {
             Object.assign(args, defaults);
         }
         if (!('garden' in args)) {
-            console.log(args);
             socket.emit('map-set-view', args);
             return;
         }

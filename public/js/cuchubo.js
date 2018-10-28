@@ -591,6 +591,7 @@ function parse_hash(s) {
             }
         }
     }
+    console.log('result:', result);
     return result;
 }
 
@@ -736,12 +737,24 @@ function init() {
     // handling the hash tail in the URL, initially and changes to it.
     var hash_parts = {};
     if(window.location.hash) {
-        console.log(window.location.hash);
+        console.log('hash=', window.location.hash);
         hash_parts = parse_hash(window.location.hash);
-        console.log(hash_parts);
+        console.log('parts=', hash_parts);
     }
     window.onhashchange = function() {
-        console.log(window.location.hash);
+        console.log('onhashchange:', window.location.hash);
+        var previous_garden = hash_parts['garden'];
+        var previous_binomial = hash_parts['binomial'];
+        hash_parts = parse_hash(window.location.hash);
+        console.log('parts=', hash_parts);
+        if ('garden' in hash_parts && previous_garden !== hash_parts['garden']) {
+            fireSelectGarden(hash_parts['garden']);
+        }
+        if ('binomial' in hash_parts && previous_binomial !== hash_parts['binomial']) {
+            match_species('{genus} {species}'.formatU(hash_parts.binomial));
+            $("#input-species > input").val(active_binomial);
+            $('#map').css('width', '80%');
+        }
     };
 
     // associate callbacks to events
@@ -786,7 +799,7 @@ function init() {
 
             // add the reference to the dialog box to the help menu.
             var list_item = $('<li/>');
-            console.log(item.name);
+            console.log('item.name: ', item.name);
             var anchor = $('<a/>', { onclick: "$('#" + item.name + "Modal').modal('show'); return false;", href: "#" });
             var icon = $('<i/>', { class: "icon-" + item.icon + " icon-black" });
             $("#help-menu-list").append(list_item);
@@ -800,7 +813,7 @@ function init() {
 
     socket.on('add-object', finalAddObject);
     socket.on('map-set-view', function(doc) {
-        console.log(doc);
+        console.log('doc=', doc);
         if('garden' in doc) {
             active_garden = doc.garden;
         }

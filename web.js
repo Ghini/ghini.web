@@ -259,7 +259,14 @@ io.sockets.on('connection', function (socket) {
                                 case 'Arecaceae':
                                     doc.icon = 'palm-tree';
                                     break;
+                                case 'Cannaceae':
+                                case 'Costaceae': 
+                                case 'Heliconiaceae':
+                                case 'Lowiaceae':
+                                case 'Marantaceae': 
                                 case 'Musaceae':
+                                case 'Strelitziaceae':
+                                case 'Zingiberaceae': 
                                     doc.icon = 'banana-tree';
                                     break;
                                 case 'Araucariaceae':
